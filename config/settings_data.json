@@ -2293,11 +2293,11 @@
           "image_hXThEF": {
             "type": "image",
             "settings": {
-              "slideshow_1_img": "shopify://shop_images/2.webp",
-              "slider1_title": "",
+              "slideshow_1_img": "shopify://shop_images/1_0d1bfd70-92ef-4bd3-86b8-e1998a54476d.webp",
+              "slider1_title": "Разгледай",
               "slide_1_heading": "#000000",
-              "slider1_subtitle": "",
-              "slide_1_subheading": "#ffffff",
+              "slider1_subtitle": "Дрехи за момичета",
+              "slide_1_subheading": "#000000",
               "slider1_content": "",
               "slide_1_desc": "#ffffff",
               "slide_1_link": "/collections/all",
@@ -2309,26 +2309,10 @@
           "image_FgFLxW": {
             "type": "image",
             "settings": {
-              "slideshow_1_img": "shopify://shop_images/2.webp",
-              "slider1_title": "",
+              "slideshow_1_img": "shopify://shop_images/2_ebffc739-8ee7-4a69-817e-13a2687b2987.webp",
+              "slider1_title": "Разгледай",
               "slide_1_heading": "#000000",
-              "slider1_subtitle": "",
-              "slide_1_subheading": "#ffffff",
-              "slider1_content": "",
-              "slide_1_desc": "#ffffff",
-              "slide_1_link": "/collections/all",
-              "slide_1_btn_txt": "",
-              "slide_1_btn": "#000000",
-              "slide_1_btn_hover_txt": "#000000"
-            }
-          },
-          "image_U6XAXe": {
-            "type": "image",
-            "settings": {
-              "slideshow_1_img": "shopify://shop_images/2.webp",
-              "slider1_title": "",
-              "slide_1_heading": "#000000",
-              "slider1_subtitle": "",
+              "slider1_subtitle": "Дрехи за момчета",
               "slide_1_subheading": "#ffffff",
               "slider1_content": "",
               "slide_1_desc": "#ffffff",
@@ -2341,8 +2325,7 @@
         },
         "block_order": [
           "image_hXThEF",
-          "image_FgFLxW",
-          "image_U6XAXe"
+          "image_FgFLxW"
         ],
         "name": "Slider Grid",
         "settings": {}
