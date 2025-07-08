@@ -16,9 +16,9 @@
       {% if section.blocks.size > 0 %}
       {% for block in section.blocks %}
         {%- assign collection = collections[block.settings.collection] -%}
-      <div class="grid-uniform full_width_tab">
+      <div class="grid-uniform full_width_tab responsive-flex-container">
         {% if block.settings.align_text == 'left' %}
-        <div class="grid__item wide--one-half post-large--one-half medium--grid__item small--grid__item" style="float:left;">
+        <div class="grid__item wide--one-half post-large--one-half medium--grid__item small--grid__item responsive-flex-image">
           {% if block.settings.image != blank %}
           <a class="collection_img" href="{{ collection.url }}">
             <img src="{{ block.settings.image | img_url: 'master' }}" alt="{{ block.settings.title }}" />
@@ -42,7 +42,7 @@
         </div>
         {% endif %}
 
-        <div class="{% if block.settings.align_text == 'none' %} grid__item {% else %} grid__item wide--one-half post-large--one-half medium--grid__item small--grid__item {% endif %}">
+        <div class="{% if block.settings.align_text == 'none' %} grid__item {% else %} grid__item wide--one-half post-large--one-half medium--grid__item small--grid__item responsive-flex-products {% endif %}">
           <ul class="{{ block.settings.title | handle }}-{{ section.id }} owl-carousel owl-theme">
             {% for product in collection.products %}
             <li class="grid__item item-row">
@@ -229,16 +229,13 @@
                 navContainer: ".{{ block.settings.title | handle }}-{{ section.id }}-nav",
                 navText: ['<a class="prev btn active"><i class="icon-arrow-left"></i></a>','<a class="next btn"><i class="icon-arrow-right"></i></a>'],
                 responsive:{
-                  0:{
+                  0: {
+                    items: 1
+                  },
+                  650: {
                     items: 2
                   },
-                  600:{
-                    items:2
-                  },
-                  750:{
-                    items:2
-                  },
-                  1000:{
+                  1000: {
                     items: {{ block.settings.products_per_column }}
                   }
                 }
@@ -248,7 +245,7 @@
         </div>
 
         {% if block.settings.align_text == 'right' %}
-        <div class="wide--one-half post-large--one-half medium--grid__item small--grid__item right-side" style="float:right;">
+        <div class="wide--one-half post-large--one-half medium--grid__item small--grid__item right-side responsive-flex-image" style="">
           {% if block.settings.image != blank %}
           <a class="collection_img" href="{{ collection.url }}">
             <img src="{{ block.settings.image | img_url: 'master' }}" alt="{{ block.settings.title }}" />
@@ -291,6 +288,69 @@
     height:62px;
   }
   {% endif %}
+
+  /* Responsive Flexbox for Home Product Grid */
+  .home-product-grid-type-17 .responsive-flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    align-items: stretch;
+  }
+  .home-product-grid-type-17 .responsive-flex-image {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1 1 300px;
+    min-width: 260px;
+    max-width: 100%;
+    margin-bottom: 24px;
+  }
+  .home-product-grid-type-17 .responsive-flex-products {
+    flex: 2 1 400px;
+    min-width: 260px;
+    max-width: 100%;
+    margin-bottom: 24px;
+  }
+  .home-product-grid-type-17 .modern-product-card {
+    min-width: 0;
+  }
+  @media (max-width: 1024px) {
+    .home-product-grid-type-17 .responsive-flex-container {
+      flex-direction: column;
+      gap: 16px;
+    }
+    .home-product-grid-type-17 .responsive-flex-image,
+    .home-product-grid-type-17 .responsive-flex-products {
+      min-width: 0;
+      max-width: 100%;
+      margin-bottom: 16px;
+    }
+  }
+  @media (max-width: 600px) {
+    .home-product-grid-type-17 .modern-main-title {
+      font-size: 1.5rem;
+    }
+    .home-product-grid-type-17 .modern-subtitle {
+      font-size: 1rem;
+    }
+    .home-product-grid-type-17 .modern-product-card {
+      padding: 10px;
+    }
+    .home-product-grid-type-17 .modern-product-title {
+      font-size: 1rem;
+    }
+    .home-product-grid-type-17 .responsive-flex-container {
+      gap: 8px;
+    }
+    .home-product-grid-type-17 .modern-add-to-cart-btn {
+      width: 100%;
+      font-size: 1rem;
+    }
+    .home-product-grid-type-17 .modern-product-actions {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
 </style>
 
 {% schema %}
