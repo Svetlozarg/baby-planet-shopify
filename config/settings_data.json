@@ -2485,34 +2485,6 @@
           "button_hover__bg_color": "#ffffff"
         }
       },
-      "home_product_grid_type_17_E6Q74d": {
-        "type": "home-product-grid-type-17",
-        "blocks": {
-          "text_block_zjpDDN": {
-            "type": "text_block",
-            "settings": {
-              "align_text": "none",
-              "letter": "",
-              "title": "New arrivals",
-              "btn": "",
-              "collection": "момичета",
-              "products_per_column": "4"
-            }
-          }
-        },
-        "block_order": [
-          "text_block_zjpDDN"
-        ],
-        "name": "Home Product Grid",
-        "settings": {
-          "main_title": "За Момичета",
-          "main_title_clr": "#000000",
-          "description_1": "",
-          "desc_color": "#000000",
-          "heading_image_need": true,
-          "heading_image": "shopify://shop_images/icon-image_7e8da680-2df2-47a3-9128-41a7052320b0.webp"
-        }
-      },
       "custom_content_PHKni7": {
         "type": "custom-content",
         "custom_css": [
@@ -2527,13 +2499,48 @@
           "top_margin": true,
           "bottom_margin": true
         }
+      },
+      "home_product_grid_type_14_jKxrpC": {
+        "type": "home-product-grid-type-14",
+        "name": "Vertical Product Grid",
+        "settings": {
+          "bg_color": "#fff",
+          "main_title": "За Момичета",
+          "main_title_clr": "#000",
+          "description_1": "",
+          "desc_color": "#000",
+          "heading_image_need": true,
+          "heading_image": "shopify://shop_images/icon-image.webp",
+          "collection": "момичета",
+          "show_vendor": true,
+          "grid": "3",
+          "rows": "2"
+        }
+      },
+      "home_product_grid_type_14_TqcHmY": {
+        "type": "home-product-grid-type-14",
+        "name": "Vertical Product Grid",
+        "settings": {
+          "bg_color": "#fff",
+          "main_title": "За Момчета",
+          "main_title_clr": "#000",
+          "description_1": "",
+          "desc_color": "#000",
+          "heading_image_need": true,
+          "heading_image": "shopify://shop_images/icon-image.webp",
+          "collection": "момичета",
+          "show_vendor": true,
+          "grid": "3",
+          "rows": "2"
+        }
       }
     },
     "content_for_index": [
       "grid_banner_type_20_bCWAhW",
       "custom_content_PHKni7",
       "category_listing_8DW9MC",
-      "home_product_grid_type_17_E6Q74d",
+      "home_product_grid_type_14_jKxrpC",
+      "home_product_grid_type_14_TqcHmY",
       "blog_post_type_1_KB4V8a",
       "support_section_2_EABpnF",
       "newsletter_fERNA7"
