@@ -2635,6 +2635,10 @@
       },
       "custom_content_PHKni7": {
         "type": "custom-content",
+        "custom_css": [
+          ".container-bg {display: none;}",
+          ".custom-content-wrapper {padding: 30px 0;}"
+        ],
         "name": "Custom content",
         "settings": {
           "heading_text": "",
