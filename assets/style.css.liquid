@@ -359,7 +359,7 @@
 ._quick-view-content { display: none }
 .quick-view .close-window,#fancybox-close
 .search-close,#popupBoxClose {
-  
+
   background:url({{ 'hover.png' | asset_url }}) no-repeat;
   border:none;
     cursor: pointer;
@@ -582,15 +582,15 @@
 .swatch.error code{font-family:monospace}
 .swatch .selector-wrapper:after{background:none;}
 .swatch input:checked + label {
-    
+
 }
 
 .swatch label {
-   
+
     float:left;
-   
+
     text-align: center;
-   
+
 }
 .swatch .swatch-element.color.white input:checked + label:before { color:#000; }
 /* ===============================================
@@ -601,21 +601,21 @@
 
 
 
-.products .reveal .hidden { 
-  position: absolute; 
+.products .reveal .hidden {
+  position: absolute;
   z-index: -1;
-  top: 0; 
- 
- 
+  top: 0;
+
+
   opacity: 0;
   -webkit-transition: opacity 0.3s ease-in-out;
   -moz-transition: opacity 0.3s ease-in-out;
   -o-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;  
+  transition: opacity 0.3s ease-in-out;
 }
-.product-container:hover .reveal .swipe { 
+.product-container:hover .reveal .swipe {
   z-index: 9;
-  opacity: 1;    
+  opacity: 1;
 }
 
 .swipe {
@@ -658,7 +658,7 @@
 }
 #mc_embed_signup button {
     margin: 0;
-    
+
     font-size: 14px;
     font-weight: normal;
 }
@@ -667,7 +667,7 @@
     text-align: center;
     float: left;
     border-top: none;
-    
+
     font-size:16px;
 }
 #email-modal .window-window .window-content .message {
@@ -993,7 +993,7 @@
   left: 0;
   z-index: 1000;
   display: none;
-  float: left;   
+  float: left;
   padding: 15px 20px;
   margin: 0px 0 0;
   font-size: 14px;
@@ -1151,10 +1151,10 @@ ul.item-swatch.swatch_count { position:absolute;top:-40px;left:0;right:0; }
 /*
 
 
-       PLEASE NOTE: 
+       PLEASE NOTE:
        ============
 
-       THIS FILE IS NOT PART OF THE *REQUIRED FONT ICON FILES* 
+       THIS FILE IS NOT PART OF THE *REQUIRED FONT ICON FILES*
        THIS FILE IS USED TO STYLE THE ICON DEMO TEMPLATE FOUND AT DEMO.HTML
 
 
@@ -1298,7 +1298,7 @@ section header:after {
 .item {
     /*background-color: #fff;
 	color: #33383e;*/
-    
+
     border-radius: 8px;
     display: inline-block;
     padding: 0.5em;
@@ -1593,7 +1593,7 @@ section header:after {
   font-weight: normal;
   font-variant: normal;
   text-transform: none;
-  
+
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -2183,13 +2183,13 @@ section header:after {
    width: 100%;
    font-family: sans-serif;
    font-weight: bold;
-  
+
 }
 
 .colorDefinition {
     background: #fff;
     color : #000;border:2px solid #000;border-radius:0;
-   
+
 }
 
 .size_xl {
@@ -2201,7 +2201,7 @@ section header:after {
 .size_lg {
    font-size:30px;
    padding:8px 25px;
-  
+
 }
 
 .size_md {
@@ -2312,7 +2312,7 @@ section header:after {
 	background: transparent
 }
 #fancybox-close {
-	
+
 	cursor: pointer;
 	z-index: 1103;
 	display: none
@@ -2448,7 +2448,7 @@ background-image:url('fancybox.png');
 .zoomWrapper > div { width: 64px !important; height: 64px !important; background-color: #fff!important; left: 50% !important; margin: -32px 0 0 -32px !important; top: 50% !important; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; z-index: 99!important; }
 
 /* Paste this css to your style sheet file or under head tag */
-/* This only works with JavaScript, 
+/* This only works with JavaScript,
 if it's not present, don't show loader */
 .no-js #loader { display: none;  }
 .js #loader { display: block; position: absolute; left: 100px; top: 0; }
@@ -2477,7 +2477,7 @@ position: relative;
     text-align: center;
 }
 
-.product-photo-container img {   
+.product-photo-container img {
     height: auto !important;
     width: auto !important;
     position: static !important;
@@ -2549,3 +2549,73 @@ position: relative;
 	zoom: 1
 }
 
+.header-type-2 {
+  width: 100%;
+  float: left;
+}
+
+.header-type-2 .site-header {
+  padding: 0;
+  width: 100%;
+  float: left;
+}
+
+.header-type-2 .site-header__menubar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: auto;
+  padding: 20px 5%;
+}
+
+.header-type-2 .site-header__logo {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.header-type-2 .site-header__logo img {
+  display: block;
+  margin: 0;
+  align-self: center;
+  max-height: 60px;
+}
+
+.header-type-2 .menubar-section {
+  flex: 1 1 auto;
+  text-align: center;
+  padding: 0 40px;
+}
+
+.header-type-2 .menu-icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+@media only screen and (max-width: 749px) {
+  .header-type-2 .site-header__menubar {
+    padding: 15px 20px;
+    flex-wrap: wrap;
+  }
+
+  .header-type-2 .site-header__logo {
+    margin: 0 auto;
+  }
+
+  .header-type-2 .menubar-section {
+    width: 100%;
+    order: 3;
+    padding: 15px 0 0;
+  }
+
+  .header-type-2 .menu-icon {
+    margin: 0;
+    padding: 10px 0;
+  }
+}
+
+.is-sticky .site-header__logo { display: block !important; }

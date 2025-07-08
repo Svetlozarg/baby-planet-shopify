@@ -1,150 +1,305 @@
 
-<div data-section-id="{{ section.id }}"  data-section-type="category-listing-type-1" class="category-listing-type-1">
-      <div class="grid-uniform">
-        <div class="container">
-       <ul class="category-listing_block">         
-        {% if section.blocks.size > 0 %}      
-        {% for block in section.blocks %}
-        {% case section.blocks.size %}
-        {% when 1 %}
-         {%- assign block_width = 'one-whole text-center' -%}
-        {% when 2 %}
-         {%- assign block_width = 'wide--one-half post-large--one-half large--one-half medium--one-half small--one-half' -%}
-        {% when 3 %}
-         {%- assign block_width = 'wide--one-third post-large--one-third large--one-third medium--one-third small--one-half' -%}
-         {% when 4 %}
-         {%- assign block_width = 'wide--one-quarter post-large--one-quarter large--one-quarter medium--one-quarter small--one-half' -%}
-         {% when 5 %}
-         {%- assign block_width = 'wide--one-fifth post-large--one-fifth large--one-fifth medium--one-third small--one-half' -%}
-         {% when 6 %}
-         {%- assign block_width = 'wide--one-sixth post-large--one-sixth large--one-third medium--one-third small--one-half' -%}
-         {% when 7 %}
-          {%- assign block_width = 'wide--one-seventh post-large--one-seventh large--one-seventh medium--one-quarter small--one-half' -%}
-         {% when 8 %}
-         {%- assign block_width = 'wide--one-eighth post-large--one-eighth large--one-eighth medium--one-quarter small--one-half' -%}
-         {% when 9 %}
-         {%- assign block_width = 'wide--one-ninth post-large--one-ninth large--one-ninth medium--one-third small--one-half' -%}
-         {% when 10 %}
-         {%- assign block_width = 'wide--one-tenth post-large--one-tenth large--one-tenth medium--one-fifth small--one-half' -%}
-         {% else %}
-         {%- assign block_width = 'wide--one-tenth post-large--one-tenth large--one-tenth medium--one-fifth small--one-half' -%}
-        {% endcase %}
-        <li class="grid__item {{ block_width }} wow fadeInUp animated"  data-wow-delay="{{ settings.time_lazy_load }}ms">
-          <div class="category-listing_section">                      
-             <div class="category-listing_inner" style="background:{{ block.settings.bg_bolor }};">    
-                   {% if block.settings.image != blank  %}  
-                  <div class="category_image">                      
-                 {% if block.settings.url != blank  %} 
-                    <a href="{{block.settings.url}}">
-                 {% endif %}     
-                    <img src="{{ block.settings.image | img_url: "250x" }}" alt="{{ block.settings.title }}" />
-                      {% if block.settings.url != blank  %} 
-                    </a>
-                 {% endif %}     
-                 </div>
-               
-               {% else %}
-               <div class="category_image">   
-               <img src="//via.placeholder.com/60x100">
-               </div>
-                  {% endif %}  
-               
-                     <div class="category_text"> 
-                   {% if block.settings.title != blank  %}  
-                  <h4 style="">{{ block.settings.title }}</h4>
-                  {% endif %}                  
-                   </div>                                
-            </div>
-        </div>       
-      </li>  
-         {% endfor %}
-        {% endif %}
-    </ul>
+<div data-section-id="{{ section.id }}" data-section-type="category-listing-type-1" class="category-listing-type-1">
+  <div class="grid-uniform">
+    <div class="container">
+      {% if section.settings.heading != blank %}
+        <div class="section-header text-center">
+          <h2 class="section-title">{{ section.settings.heading }}</h2>
+          {% if section.settings.subheading != blank %}
+            <div class="section-subheading">{{ section.settings.subheading }}</div>
+          {% endif %}
         </div>
-        <div class="dt-sc-hr-invisible-large"></div>
-      </div>
+      {% endif %}
+
+      <ul class="category-listing_block">
+        {% if section.blocks.size > 0 %}
+          {% for block in section.blocks %}
+            {% case section.blocks.size %}
+              {% when 1 %}
+                {%- assign block_width = 'one-whole text-center' -%}
+              {% when 2 %}
+                {%- assign block_width = 'wide--one-half post-large--one-half large--one-half medium--one-half small--one-half' -%}
+              {% when 3 %}
+                {%- assign block_width = 'wide--one-third post-large--one-third large--one-third medium--one-third small--one-half' -%}
+              {% when 4 %}
+                {%- assign block_width = 'wide--one-quarter post-large--one-quarter large--one-quarter medium--one-quarter small--one-half' -%}
+              {% when 5 %}
+                {%- assign block_width = 'wide--one-fifth post-large--one-fifth large--one-fifth medium--one-third small--one-half' -%}
+              {% else %}
+                {%- assign block_width = 'wide--one-quarter post-large--one-quarter large--one-quarter medium--one-quarter small--one-half' -%}
+            {% endcase %}
+
+            <li class="grid__item {{ block_width }} wow fadeInUp animated" data-wow-delay="{{ settings.time_lazy_load }}ms">
+              <div class="category-listing_section">
+                <div class="category-listing_inner" style="background:{{ block.settings.bg_bolor }};">
+                  {% if block.settings.url != blank %}
+                    <a href="{{block.settings.url}}" class="category-link">
+                  {% endif %}
+
+                    <div class="category_image">
+                      {% if block.settings.image != blank %}
+                        <img src="{{ block.settings.image | img_url: '300x300', crop: 'center' }}" alt="{{ block.settings.title }}" />
+                      {% else %}
+                        <img src="//via.placeholder.com/300x300" alt="placeholder">
+                      {% endif %}
+                    </div>
+
+                    <div class="category_text">
+                      {% if block.settings.title != blank %}
+                        <h4>{{ block.settings.title }}</h4>
+                      {% endif %}
+                      {% if block.settings.description != blank %}
+                        <p class="category-description">{{ block.settings.description }}</p>
+                      {% endif %}
+                    </div>
+
+                  {% if block.settings.url != blank %}
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        {% endif %}
+      </ul>
+    </div>
+  </div>
 </div>
+
 <style type="text/css">
-  .category-listing-type-1 .category-listing_inner {  }
-  .category-listing-type-1 .category-listing_inner:hover { background:{{ section.settings.bg_hover_bolor }}; }
-  .category-listing-type-1 .category-listing_inner .category_text h4 { color:{{ section.settings.title_color }}; }
-  .category-listing-type-1 .category-listing_inner:hover .category_text h4 { color:{{ section.settings.bg_hover_color }}; }
-  .category-listing-type-1 .category-listing_inner:hover ul li .category-listing_section { border-color:{{ section.settings.bg_hover_bolor }};}
-  
-  .category-listing_inner ul li a:hover { color:{{ section.settings.linkedlist_hover_color }} !important; }
-  .category-listing-type-1 .category-listing_inner:hover {    box-shadow: 0 20px 10px 0 {{section.settings.box-shadow_color}};}
+  .category-listing-type-1 {
+    padding: 60px 0;
+  }
+
+  .category-listing-type-1 .section-header {
+    margin-bottom: 40px;
+  }
+
+  .category-listing-type-1 .section-title {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: {{ section.settings.heading_color }};
+  }
+
+  .category-listing-type-1 .section-subheading {
+    font-size: 16px;
+    color: {{ section.settings.subheading_color }};
+    line-height: 1.6;
+  }
+
+  .category-listing-type-1 .category-listing_block {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+    list-style: none;
+    padding: 0;
+  }
+
+  .category-listing-type-1 .grid__item {
+    padding: 15px;
+  }
+
+  .category-listing-type-1 .category-listing_inner {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .category-listing-type-1 .category-link {
+    text-decoration: none;
+    display: block;
+  }
+
+  .category-listing-type-1 .category_image {
+    position: relative;
+    padding-top: 100%;
+    overflow: hidden;
+  }
+
+  .category-listing-type-1 .category_image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .category-listing-type-1 .category_text {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    text-align: center;
+  }
+
+  .category-listing-type-1 .category_text h4 {
+    color: {{ section.settings.title_color }};
+    font-size: 18px;
+    margin: 0;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  .category-listing-type-1 .category-description {
+    color: {{ section.settings.description_color }};
+    font-size: 14px;
+    margin: 5px 0 0;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+  }
+
+  .category-listing-type-1 .category-listing_inner:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px -10px {{ section.settings.box-shadow_color }};
+  }
+
+  .category-listing-type-1 .category-listing_inner:hover .category_image img {
+    transform: scale(1.1);
+  }
+
+  .category-listing-type-1 .category-listing_inner:hover .category_text {
+    background: linear-gradient(to top, {{ section.settings.bg_hover_bolor }}, transparent);
+  }
+
+  .category-listing-type-1 .category-listing_inner:hover .category_text h4 {
+    color: {{ section.settings.bg_hover_color }};
+  }
+
+  .category-listing-type-1 .category-listing_inner:hover .category-description {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media screen and (max-width: 767px) {
+    .category-listing-type-1 {
+      padding: 40px 0;
+    }
+
+    .category-listing-type-1 .section-title {
+      font-size: 24px;
+    }
+
+    .category-listing-type-1 .grid__item {
+      padding: 10px;
+    }
+
+    .category-listing-type-1 .category_text {
+      padding: 15px;
+    }
+
+    .category-listing-type-1 .category_text h4 {
+      font-size: 16px;
+    }
+  }
 </style>
+
 {% schema %}
 {
   "name": "Category Icons",
   "class": "index-section",
-  "max_blocks":12,
+  "max_blocks": 12,
   "settings": [
-      
-        {
-        "type": "color",
-        "id": "title_color",
-        "label": "Heading",
-        "default": "#000"
-        },
- {
-        "type": "color",
-        "id": "box-shadow_color",
-        "label": "Hover Boxshadow Color",
-        "default": "#000"
-        },
- 	
-{
-        "type": "color",
-        "id": "bg_hover_bolor",
-        "label": "Item Hover Background",
-        "default": "#b0d235"
-        },
-{
-        "type": "color",
-        "id": "bg_hover_color",
-        "label": "Item Hover Color",
-        "default": "#fff"
-        }
-
-        
-       
-],
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by Category"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Discover our wonderful collection of baby products"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading Color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Category Title Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "box-shadow_color",
+      "label": "Hover Shadow Color",
+      "default": "rgba(0,0,0,0.1)"
+    },
+    {
+      "type": "color",
+      "id": "bg_hover_bolor",
+      "label": "Hover Background Color",
+      "default": "rgba(176,210,53,0.9)"
+    },
+    {
+      "type": "color",
+      "id": "bg_hover_color",
+      "label": "Hover Text Color",
+      "default": "#ffffff"
+    }
+  ],
   "blocks": [
     {
       "type": "image",
       "name": "Category",
-      "settings": [ 
+      "settings": [
         {
-        "type": "image_picker",
-        "id": "image",
-        "label": "Image", 
-        "info": "Size:150x150"
-
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Recommended size: 600x600px"
         },
- {
-        "type": "color",
-        "id": "bg_bolor",
-        "label": "Item Background",
-        "default": "#fff"
-        },
- 		{
-        "type": "text",
-        "id": "title",
-        "label": "Heading",
-        "default": "Collection Name"
-        },			
         {
-        "type": "url",
-        "id": "url",
-        "label": "Link"
-        }		
+          "type": "color",
+          "id": "bg_bolor",
+          "label": "Background Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Category Name",
+          "default": "Category Name"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Short category description"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        }
       ]
     }
   ],
   "presets": [
     {
-     "name": "Category Icons",
+      "name": "Category Icons",
       "category": "image",
       "blocks": [
         {
@@ -156,28 +311,9 @@
         {
           "type": "image"
         },
-{
-          "type": "image"
-        },
         {
-          "type": "image"
-        },
-        {
-          "type": "image"
-        },
-{
-          "type": "image"
-        },
-        {
-          "type": "image"
-        },
-        {
-          "type": "image"
-        },
-		{
           "type": "image"
         }
- 		
       ]
     }
   ]

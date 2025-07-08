@@ -1,60 +1,60 @@
 <ul class="menu-icon">
- 
+
   {% if section.settings.display_wishlist %}
      <li class=" wish-list ">
          <a href="/pages/wishlist" title="{{ 'products.wishlist.wishlist_name' | t }}"> <i class="fa fa-heart" aria-hidden="true"></i> <span>{{ 'products.wishlist.wishlist_name' | t }}</span></a>
      </li>
    {% endif %}
-   
+
 
   <li class="header-bar__module cart header_cart">
     {% if section.settings.display_minicart %}
-    {% include 'mini-cart' %} 
-    {% endif %} 
+    {% include 'mini-cart' %}
+    {% endif %}
   </li>
-   {% if section.settings.display_search %}                
+   {% if section.settings.display_search %}
   <li class="header-search">
     <a href="/search" class="site-header__link site-header__search js-drawer-open-top">
       <span class="fa fa-search" aria-hidden="true"></span>
     </a>
   </li>
-  {% endif %}  
+  {% endif %}
      <li class="header-mobile">
     <div class="menu-block visible-phone"><!-- start Navigation Mobile  -->
       <div id="showLeftPush">
         <i class="fa fa-bars" aria-hidden="true">  </i>
       </div>
-    </div><!-- end Navigation Mobile  --> 
+    </div><!-- end Navigation Mobile  -->
   </li>
-</ul> 
-<style> 
+</ul>
+<style>
   /* Top block */
-  
+
   .header-type-2 .header-bar__module.cart .baskettop a.icon-cart-arrow #cartCount { background: {{ section.settings.minicart_count_bg }};color:{{section.settings.minicart_count }};}
   .header-type-2 .header-bar__module.cart .baskettop a.icon-cart-arrow:hover #cartCount { background: {{ section.settings.minicart_count_hover_bg }};color:{{section.settings.minicart_count_hover_text }};}
 
 
   /* Logo block */
   .header-type-2 .site-header__logo a,.header-type-2 .header-mobile #showLeftPush { color:{{section.settings.logo_text }};}
-  .header-type-2 .site-header__logo a:hover,.header-type-2 .header-mobile #showLeftPush:hover { color:{{section.settings.logo_hover_text }};}    
+  .header-type-2 .site-header__logo a:hover,.header-type-2 .header-mobile #showLeftPush:hover { color:{{section.settings.logo_hover_text }};}
 
   .header-type-2 .site-header,.mobile-nav-section,.sticky-animate {background: {{ section.settings.menubar_bg }};}
   .header-type-2 .menu-tool ul li {color: {{ section.settings.menubar_text }};}
-  .header-type-2 .menu-tool ul li a,.mobile-nav-section .mobile-nav-trigger,.header-type-2 .wish-list a span,.header-type-2 .header-bar__module a .detail span {color:{{section.settings.menubar_links}};}  
-  .header-type-2 .menu-tool ul li a:hover,.header-type-2 .menu-tool .site-nav > li > a.current:hover,.header-type-2 .wish-list a:hover span,.header-type-2 .header-bar__module a:hover .detail span:hover {color:{{section.settings.menubar_links_hover}};} 
-  .header-type-2 .menu-tool .site-nav >  li > a.current, .header-type-2 .menu-tool .site-nav >  li > a:hover {color:{{section.settings.menu_active}};} 
+  .header-type-2 .menu-tool ul li a,.mobile-nav-section .mobile-nav-trigger,.header-type-2 .wish-list a span,.header-type-2 .header-bar__module a .detail span {color:{{section.settings.menubar_links}};}
+  .header-type-2 .menu-tool ul li a:hover,.header-type-2 .menu-tool .site-nav > li > a.current:hover,.header-type-2 .wish-list a:hover span,.header-type-2 .header-bar__module a:hover .detail span:hover {color:{{section.settings.menubar_links_hover}};}
+  .header-type-2 .menu-tool .site-nav >  li > a.current, .header-type-2 .menu-tool .site-nav >  li > a:hover {color:{{section.settings.menu_active}};}
   .header-type-2 .site-nav-dropdown,#MobileNav,.mobile-nav__sublist { background: {{ section.settings.menubar_dropdown_bg }};}
   /*.header-type-2 .site-nav-dropdown .inner > a {color: {{ section.settings.menubar_dropdown_caption }};}    */
   /*.header-type-2 .site-nav-dropdown .inner > a:hover {color: {{ section.settings.menubar_dropdown_caption_hover }};}    */
   .header-type-2 .site-nav-dropdown .inner .dropdown a,.header-type-2 .menu-tool .site-nav .site-nav-dropdown li a,.header-type-2 .site-nav .widget-featured-product .product-title,.header-type-2 .site-nav .widget-featured-product .widget-title h3,#MobileNav a,.mobile-nav__sublist a,.site-nav .widget-featured-nav .owl-prev a,.site-nav .widget-featured-nav .owl-next a  {color: {{ section.settings.menubar_dropdown_links }};}
   .header-type-2 .site-nav-dropdown .inner .dropdown a:hover,.header-type-2 .site-nav-dropdown .inner .dropdown a.current,.header-type-2 .menu-tool .site-nav .site-nav-dropdown li a.current,.header-type-2 .site-nav .widget-featured-product .product-title:hover,#MobileNav a.current,.mobile-nav__sublist a.current,.site-nav .widget-featured-nav .owl-prev a:hover,.site-nav .widget-featured-nav .owl-next a:hover {color: {{ section.settings.menubar_dropdown_links_hover }};}
-  
- 
 
-  /* Search block */     
-  .header-type-2 .search-bar input[type="search"] {color:{{section.settings.search_text }};} 
-  .header-type-2 .header-search span,.header-type-2 .wish-list a  {color:{{section.settings.search_icon}};} 
-  .header-type-2 .header-search span:hover,.header-type-2 .wish-list a:hover {color:{{section.settings.search_icon_hover }};} 
+
+
+  /* Search block */
+  .header-type-2 .search-bar input[type="search"] {color:{{section.settings.search_text }};}
+  .header-type-2 .header-search span,.header-type-2 .wish-list a  {color:{{section.settings.search_icon}};}
+  .header-type-2 .header-search span:hover,.header-type-2 .wish-list a:hover {color:{{section.settings.search_icon_hover }};}
   .header-type-2 .search-bar__form, .header-type-2 #SearchDrawer,.drawer-page-content:after  {  background:{{section.settings.search_bg }};}
   .header-type-2 .search-bar__form button,.header-type-2 .search-bar__icon-button { color:{{section.settings.search_link }};}
   .header-type-2 .search-bar__form button:hover,.header-type-2 .search-bar__icon-button:hover { color:{{section.settings.search_link_hover }};}
@@ -73,50 +73,50 @@
     color:{{section.settings.search_text }};
   }
  /*  Cart Summary block */
-  
+
  .header-type-2 .header-bar__module.cart .baskettop a.icon-cart-arrow {color: {{ section.settings.minicart_icon }};}
   .header-type-2 .header-bar__module.cart .baskettop a.icon-cart-arrow:hover {color: {{ section.settings.minicart_icon_hover }};}
- 
+
   .header-type-2 #slidedown-cart .actions, .header-type-2  #slidedown-cart  {background: {{ section.settings.minicart_bg }};}
   .header-type-2 .header-bar__module p {color: {{ section.settings.minicart_text }};}
-  .header-type-2 .header-bar__module a,.header-type-2 #slidedown-cart p.text-continue a {color:{{section.settings.minicart_link }};}  
-  .header-type-2 .header-bar__module a:hover,.header-type-2 #slidedown-cart p.text-continue a:hover {color:{{section.settings.minicart_link_hover}};} 
-  .header-type-2 .header-bar__module .btn {color:{{section.settings.minicart_btn_text}};background: {{ section.settings.minicart_btn_bg }};} 
-  .header-type-2 .header-bar__module .btn:hover {color:{{section.settings.minicart_btn_hover_text}};background: {{ section.settings.minicart_btn_hover_bg }};} 
-  .header-type-2 .header-bar__module p .price{color: {{ section.settings.minicart_total }}; } 	
+  .header-type-2 .header-bar__module a,.header-type-2 #slidedown-cart p.text-continue a {color:{{section.settings.minicart_link }};}
+  .header-type-2 .header-bar__module a:hover,.header-type-2 #slidedown-cart p.text-continue a:hover {color:{{section.settings.minicart_link_hover}};}
+  .header-type-2 .header-bar__module .btn {color:{{section.settings.minicart_btn_text}};background: {{ section.settings.minicart_btn_bg }};}
+  .header-type-2 .header-bar__module .btn:hover {color:{{section.settings.minicart_btn_hover_text}};background: {{ section.settings.minicart_btn_hover_bg }};}
+  .header-type-2 .header-bar__module p .price{color: {{ section.settings.minicart_total }}; }
 
   /* Currency block */
 
-  .header-type-2 .currency select ,.header-type-2 .header_currency ul li.currency .selector-arrow::after{color:{{section.settings.currency_icon}};}   
-  
-  .header-type-2 .currency .selector-arrow:hover select ,.header-type-2 .header_currency ul li.currency:hover .selector-arrow::after{color:{{section.settings.currency_icon_hover}};}  
+  .header-type-2 .currency select ,.header-type-2 .header_currency ul li.currency .selector-arrow::after{color:{{section.settings.currency_icon}};}
+
+  .header-type-2 .currency .selector-arrow:hover select ,.header-type-2 .header_currency ul li.currency:hover .selector-arrow::after{color:{{section.settings.currency_icon_hover}};}
   .header-type-2 .currency:hover:after {border-top-color:{{section.settings.currency_icon_hover}};}
   .header-type-2 .currency ul li.currency:after {border-top-color:{{section.settings.currency_icon}};}
   .header-type-2 .currency option {background:{{section.settings.currency_bg}};color:{{section.settings.currency_link}};}
 
-  
-  
-  
+
+
+
   .header-type-2 .wish-list i:after,.header-type-2 .header-search span:after{ background:{{ section.settings.icon_bg }}; border-color:{{ section.settings.icon_border_clr }};}
   .header-type-2 .wish-list a:hover i:after,.header-type-2 .header-search span:hover:after { background:{{ section.settings.icon_bg_hvr }}; }
   .header-type-2 a.icon-cart-arrow i:after, .header-type-2 .header-mobile .menu-block.visible-phone #showLeftPush i:after{ background:{{ section.settings.cart_bg }};border-color:{{ section.settings.cart_border_clr }};}
   .header-type-2 .baskettop:hover i:after, .header-type-2 .header-mobile:hover .menu-block.visible-phone #showLeftPush i:after{ background:{{ section.settings.cart_bg_hvr }}; color: {{ section.settings.cart_hvr_clr}};}
-  
-  
-  
-  
-</style> 
+
+
+
+
+</style>
 
 
 {% schema %}
 {
 "name": "Header",
-"settings": [ 
+"settings": [
 
 {
 "type":"checkbox",
 "id": "display_search",
-"label": "Display search"	
+"label": "Display search"
 },
 
 {
@@ -305,7 +305,7 @@
 "id": "minicart_total",
 "label": "Cart Total",
 "default": "#000"
-}, 
+},
 {
 "type": "header",
 "content": "Currency Block"
@@ -345,7 +345,7 @@
 "id": "menubar_bg",
 "label": "Background",
 "default": "#fff"
-},  
+},
 {
 "type": "color",
 "id": "menubar_links",
