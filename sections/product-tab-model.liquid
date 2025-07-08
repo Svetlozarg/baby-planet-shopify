@@ -1,243 +1,752 @@
-<div data-section-id="{{ section.id }}"  data-section-type="product-tab-type-2" class="product-tab-type-2" >     
+<div data-section-id="{{ section.id }}" data-section-type="modern-product-tab" class="modern-product-tab">
    {{ 'swiper.js' | asset_url | script_tag }}
    {{ 'swiper.css' | asset_url | stylesheet_tag }}
 
-    <div class="full_width_tab"  style="float:left;width:100%;{% if section.settings.image_bg != blank %} background-image:url('{{ section.settings.image_bg | img_url: 'master' }}');background-repeat:no-repeat;background-position:left top; {% endif %} background-color:{{ section.settings.bg_color }};">          
-      <div class="grid-uniform">          
-
-        <div class="grid__item">   
+    <div class="full_width_tab" style="float:left;width:100%;{% if section.settings.image_bg != blank %} background-image:url('{{ section.settings.image_bg | img_url: 'master' }}');background-repeat:no-repeat;background-position:left top; {% endif %} background-color:{{ section.settings.bg_color }};">
+      <div class="grid-uniform">
+        <div class="grid__item">
           <div class="container">
-          
-            {% if section.settings.main_title != blank or section.settings.description_1 != blank    %}
-        <div class="section-header section-header--small">
-          <div class="border-title wow fadeInDown animated">            
-            <h2 style="color:{{ section.settings.main_title_clr }};">{{ section.settings.main_title }}</h2>      
-            {% if section.settings.description_1 != blank %} <h5 class="small-title" style="color:{{ section.settings.desc_color }}">{{ section.settings.description_1 }}</h5>{% endif %}        
-          </div>
 
-        </div>              
-        {% endif %} 
+            {% if section.settings.main_title != blank or section.settings.description_1 != blank %}
+            <div class="section-header section-header--small">
+              <div class="modern-title-wrapper wow fadeInDown animated">
+                <h2 class="modern-main-title" style="color:{{ section.settings.main_title_clr }};">{{ section.settings.main_title }}</h2>
+                {% if section.settings.description_1 != blank %}
+                <p class="modern-subtitle" style="color:{{ section.settings.desc_color }}">{{ section.settings.description_1 }}</p>
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
 
-           
-          
-              <div class="dt-sc-tabs-container-section"> 
-              
-              {%- assign collection = collections[section.settings.collection] -%}               
-              
-                 
-               <div class="swiper-container swiper-tab-{{ section.id }}"> 
-                <ul class="swiper-wrapper {{ section.id }}">
+            <div class="modern-tabs-container">
+              {%- assign collection = collections[section.settings.collection] -%}
+
+              <div class="swiper-container modern-swiper-{{ section.id }}">
+                <div class="swiper-wrapper">
                   {% for product in collection.products %}
-                  {% include 'home-product-grid-single' , grid_item_width: " " %}  
+                  {% include 'modern-product-card', product: product %}
                   {% else %}
                   {% for i in (1..8) %}
-                  <li class="grid__item swiper-slide item-row  on-sale" id="product-{{ i }}">
-                    <div class="products">
-                      <div class="product-container">
-                        <a href="#" class="grid-link"> 
-                          {% if forloop.index == 3 %}
-                          <div class="featured-tag">
-                            <span class="badge badge--sale">
-                              <span class="gift-tag badge__text{% if sale_text.size > 7 %} badge__text--small{% endif %}">{{ 'products.product.sale' | t }}</span>
-                            </span>
-                          </div>{% endif %}
-
-                          <div class="reveal"> 
-                            {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
-                            {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }} 
-                          </div>
-                        </a>
-                        <div class="ImageWrapper">
-                          <div class="product-button">
-                            
-                              <a href="#" class="quick-view-text"> 
-                                <i class="zmdi zmdi-eye"></i>
-                              </a>
-                              <a href="{{ product.url }}">                      
-                                <i class="zmdi zmdi-link"></i>
-                              </a>  
-                            
-                              <form action="#" method="post" class="variants clearfix" id="cart-form-6529189125">
-                                <input type="hidden" name="id" value="21661289093">
-                                <a href="#" class="add-cart-btn"><i class="zmdi zmdi-shopping-cart"></i> </a>
-                              </form>
-                              <a href="/account/login" class="wishlist"><i class="zmdi zmdi-favorite-outline"></i></a> 
-
-                            
-                          </div>
+                  <div class="swiper-slide">
+                    <div class="modern-product-card">
+                      <div class="modern-product-image-container">
+                        {% if forloop.index == 3 %}
+                        <div class="modern-sale-badge">
+                          <span>{{ 'products.product.sale' | t }}</span>
                         </div>
+                        {% endif %}
+
+                        <div class="modern-product-image">
+                          {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                          {{ 'product-' | append: current | placeholder_svg_tag: 'modern-placeholder-svg' }}
+                        </div>
+
+                        <div class="modern-product-actions">
+                          <button class="modern-action-btn quick-view" data-product-id="{{ product.id | default: i }}" title="Quick View">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                              <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                          </button>
+                          <button class="modern-action-btn wishlist" data-product-id="{{ product.id | default: i }}" title="Add to Wishlist">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                          </button>
+                          <a href="{{ product.url | default: '#' }}" class="modern-action-btn" title="View Product">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                              <polyline points="15,3 21,3 21,9"/>
+                              <line x1="10" y1="14" x2="21" y2="3"/>
+                            </svg>
+                          </a>
+                        </div>
+
+                        <form action="/cart/add" method="post" class="modern-add-to-cart-form" data-product-id="{{ product.id | default: i }}">
+                          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id | default: '21661289093' }}">
+                          <button type="submit" class="modern-add-to-cart-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <circle cx="9" cy="21" r="1"/>
+                              <circle cx="20" cy="21" r="1"/>
+                              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                            </svg>
+                            Add to Cart
+                          </button>
+                        </form>
                       </div>
-                      <div class="product-detail"> 
-                        <a href="#" class="grid-link__title">Sample title {{ i }}</a>
 
-                        <div class="grid-link__meta">
-                          <div class="product_price"> <span class="money" data-currency-usd="$320.00">$0.00</span> </div>
-                          <del class="grid-link__sale_price"><span class="money" data-currency-usd="$756.00">$0.00</span></del> </div>
-                        <span class="spr-badge" id="spr_badge_6529189125" data-rating="0.0"> 
-                          <span class="spr-starrating spr-badge-starrating"><i class="spr-icon spr-icon-star-empty" style="color: #f05315;"></i><i class="spr-icon spr-icon-star-empty" style="color: #f05315;"></i><i class="spr-icon spr-icon-star-empty" style="color: #f05315;"></i><i class="spr-icon spr-icon-star-empty" style="color: #f05315;"></i><i class="spr-icon spr-icon-star-empty" style="color: #f05315;"></i></span> <span class="spr-badge-caption"> </span> </span>
+                      <div class="modern-product-info">
+                        <a href="{{ product.url | default: '#' }}" class="modern-product-title">
+                          {{ product.title | default: 'Sample Product Title' }} {{ i }}
+                        </a>
 
+                        <div class="modern-product-rating">
+                          {% assign rating = product.metafields.reviews.rating.value | default: 4.0 %}
+                          {% for i in (1..5) %}
+                            {% if i <= rating %}
+                              <svg class="modern-star filled" viewBox="0 0 24 24">
+                                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                              </svg>
+                            {% else %}
+                              <svg class="modern-star empty" viewBox="0 0 24 24">
+                                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                              </svg>
+                            {% endif %}
+                          {% endfor %}
+                          <span class="modern-rating-text">({{ rating | default: 4.0 }})</span>
+                        </div>
+
+                        <div class="modern-product-price">
+                          {% if product.compare_at_price > product.price %}
+                            <span class="modern-current-price">
+                              <span class="money">{{ product.price | default: 32000 | money }}</span>
+                            </span>
+                            <span class="modern-original-price">
+                              <span class="money">{{ product.compare_at_price | default: 75600 | money }}</span>
+                            </span>
+                            <span class="modern-discount-badge">
+                              {{ product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price | default: 58 }}% off
+                            </span>
+                          {% else %}
+                            <span class="modern-current-price">
+                              <span class="money">{{ product.price | default: 32000 | money }}</span>
+                            </span>
+                          {% endif %}
+                        </div>
+
+                        {% if product.description %}
+                        <p class="modern-product-description">
+                          {{ product.description | strip_html | truncate: 80 }}
+                        </p>
+                        {% endif %}
+
+                        {% if product.variants.size > 1 %}
+                        <div class="modern-product-variants">
+                          {% for variant in product.variants limit: 5 %}
+                          <div class="modern-variant-option"
+                               data-variant-id="{{ variant.id }}"
+                               style="background-color: {{ variant.metafields.color.value | default: '#' | append: forloop.index | append: forloop.index | append: forloop.index | append: forloop.index | append: forloop.index | append: forloop.index }}"
+                               title="{{ variant.title }}">
+                          </div>
+                          {% endfor %}
+                        </div>
+                        {% endif %}
                       </div>
                     </div>
-                  </li>
-                  {% endfor %} 
-                 {% endfor %}
-                </ul>
+                  </div>
+                  {% endfor %}
+                  {% endfor %}
                 </div>
-             <div class="swiper-button">
-   				 <div class="swiper-button-prev nav-{{ section.id  }}-controls"></div>
-                <div class="swiper-button-next nav-{{ section.id }}-controls"></div>
+              </div>
+
+              <div class="modern-swiper-navigation">
+                <div class="swiper-button-prev modern-nav-{{ section.id }}-controls">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15,18 9,12 15,6"/>
+                  </svg>
                 </div>
-              
-                         
-           
-           
-          </div>    
-        </div>
+                <div class="swiper-button-next modern-nav-{{ section.id }}-controls">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9,18 15,12 9,6"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      
-      
-      
-      
-      <script type="text/javascript">                   
-                var swiper = new Swiper('.swiper-tab-{{ section.id }}', {
-                                        slidesPerView: {{ section.settings.products_per_view }},
-                   slidesPerColumn: {{ section.settings.products_per_column }},                  
-                   loop: false,
-                   pagination: {
-                   el: '.swiper-pagination',
-                   clickable: true,
-                  },
-                   navigation: {
-                    nextEl: '.swiper-button-next.nav-{{ section.id }}-controls',
-                    prevEl: '.swiper-button-prev.nav-{{ section.id }}-controls',
-                  },
-                                        
-                                        breakpoints: {
-                                        1400: {
-                                        slidesPerView: 4,
-                                        
-                                        },
-                                        1024: {
-                                        slidesPerView: 3,
-                                        
-                                        },
-                                        768: {
-                                        slidesPerView: 3,
-                                        
-                                        },
-                                        640: {
-                                        slidesPerView: 1,
-                                       
-                                        },
-                                        320: {
-                                        slidesPerView: 1,
-                                        
-                                        }
-                                        },
-                });               
+    </div>
 
-              </script>
-      
-      
-      <style>
-        
-        
-    {% if section.settings.heading_image_need %}  .product-tab-type-2 .border-title:before {  content:"";background-image:url({{ section.settings.heading_image | img_url: 'master' }});display:inline-block;background-repeat:no-repeat;background-position:center;width:69px;height:62px;} {% endif %}
-      </style>
-    
-    </div> 
-
-  <div class="dt-sc-hr-invisible-large"></div>
+    <div class="dt-sc-hr-invisible-large"></div>
 </div>
+
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+  var swiper = new Swiper('.modern-swiper-{{ section.id }}', {
+    slidesPerView: {{ section.settings.products_per_view | default: 3 }},
+    slidesPerColumn: {{ section.settings.products_per_column | default: 1 }},
+    spaceBetween: 24,
+    loop: false,
+    navigation: {
+      nextEl: '.swiper-button-next.modern-nav-{{ section.id }}-controls',
+      prevEl: '.swiper-button-prev.modern-nav-{{ section.id }}-controls',
+    },
+    breakpoints: {
+      1400: {
+        slidesPerView: 4,
+        spaceBetween: 24,
+      },
+      1024: {
+        slidesPerView: 3,
+        spaceBetween: 20,
+      },
+      768: {
+        slidesPerView: 2,
+        spaceBetween: 16,
+      },
+      640: {
+        slidesPerView: 1,
+        spaceBetween: 12,
+      },
+      320: {
+        slidesPerView: 1,
+        spaceBetween: 12,
+      }
+    }
+  });
+
+  // Add to cart functionality
+  document.querySelectorAll('.modern-add-to-cart-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const button = this.querySelector('.modern-add-to-cart-btn');
+      const originalText = button.innerHTML;
+
+      button.innerHTML = '<svg class="loading-spinner" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" opacity="0.25"/><path d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor"/></svg>Adding...';
+      button.disabled = true;
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: this.querySelector('input[name="id"]').value,
+          quantity: 1
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        button.innerHTML = '✓ Added!';
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.disabled = false;
+        }, 2000);
+      })
+      .catch(error => {
+        button.innerHTML = 'Error';
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.disabled = false;
+        }, 2000);
+      });
+    });
+  });
+
+  // Wishlist functionality
+  document.querySelectorAll('.modern-action-btn.wishlist').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      this.classList.toggle('active');
+      const svg = this.querySelector('svg');
+      if (this.classList.contains('active')) {
+        svg.setAttribute('fill', 'currentColor');
+      } else {
+        svg.setAttribute('fill', 'none');
+      }
+    });
+  });
+
+  // Variant selection
+  document.querySelectorAll('.modern-variant-option').forEach(option => {
+    option.addEventListener('click', function() {
+      const parent = this.closest('.modern-product-card');
+      parent.querySelectorAll('.modern-variant-option').forEach(opt => opt.classList.remove('selected'));
+      this.classList.add('selected');
+
+      const variantId = this.dataset.variantId;
+      const form = parent.querySelector('.modern-add-to-cart-form');
+      if (form && variantId) {
+        form.querySelector('input[name="id"]').value = variantId;
+      }
+    });
+  });
+});
+</script>
+
+<style>
+.modern-product-tab {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 60px 0;
+}
+
+.modern-title-wrapper {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.modern-main-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.modern-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.8;
+  font-weight: 400;
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.modern-tabs-container {
+  position: relative;
+}
+
+.modern-swiper-{{ section.id }} {
+  padding: 0 20px 20px;
+  overflow: visible;
+}
+
+.modern-product-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  height: 100%;
+}
+
+.modern-product-card:hover {
+  transform: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modern-product-image-container {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+  background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+}
+
+.modern-product-image {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s ease;
+}
+
+.modern-product-image svg,
+.modern-placeholder-svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modern-product-card:hover .modern-product-image {
+  transform: scale(1.08);
+}
+
+.modern-sale-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(238, 90, 36, 0.3);
+  z-index: 10;
+}
+
+.modern-product-actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.modern-product-card:hover .modern-product-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.modern-action-btn {
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  color: inherit;
+}
+
+.modern-action-btn:hover {
+  background: white;
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modern-action-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: #333;
+  transition: stroke 0.3s ease;
+}
+
+.modern-action-btn:hover svg {
+  stroke: #667eea;
+}
+
+.modern-action-btn.active svg {
+  fill: #ff6b6b;
+  stroke: #ff6b6b;
+}
+
+.modern-add-to-cart-form {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  opacity: 0;
+  transition: all 0.4s ease;
+  z-index: 10;
+}
+
+.modern-product-card:hover .modern-add-to-cart-form {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.modern-add-to-cart-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.modern-add-to-cart-btn:hover {
+  background: linear-gradient(135deg, #5a6fd8, #6a42a0);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.modern-add-to-cart-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.modern-product-info {
+  padding: 24px;
+}
+
+.modern-product-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  display: block;
+}
+
+.modern-product-title:hover {
+  color: #667eea;
+}
+
+.modern-product-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.modern-star {
+  width: 14px;
+  height: 14px;
+  fill: #ffd700;
+}
+
+.modern-star.empty {
+  fill: #e2e8f0;
+}
+
+.modern-rating-text {
+  font-size: 13px;
+  color: #64748b;
+  margin-left: 4px;
+}
+
+.modern-product-price {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.modern-current-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.modern-original-price {
+  font-size: 16px;
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
+.modern-discount-badge {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.modern-product-description {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.modern-product-variants {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.modern-variant-option {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.modern-variant-option.selected {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.modern-variant-option:hover {
+  transform: scale(1.1);
+}
+
+.modern-swiper-navigation {
+  position: static;
+  margin-top: 30px;
+  transform: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.swiper-button-prev.modern-nav-{{ section.id }}-controls,
+.swiper-button-next.modern-nav-{{ section.id }}-controls {
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 50%;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  color: #333;
+  position: static;
+  margin: 0;
+}
+
+.swiper-button-prev.modern-nav-{{ section.id }}-controls:hover,
+.swiper-button-next.modern-nav-{{ section.id }}-controls:hover {
+  background: #f8fafc;
+  transform: none;
+  box-shadow: none;
+}
+
+.swiper-button-prev.modern-nav-{{ section.id }}-controls svg,
+.swiper-button-next.modern-nav-{{ section.id }}-controls svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+}
+
+.swiper-button-prev.modern-nav-{{ section.id }}-controls:after,
+.swiper-button-next.modern-nav-{{ section.id }}-controls:after {
+  display: none;
+}
+
+{% if section.settings.heading_image_need %}
+.modern-title-wrapper:before {
+  content: "";
+  background-image: url({{ section.settings.heading_image | img_url: 'master' }});
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 69px;
+  height: 62px;
+  margin-bottom: 20px;
+}
+{% endif %}
+
+@media (max-width: 1024px) {
+  .modern-swiper-{{ section.id }} {
+    padding: 0 10px 20px;
+  }
+
+  .modern-product-card {
+    margin: 0 5px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modern-main-title {
+    font-size: 1.8rem;
+  }
+
+  .modern-subtitle {
+    font-size: 1rem;
+  }
+
+  .modern-product-card {
+    margin: 0;
+  }
+
+  .modern-swiper-navigation {
+    display: flex;
+  }
+
+  .modern-swiper-{{ section.id }} {
+    padding: 0 0 20px;
+  }
+}
+</style>
+
 {% schema %}
 {
-"name": "Product Tab",
-"class": "index-section",
-
-"settings": [
-{
-"type": "color",
-"id": "bg_color",
-"label": "Bg color",
-"default": "#fff"
-},
-
-{
-"type": "image_picker",
-"id": "image_bg",
-"label": "Image",      
-"info": "Size: 1920x1770"
-},
-
-{
-"type": "text",
-"id": "main_title",
-"label": "Heading",
-"default": "New arrivals"
-}, 
-{
-"type": "color",
-"id": "main_title_clr",
-"label": "Heading color",
-"default": "#000"
-}, 
-{
-"type": "textarea",
-"id": "description_1",
-"label": "Small Heading"
-},
-{
-"type": "color",
-"id": "desc_color",
-"label": "Description color",
-"default": "#000"
-}, 
-
-{
+  "name": "Modern Product Tab",
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#f8fafc"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_bg",
+      "label": "Background Image",
+      "info": "Size: 1920x1080"
+    },
+    {
+      "type": "text",
+      "id": "main_title",
+      "label": "Heading",
+      "default": "Featured Products"
+    },
+    {
+      "type": "color",
+      "id": "main_title_clr",
+      "label": "Heading color",
+      "default": "#1e293b"
+    },
+    {
+      "type": "textarea",
+      "id": "description_1",
+      "label": "Description",
+      "default": "Discover our carefully curated collection of premium products"
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description color",
+      "default": "#64748b"
+    },
+    {
       "type": "checkbox",
       "id": "heading_image_need",
-      "label": "Show Heading Image ?"
-      
-    },	
-{
+      "label": "Show Heading Image"
+    },
+    {
       "type": "image_picker",
       "id": "heading_image",
-      "label": "Image",
-	  "info": "Size: 69x62"
-      
-    },	
-{
-"id": "collection",
-"type": "collection",
-"label": "Collection"
-},
-
-{
-"type": "text",
-"id": "products_per_view",
-"label": "Products per Row",
-"default": "3"
-},
-{
-"type": "text",
-"id": "products_per_column",
-"label": "Products per Column",
-"default": "2"
-}
-
-
-
-
-
-],
-
-"presets": [
-{
-"name": "Product Tab",
-"category": "Collection"
-
-}
-]
+      "label": "Heading Image",
+      "info": "Size: 69x62"
+    },
+    {
+      "id": "collection",
+      "type": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_per_view",
+      "label": "Products per Row",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "products_per_column",
+      "label": "Products per Column",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Modern Product Tab",
+      "category": "Collection"
+    }
+  ]
 }
 {% endschema %}
