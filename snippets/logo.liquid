@@ -4,7 +4,7 @@
   <div class="h1 grid__item wide--one-sixth post-large--one-sixth large--one-sixth site-header__logo" itemscope itemtype="http://schema.org/Organization">
     {% endif %}
     {% if settings.logo_use_image %}
-    <a href="/">
+    <a class="logo-link" href="/">
       <img class="normal-logo" src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" itemprop="logo" style="margin-bottom: 15px;">
     </a>
     {% else %}
@@ -14,5 +14,45 @@
     </h1>
   {% else %}
   </div>
-
 {% endif %}
+
+<style>
+  /* Logo centering for very small screens */
+  @media only screen and (max-width: 567px) {
+    .site-header__logo {
+      text-align: center !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      flex: none !important;
+      order: 1 !important;
+    }
+
+    .site-header__logo .logo-link,
+    .site-header__logo .logo_name {
+      display: block !important;
+      text-align: center !important;
+      width: auto !important;
+      margin: 0 auto !important;
+    }
+
+    .site-header__logo img,
+    .site-header__logo .normal-logo {
+      display: block !important;
+      margin: 0 auto !important;
+      max-height: 35px !important;
+      height: auto !important;
+      width: auto !important;
+    }
+
+    /* Override any grid or flexbox issues */
+    .grid__item.site-header__logo {
+      float: none !important;
+      width: 100% !important;
+      flex: none !important;
+    }
+  }
+</style>

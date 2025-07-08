@@ -1,12 +1,89 @@
 <div class="desktop-megamenu">
       <div class="nav-bar-mobile">
-        <nav class="nav-bar" role="navigation">
-    <div class="site-nav-dropdown_inner">
+        <nav class="nav-bar" role="navigation" aria-label="{{ 'general.accessibility.nav_main' | t | default: 'Main navigation' }}">
+          <div class="site-nav-dropdown_inner">
             {% include 'site-nav' %}
           </div>
         </nav>
       </div>
 </div>
+
+<style>
+  /* Enhanced Navigation Responsive Styles */
+  .desktop-megamenu {
+    position: relative;
+    z-index: 10;
+  }
+
+  .nav-bar {
+    display: block;
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-nav > li {
+    margin: 0;
+    position: relative;
+  }
+
+  .site-nav > li > a {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  /* Ensure dropdowns work properly on all screen sizes */
+  .site-nav .dropdown:hover .site-nav-dropdown {
+    display: block;
+  }
+
+  .site-nav-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    border: 1px solid #e8e9eb;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 220px;
+    display: none;
+  }
+
+  /* Large Desktop Screens */
+  @media only screen and (min-width: 1200px) {
+    .site-nav > li > a {
+      padding: 18px 25px;
+      font-size: 16px;
+    }
+  }
+
+  /* Desktop Screens */
+  @media only screen and (max-width: 1199px) and (min-width: 968px) {
+    .site-nav > li > a {
+      padding: 15px 18px;
+      font-size: 15px;
+    }
+  }
+
+  /* Hide desktop navigation on tablets and mobile */
+  @media only screen and (max-width: 1050px) {
+    .desktop-megamenu {
+      display: none !important;
+    }
+  }
+</style>
 
 
 {% schema %}
