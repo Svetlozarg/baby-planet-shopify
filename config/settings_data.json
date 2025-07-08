@@ -2256,10 +2256,10 @@
             "type": "image",
             "settings": {
               "slideshow_1_img": "shopify://shop_images/1_0d1bfd70-92ef-4bd3-86b8-e1998a54476d.webp",
-              "slider1_title": "Разгледай",
-              "slide_1_heading": "#000000",
               "slider1_subtitle": "Дрехи за момичета",
               "slide_1_subheading": "#000000",
+              "slider1_title": "Разгледай",
+              "slide_1_heading": "#000000",
               "slider1_content": "",
               "slide_1_desc": "#ffffff",
               "slide_1_link": "/collections/all",
@@ -2272,10 +2272,10 @@
             "type": "image",
             "settings": {
               "slideshow_1_img": "shopify://shop_images/2_ebffc739-8ee7-4a69-817e-13a2687b2987.webp",
-              "slider1_title": "Разгледай",
-              "slide_1_heading": "#000000",
               "slider1_subtitle": "Дрехи за момичета",
               "slide_1_subheading": "#ffffff",
+              "slider1_title": "Разгледай",
+              "slide_1_heading": "#000000",
               "slider1_content": "",
               "slide_1_desc": "#ffffff",
               "slide_1_link": "",
@@ -2302,6 +2302,8 @@
               "bg_bolor": "#daf5f3",
               "title": "Момчета",
               "description": "",
+              "badge": "",
+              "product_count": "",
               "url": "shopify://collections/бебешки-продукти"
             }
           },
@@ -2312,6 +2314,8 @@
               "bg_bolor": "#f7dfda",
               "title": "Момичета",
               "description": "",
+              "badge": "",
+              "product_count": "",
               "url": "shopify://collections/бебешки-дрехи"
             }
           },
@@ -2323,6 +2327,8 @@
               "bg_bolor": "#e2f5e1",
               "title": "Подаръчни сетове",
               "description": "Short category description",
+              "badge": "",
+              "product_count": "",
               "url": "shopify://collections/подаръчни-сетове"
             }
           },
@@ -2334,6 +2340,8 @@
               "bg_bolor": "#f7e0fa",
               "title": "Персонализирани подаръци",
               "description": "Short category description",
+              "badge": "",
+              "product_count": "",
               "url": ""
             }
           }
@@ -2352,13 +2360,21 @@
         "settings": {
           "heading": "Категории",
           "subheading": "Открийте нашата прекрасни колекции от дрехи за бебета",
+          "section_bg_color": "#ffffff",
+          "section_padding_top": 80,
+          "section_padding_bottom": 80,
           "heading_color": "#2c3e50",
           "subheading_color": "#7f8c8d",
           "title_color": "#000000",
+          "title_hover_color": "#ff6b6b",
           "description_color": "#7f8c8d",
-          "box-shadow_color": "rgba(0,0,0,0)",
-          "bg_hover_bolor": "rgba(0,0,0,0)",
-          "bg_hover_color": "rgba(0,0,0,0)"
+          "count_color": "#999999",
+          "card_bg_color": "#ffffff",
+          "card_border_color": "#f0f0f0",
+          "card_hover_border_color": "#ff6b6b",
+          "placeholder_color": "#cccccc",
+          "badge_bg_color": "#ff6b6b",
+          "badge_text_color": "#ffffff"
         }
       },
       "product_tab_model_AUG86x": {
@@ -2366,7 +2382,7 @@
         "name": "Product Tab",
         "settings": {
           "bg_color": "#ffffff",
-          "main_title": "Промоции",
+          "main_title": "За Момчета",
           "main_title_clr": "#000000",
           "description_1": "",
           "desc_color": "#000000",
@@ -2375,36 +2391,6 @@
           "collection": "промоционални-продукти",
           "products_per_view": 4,
           "products_per_column": 2
-        }
-      },
-      "wide_banner_type_5_caDkdc": {
-        "type": "wide-banner-type-5",
-        "name": "Wide Banner",
-        "settings": {
-          "border_color": "#00ccf9",
-          "gradient_color_1": "#fa42ab",
-          "gradient_color_2": "#3196ed",
-          "gradient_color_3": "#fff5f0",
-          "use_bg_image": false,
-          "show_overlay_clr": false,
-          "overlay_color": "#ffffffd9",
-          "title_1": "Персонализирани подаръци",
-          "title_color": "#ffffff",
-          "titleshadow_1": "Ръчно изработени",
-          "shadowtext_color": "#ffffff",
-          "text_1": "",
-          "text_color": "#ffffff",
-          "button_1": "Виж всички",
-          "link_1": "shopify://collections/персонализирани-подаръци",
-          "button_bg_color": "#ffb3d9",
-          "button_bg_hover_color": "#ff8fb3",
-          "button_text_color": "#ffffff",
-          "button_text_hover_color": "#ffffff",
-          "button_shadow_color": "#ffb3d966",
-          "button_shadow_hover_color": "#ffb3d999",
-          "decoration_color_1": "#ffe5f1",
-          "decoration_color_2": "#e5f3ff",
-          "decoration_color_3": "#fff5e5"
         }
       },
       "grid_banner_epwbEn": {
@@ -2573,7 +2559,7 @@
               "letter": "",
               "title": "New arrivals",
               "btn": "",
-              "collection": "промоционални-продукти",
+              "collection": "момичета",
               "products_per_column": "4"
             }
           }
@@ -2583,7 +2569,7 @@
         ],
         "name": "Home Product Grid",
         "settings": {
-          "main_title": "Нови Продукти",
+          "main_title": "За Момичета",
           "main_title_clr": "#000000",
           "description_1": "",
           "desc_color": "#000000",
@@ -2612,7 +2598,6 @@
       "custom_content_PHKni7",
       "category_listing_8DW9MC",
       "home_product_grid_type_17_E6Q74d",
-      "wide_banner_type_5_caDkdc",
       "product_tab_model_AUG86x",
       "grid_banner_epwbEn",
       "blog_post_type_1_KB4V8a",
