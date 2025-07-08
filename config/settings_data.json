@@ -2434,9 +2434,9 @@
         "type": "wide-banner-type-5",
         "name": "Wide Banner",
         "settings": {
-          "border_color": "#64dcf6",
-          "gradient_color_1": "#fff8fc",
-          "gradient_color_2": "#f0f8ff",
+          "border_color": "#00ccf9",
+          "gradient_color_1": "#fa42ab",
+          "gradient_color_2": "#3196ed",
           "gradient_color_3": "#fff5f0",
           "use_bg_image": false,
           "show_overlay_clr": false,
