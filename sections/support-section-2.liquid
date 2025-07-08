@@ -1,148 +1,180 @@
-<div data-section-id="{{ section.id }}"  data-section-type="support-block-type-6" class="support-block-type-6">  
+{% assign section_id = section.id %}
+<div class="support-section" data-section-id="{{ section_id }}" data-section-type="support-section">
+  <div class="container">
+    <div class="support-grid">
+      <!-- 24/7 Support Card -->
+      <div class="support-card">
+        <div class="support-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>24/7 Обслужване</h3>
+        <p>Винаги на ваше разположение за въпроси и съдействие</p>
+      </div>
 
-  <div class="grid-uniform">
-    <div class="container">
-      <div class="support-blk-section">
-        <ul class="support_block" >         
-          {% if section.blocks.size > 0 %}      
-          {% for block in section.blocks %}
-          {% case section.blocks.size %}
-          {% when 1 %}
-          {%- assign block_width = 'one-whole text-center' -%}
-          {% when 2 %}
-          {%- assign block_width = 'wide--one-half post-large--one-half large--one-half medium--one-half small-grid__item' -%}
-          {% when 3 %}
-          {%- assign block_width = 'wide--one-third post-large--one-third large--one-third medium--one-half small-grid__item' -%}
-          {% when 4 %}
-          {%- assign block_width = 'wide--one-quarter post-large--one-quarter large--one-half medium--one-half small-grid__item' -%}
-          {% endcase %}
-          <li class="grid__item {{ block_width }} wow fadeInUp"  data-wow-delay="{{ settings.time_lazy_load }}ms">
+      <!-- Secure Payment Card -->
+      <div class="support-card">
+        <div class="support-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+            <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 11L11 14L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Сигурно плащане</h3>
+        <p>Защитени и надеждни методи за разплащане</p>
+      </div>
 
-            <div class="support_section" >  
-              <div class="support-wrapper" style="background:{{block.settings.icon_bg_color}}">
+      <!-- Package Tracking Card -->
+      <div class="support-card">
+        <div class="support-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+            <path d="M4 7L12 3L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 7V17L12 21L20 17V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 12L12 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 7L12 11L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Преглед на пратката</h3>
+        <p>Проследяване на вашата поръчка в реално време</p>
+      </div>
 
-                {% if block.settings.icon_image != blank  %}  
-                <div class="support_icon" style="">                      
-                  <a href="{{ block.settings.link }}"  class="icon"><img src="{{ block.settings.icon_image | img_url:"small" }}"></a>
-                </div>
-                {% endif %}   
-                <div class="support_text"> 
-                  {% if block.settings.title != blank  %}  
-                  <h6 style="color:{{ block.settings.title_color }};">{{ block.settings.title }}</h6>
-                  {% endif %} 
-                  {% if block.settings.desc != blank  %}  
-                  <p style="color:{{ block.settings.desc_color }};" class="desc">{{ block.settings.desc }}</p>
-                  {% endif %}                       
-                </div>   
-              </div>
-
-            </div>    
-          </li>  
-          {% endfor %}
-          {% endif %}
-        </ul>
+      <!-- Quality Guarantee Card -->
+      <div class="support-card">
+        <div class="support-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Гаранция за качество</h3>
+        <p>100% гаранция за всички наши продукти</p>
       </div>
     </div>
   </div>
-  <div class="dt-sc-hr-invisible-large"></div>
-
-
 </div>
 
-
-
 <style>
+.support-section {
+  padding: 4rem 0;
+  background-color: #FFF9F9;
+  border-radius: 30px;
+  margin: 2rem auto;
+}
 
-  .support-block-type-6 .support_section .support-wrapper:hover .support_text h4::after { background:{{section.settings.iconhovertext_color}}!important;} 
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
 
-  .support-block-type-6 .support_section .support-wrapper .support_text h4::after { background: {{section.settings.border_color}}!important;}
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
 
-  .support-block-type-6 .support_section .support-wrapper:hover .support_icon{ }
+.support-card {
+  background: #FFFFFF;
+  padding: 2.5rem 1.5rem;
+  border-radius: 20px;
+  text-align: center;
+  transition: all 0.4s ease;
+  position: relative;
+  border: 2px solid #FFE6E6;
+}
 
-  .support-block-type-6 .support_section .support-wrapper:hover{ background: {{section.settings.iconhoverbg_color}}!important;}
+.support-card:hover {
+  transform: translateY(-8px);
+  border-color: #FFB6C1;
+  box-shadow: 0 15px 30px rgba(255, 182, 193, 0.15);
+}
 
-  .support-block-type-6 .support_section .support-wrapper:hover p,.support-block-type-6 .support_section .support-wrapper:hover h4{color:{{section.settings.iconhovertext_color}}!important;}
+.support-icon {
+  background: #FFF0F5;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  color: #FF99AC;
+  transition: all 0.3s ease;
+}
+
+.support-card:hover .support-icon {
+  background: #FFE6E6;
+  color: #FF6B81;
+  transform: scale(1.1);
+}
+
+.support-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.support-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #FF6B81;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-heading-family);
+}
+
+.support-card p {
+  font-size: 0.95rem;
+  color: #666666;
+  line-height: 1.6;
+  margin: 0;
+  font-family: var(--font-body-family);
+}
+
+@media (max-width: 1024px) {
+  .support-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .support-section {
+    padding: 3rem 0;
+    margin: 1.5rem auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .support-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .support-card {
+    padding: 2rem 1.25rem;
+  }
+
+  .support-icon {
+    width: 70px;
+    height: 70px;
+  }
+
+  .support-icon svg {
+    width: 40px;
+    height: 40px;
+  }
+}
 </style>
-
-
 
 {% schema %}
 {
-"name": "Support Block",
-"class": "index-section",
-"max_blocks":4,
-"settings": [
-
-
-],
-"blocks": [
-{
-"type": "text",
-"name": "Support Block",
-"settings": [ 
-{
-"type": "color",
-"id": "icon_bg_color",
-"label": "Icon Bg color",
-"default":"#000"
-},
-{
-"type": "image_picker",
-"id": "icon_image",
-"label": "Icon Image"
-},
-
-
-{
-"type": "text",
-"id": "title",
-"label": "Heading"          
-},
-{
-"type": "color",
-"id": "title_color",
-"label": "Color",
-"default":"#000"
-},
-{
-"type": "text",
-"id": "desc",
-"label": "Description"          
-},
-
-{
-"type": "color",
-"id": "desc_color",
-"label": "Color",
-"default":"#000"
-},
-
-{
-"type": "text",
-"id": "link",
-"label": "Link"          
-}      
-
-]
-}
-],
-"presets": [
-{
-"name": "Support Block",
-"category": "Text",
-"blocks": [
-{
-"type": "text"
-},
-{
-"type": "text"
-},
-{
-"type": "text"
-}
-
-]
-}
-]
+  "name": "Support Features",
+  "class": "index-section",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Support Features",
+      "category": "Content"
+    }
+  ]
 }
 {% endschema %}

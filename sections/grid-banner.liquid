@@ -1,129 +1,406 @@
-<div data-section-id="{{ section.id }}" data-section-type="grid-banner-type-10" class="grid-banner-type-10">   
+<div data-section-id="{{ section.id }}" data-section-type="grid-banner-type-10" class="grid-banner-type-10">
   <div class="container">
-    <div class="grid-uniform featuredItems">  
-      <div class="grid__item wide--three-tenths post-large--three-tenths large--three-tenths medium-down--grid__item small--grid__item small--text-center">
-        <div class="ovrly31 overlay_1">
-          {% if section.settings.link_1 != blank %}<a class="banner_half_img" href="{{ section.settings.link_1 }}">{% endif%}
+    <div class="grid-uniform featuredItems">
+      <div class="grid__item wide--three-tenths post-large--three-tenths large--three-tenths medium--one-whole small--one-whole text-center">
+        <div class="banner-item banner-item--tall">
+          {% if section.settings.link_1 != blank %}
+            <a class="banner-link" href="{{ section.settings.link_1 }}">
+          {% endif %}
           {% if section.settings.image_1 != blank %}
-          <img src="{{ section.settings.image_1 | img_url: '1000x' }}" alt="{{ section.settings.title_1 }}" />
-          <div class="ovrly"></div>
+            <div class="banner-image">
+              <img src="{{ section.settings.image_1 | img_url: '1000x' }}" alt="{{ section.settings.title_1 }}" class="img-responsive" />
+              <div class="banner-overlay" {% if section.settings.overlay1 %}style="background: {{ section.settings.overlay_1 | color_modify: 'alpha', 0.4 }};"{% endif %}></div>
+            </div>
           {% else %}
-          <img src="//via.placeholder.com/800x1280">
-          {% endif%}           
-          {% if section.settings.link_1 != blank %}  </a>
-
-          {% endif%}
-          
+            <img src="//via.placeholder.com/800x1280" class="img-responsive">
+          {% endif %}
+          {% if section.settings.link_1 != blank %}
+            </a>
+          {% endif %}
         </div>
-      </div>   
-       <div class="grid__item wide--seven-tenths post-large--seven-tenths large--seven-tenths medium-down--grid__item small--grid__item small--text-center">
-        <div class="middle-top">  
-          <div class="ovrly31 overlay_3">
-            {% if section.settings.link_3 != blank %}<a class="banner_half_img" href="{{ section.settings.link_3 }}">{% endif%}
-            {% if section.settings.image_3 != blank %}
-            <img src="{{ section.settings.image_3 | img_url: '1000x' }}" alt="{{ section.settings.title_3 }}" />
-            <div class="ovrly"></div>
-            
-            <div class="featured-content">       
-        {% if section.settings.title_3 != blank %}
-        <h6 style="color:{{ section.settings.title_1_color }}">{{ section.settings.title_3 }}</h6>
-        {% endif %}
-        {% if section.settings.text_1 != blank %}
-        <h2 style="color:{{ section.settings.text_1_color }}">{{ section.settings.text_1}}</h2>    
-        {% endif %}
-              
-{% if section.settings.desc != blank %}
-        <p style="color:{{ section.settings.desc_color }}">{{ section.settings.desc}}</p>    
-        {% endif %}              
-        {% if section.settings.button_1 != blank %}
-        <a class="btn three" href="{{ section.settings.link_1 }}" style="color:{{ section.settings.button_1_txt_color }};border:none;background-color:{{ section.settings.button_1_bg_color }};">{{ section.settings.button_1}}</a>    
-        {% endif %}         
       </div>
+
+      <div class="grid__item wide--seven-tenths post-large--seven-tenths large--seven-tenths medium--one-whole small--one-whole">
+        <div class="banner-grid-right">
+          <div class="banner-item banner-item--wide">
+            {% if section.settings.link_3 != blank %}
+              <a class="banner-link" href="{{ section.settings.link_3 }}">
+            {% endif %}
+            {% if section.settings.image_3 != blank %}
+              <div class="banner-image">
+                <img src="{{ section.settings.image_3 | img_url: '1000x' }}" alt="{{ section.settings.title_3 }}" class="img-responsive" />
+                <div class="banner-overlay" {% if section.settings.overlay3 %}style="background: {{ section.settings.overlay_3 | color_modify: 'alpha', 0.4 }};"{% endif %}></div>
+
+                <div class="banner-content {% unless section.settings.title_3 != blank or section.settings.text_1 != blank or section.settings.desc != blank or section.settings.button_1 != blank %}banner-content--empty{% endunless %}">
+                  {% if section.settings.title_3 != blank %}
+                    <h6 style="color:{{ section.settings.title_1_color }}">{{ section.settings.title_3 }}</h6>
+                  {% endif %}
+                  {% if section.settings.text_1 != blank %}
+                    <h2 style="color:{{ section.settings.text_1_color }}">{{ section.settings.text_1}}</h2>
+                  {% endif %}
+                  {% if section.settings.desc != blank %}
+                    <p style="color:{{ section.settings.desc_color }}">{{ section.settings.desc}}</p>
+                  {% endif %}
+                  {% if section.settings.button_1 != blank %}
+                    <a class="btn btn-primary" href="{{ section.settings.link_1 }}" style="color:{{ section.settings.button_1_txt_color }};background-color:{{ section.settings.button_1_bg_color }};">{{ section.settings.button_1}}</a>
+                  {% endif %}
+                </div>
+              </div>
             {% else %}
+              <img src="//via.placeholder.com/1000x300" class="img-responsive">
+            {% endif %}
+            {% if section.settings.link_3 != blank %}
+              </a>
+            {% endif %}
+          </div>
 
-           <img src="//via.placeholder.com/1000x300">
-            {% endif%}           
-            {% if section.settings.link_3 != blank %}  </a>
+          <div class="banner-bottom-grid">
+            <div class="grid__item wide--two-thirds post-large--two-thirds large--two-thirds medium--one-whole small--one-whole">
+              <div class="banner-item">
+                {% if section.settings.link_4 != blank %}
+                  <a class="banner-link" href="{{ section.settings.link_4 }}">
+                {% endif %}
+                {% if section.settings.image_4 != blank %}
+                  <div class="banner-image">
+                    <img src="{{ section.settings.image_4 | img_url: '1000x' }}" alt="{{ section.settings.title_4 }}" class="img-responsive" />
+                    <div class="banner-overlay" {% if section.settings.overlay4 %}style="background: {{ section.settings.overlay_4 | color_modify: 'alpha', 0.4 }};"{% endif %}></div>
+                    <div class="banner-content {% unless section.settings.offer != blank or section.settings.offer_text != blank or section.settings.title_4 != blank or section.settings.text_2 != blank or section.settings.button_2 != blank %}banner-content--empty{% endunless %}">
+                      {% if section.settings.offer != blank or section.settings.offer_text != blank %}
+                        <div class="offer-badge">
+                          <span class="offer-percent">{{ section.settings.offer }}</span>
+                          <span class="offer-text">{{ section.settings.offer_text }}</span>
+                        </div>
+                      {% endif %}
+                      {% if section.settings.title_4 != blank %}
+                        <h6 style="color:{{ section.settings.title_2_color }}">{{ section.settings.title_4 }}</h6>
+                      {% endif %}
+                      {% if section.settings.text_2 != blank %}
+                        <h2 style="color:{{ section.settings.text_2_color }}">{{ section.settings.text_2}}</h2>
+                      {% endif %}
+                      {% if section.settings.button_2 != blank %}
+                        <a class="btn btn-secondary" href="{{ section.settings.link_2 }}" style="color:{{ section.settings.button_2_txt_color }};background-color:{{ section.settings.button_2_bg_color }};">{{ section.settings.button_2}}</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% else %}
+                  <img src="//via.placeholder.com/800x400" class="img-responsive">
+                {% endif %}
+                {% if section.settings.link_4 != blank %}
+                  </a>
+                {% endif %}
+              </div>
+            </div>
 
-            {% endif%}
-            
+            <div class="grid__item wide--one-third post-large--one-third large--one-third medium--one-whole small--one-whole">
+              <div class="banner-item">
+                {% if section.settings.link_2 != blank %}
+                  <a class="banner-link" href="{{ section.settings.link_2 }}">
+                {% endif %}
+                {% if section.settings.image_2 != blank %}
+                  <div class="banner-image">
+                    <img src="{{ section.settings.image_2 | img_url: '1000x' }}" alt="{{ section.settings.title_2 }}" class="img-responsive" />
+                    <div class="banner-overlay" {% if section.settings.overlay2 %}style="background: {{ section.settings.overlay_2 | color_modify: 'alpha', 0.4 }};"{% endif %}></div>
+                  </div>
+                {% else %}
+                  <img src="//via.placeholder.com/800x855" class="img-responsive">
+                {% endif %}
+                {% if section.settings.link_2 != blank %}
+                  </a>
+                {% endif %}
+              </div>
+            </div>
           </div>
         </div>
-
-        <div class="middle-bottom">    
-          <div class="grid__item wide--two-thirds post-large--two-thirds large--two-thirds medium-down--grid__item small--grid__item small--text-center">
-          <div class="ovrly31 overlay_4">
-            {% if section.settings.link_4 != blank %}<a class="banner_half_img" href="{{ section.settings.link_4 }}">{% endif%}
-            {% if section.settings.image_4 != blank %}
-            <img src="{{ section.settings.image_4 | img_url: '1000x' }}" alt="{{ section.settings.title_4 }}" />
-            <div class="ovrly"></div>
-            <div class="featured-content">     
-        {% if section.settings.offer != blank or section.settings.offer_text != blank  %}
-        <div class="offer_text">{{ section.settings.offer }}<p><span>{{ section.settings.offer_text }}</span></p></div>
-        {% endif %} 
-        {% if section.settings.title_4 != blank %}
-        <h6 style="color:{{ section.settings.title_2_color }}">{{ section.settings.title_4 }}</h6>
-        {% endif %}
-        {% if section.settings.text_2 != blank %}
-        <h2 style="color:{{ section.settings.text_2_color }}">{{ section.settings.text_2}}</h2>    
-        {% endif %}  
-        
-        {% if section.settings.button_2 != blank %}
-        <a class="btn four" href="{{ section.settings.link_2 }}" style="color:{{ section.settings.button_2_txt_color }};border:none;background-color:{{ section.settings.button_2_bg_color }};">{{ section.settings.button_2}}</a>    
-        {% endif %}         
-       </div>
-            {% else %}
-
-              <img src="//via.placeholder.com/800x400">
-            {% endif%}           
-            {% if section.settings.link_4 != blank %}  </a>
-
-            {% endif%}
-               
-          </div>
-          </div>
-                    <div class="grid__item wide--one-third post-large--one-third large--one-third medium-down--grid__item small--grid__item small--text-center">
-
-                <div class="ovrly31 overlay_2">
-          {% if section.settings.link_2 != blank %}<a class="banner_half_img" href="{{ section.settings.link_2 }}">{% endif%}
-          {% if section.settings.image_2 != blank %}
-          <img src="{{ section.settings.image_2 | img_url: '1000x' }}" alt="{{ section.settings.title_2 }}" />
-          <div class="ovrly"></div>
-          {% else %}
-
-         <img src="//via.placeholder.com/800x855">
-          {% endif%}           
-          {% if section.settings.link_2 != blank %}  </a>
-
-          {% endif%}
-          
-        </div>
-          </div>
-        </div>
-      
-
-  
-      </div>      
-     
-    </div>   
+      </div>
+    </div>
   </div>
 </div>
-<style>
-  
-  .grid-banner-type-10 .featured-content .btn.three:hover { background:{{ section.settings.button_1_hover_bg_color }} !important;color:{{ section.settings.button_1_hover_txt_color }} !important; }
-  .grid-banner-type-10 .featured-content .btn.four:hover { background:{{ section.settings.button_2_hover_bg_color }} !important;color:{{ section.settings.button_2_hover_txt_color }} !important; }
-  .grid-banner-type-10 .featured-content h2 span { color:{{ section.settings.hot_text }}; }
-  .grid-banner-type-10 .featured-content .offer_text { color:{{ section.settings.offer_text_clr }}; }
-  .grid-banner-type-10 .featured-content p span:before,.grid-banner-type-10 .featured-content p span:after { background:{{ section.settings.offer_text_clr }}; }
-  
-  
-  
-  
-   {% if section.settings.overlay1 %}.grid-banner-type-10 .ovrly31.overlay_1 .ovrly { background:{{ section.settings.overlay_1 | color_modify: 'alpha', 0.7 }};  }{% endif %}
-  {% if section.settings.overlay2 %}.grid-banner-type-10 .ovrly31.overlay_2 .ovrly { background:{{ section.settings.overlay_2 | color_modify: 'alpha', 0.7 }};  }{% endif %}
-  {% if section.settings.overlay3 %} .grid-banner-type-10 .ovrly31.overlay_3 .ovrly { background:{{ section.settings.overlay_3 | color_modify: 'alpha', 0.7 }};  }{% endif %}
-  {% if section.settings.overlay4 %}.grid-banner-type-10 .ovrly31.overlay_4 .ovrly { background:{{ section.settings.overlay_4 | color_modify: 'alpha', 0.7 }};  }{% endif %}
 
+<style>
+  .grid-banner-type-10 {
+    padding: 40px 0;
+  }
+
+  .grid-banner-type-10 .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .grid-banner-type-10 .grid-uniform {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+  }
+
+  .grid-banner-type-10 .grid__item {
+    padding: 0 15px;
+  }
+
+  .grid-banner-type-10 .banner-item {
+    position: relative;
+    margin-bottom: 30px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+  }
+
+  .grid-banner-type-10 .banner-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  }
+
+  .grid-banner-type-10 .banner-item--tall {
+    height: 700px;
+  }
+
+  .grid-banner-type-10 .banner-item--wide {
+    height: 400px;
+    margin-bottom: 30px;
+  }
+
+  .grid-banner-type-10 .banner-grid-right {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .grid-banner-type-10 .banner-bottom-grid {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+    height: 270px;
+  }
+
+  .grid-banner-type-10 .banner-bottom-grid .grid__item {
+    height: 100%;
+  }
+
+  .grid-banner-type-10 .banner-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .grid-banner-type-10 .banner-link {
+    display: block;
+    height: 100%;
+  }
+
+  .grid-banner-type-10 .img-responsive {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .grid-banner-type-10 .banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0);
+    transition: background 0.3s ease;
+  }
+
+  .grid-banner-type-10 .banner-content {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    right: 40px;
+    z-index: 2;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    transition: opacity 0.3s ease;
+  }
+
+  .grid-banner-type-10 .banner-content--empty {
+    background: transparent;
+    backdrop-filter: none;
+    padding: 0;
+  }
+
+  .grid-banner-type-10 .banner-content h6 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .grid-banner-type-10 .banner-content h2 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+
+  .grid-banner-type-10 .banner-content p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .grid-banner-type-10 .btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+  }
+
+  .grid-banner-type-10 .btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+  }
+
+  .grid-banner-type-10 .offer-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 50%;
+    text-align: center;
+    min-width: 80px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .grid-banner-type-10 .offer-percent {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    color: {{ section.settings.offer_text_clr }};
+  }
+
+  .grid-banner-type-10 .offer-text {
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    color: {{ section.settings.offer_text_clr }};
+  }
+
+  @media screen and (max-width: 1024px) {
+    .grid-banner-type-10 .banner-item--tall {
+      height: 600px;
+    }
+
+    .grid-banner-type-10 .banner-item--wide {
+      height: 350px;
+    }
+
+    .grid-banner-type-10 .banner-bottom-grid {
+      height: 250px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .grid-banner-type-10 {
+      padding: 20px 0;
+    }
+
+    .grid-banner-type-10 .grid-uniform {
+      margin: 0 -10px;
+    }
+
+    .grid-banner-type-10 .grid__item {
+      padding: 0 10px;
+    }
+
+    .grid-banner-type-10 .banner-item--tall {
+      height: 400px;
+    }
+
+    .grid-banner-type-10 .banner-item--wide {
+      height: 300px;
+    }
+
+    .grid-banner-type-10 .banner-bottom-grid {
+      height: auto;
+      margin: 0 -10px;
+    }
+
+    .grid-banner-type-10 .banner-bottom-grid .grid__item {
+      height: 250px;
+    }
+
+    .grid-banner-type-10 .banner-content {
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      padding: 15px;
+    }
+
+    .grid-banner-type-10 .banner-content h2 {
+      font-size: 24px;
+    }
+
+    .grid-banner-type-10 .banner-content p {
+      font-size: 14px;
+    }
+
+    .grid-banner-type-10 .btn {
+      padding: 10px 20px;
+      font-size: 12px;
+    }
+
+    .grid-banner-type-10 .offer-badge {
+      min-width: 60px;
+      min-height: 60px;
+      padding: 10px;
+    }
+
+    .grid-banner-type-10 .offer-percent {
+      font-size: 20px;
+    }
+
+    .grid-banner-type-10 .offer-text {
+      font-size: 10px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .grid-banner-type-10 .banner-item--tall {
+      height: 350px;
+    }
+
+    .grid-banner-type-10 .banner-item--wide {
+      height: 250px;
+    }
+
+    .grid-banner-type-10 .banner-bottom-grid .grid__item {
+      height: 200px;
+    }
+
+    .grid-banner-type-10 .banner-content {
+      bottom: 15px;
+      left: 15px;
+      right: 15px;
+      padding: 12px;
+    }
+
+    .grid-banner-type-10 .banner-content h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .grid-banner-type-10 .banner-content p {
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+  }
 </style>
 <div class="dt-sc-hr-invisible-large"></div>
 
@@ -193,7 +470,7 @@
   "label": "Color",
   "default":"#000"
   },
-  
+
   {
   "type": "color",
   "id": "text_1_color",
@@ -253,7 +530,7 @@
   "label": "Button hover text color",
   "default": "#fff"
   },
-  
+
 {
 "type": "url",
 "id": "link_3",
@@ -394,6 +671,3 @@
 ]
 }
 {% endschema %}
-
-
-
