@@ -2256,10 +2256,10 @@
             "type": "image",
             "settings": {
               "slideshow_1_img": "shopify://shop_images/1_0d1bfd70-92ef-4bd3-86b8-e1998a54476d.webp",
-              "slider1_title": "Разгледай",
-              "slide_1_heading": "#000000",
               "slider1_subtitle": "Дрехи за момичета",
               "slide_1_subheading": "#000000",
+              "slider1_title": "Разгледай",
+              "slide_1_heading": "#000000",
               "slider1_content": "",
               "slide_1_desc": "#ffffff",
               "slide_1_link": "/collections/all",
@@ -2272,10 +2272,10 @@
             "type": "image",
             "settings": {
               "slideshow_1_img": "shopify://shop_images/2_ebffc739-8ee7-4a69-817e-13a2687b2987.webp",
-              "slider1_title": "Разгледай",
-              "slide_1_heading": "#000000",
               "slider1_subtitle": "Дрехи за момичета",
               "slide_1_subheading": "#ffffff",
+              "slider1_title": "Разгледай",
+              "slide_1_heading": "#000000",
               "slider1_content": "",
               "slide_1_desc": "#ffffff",
               "slide_1_link": "",
@@ -2302,6 +2302,8 @@
               "bg_bolor": "#daf5f3",
               "title": "Момчета",
               "description": "",
+              "badge": "",
+              "product_count": "",
               "url": "shopify://collections/бебешки-продукти"
             }
           },
@@ -2312,6 +2314,8 @@
               "bg_bolor": "#f7dfda",
               "title": "Момичета",
               "description": "",
+              "badge": "",
+              "product_count": "",
               "url": "shopify://collections/бебешки-дрехи"
             }
           },
@@ -2323,6 +2327,8 @@
               "bg_bolor": "#e2f5e1",
               "title": "Подаръчни сетове",
               "description": "Short category description",
+              "badge": "",
+              "product_count": "",
               "url": "shopify://collections/подаръчни-сетове"
             }
           },
@@ -2334,6 +2340,8 @@
               "bg_bolor": "#f7e0fa",
               "title": "Персонализирани подаръци",
               "description": "Short category description",
+              "badge": "",
+              "product_count": "",
               "url": ""
             }
           }
@@ -2352,107 +2360,21 @@
         "settings": {
           "heading": "Категории",
           "subheading": "Открийте нашата прекрасни колекции от дрехи за бебета",
+          "section_bg_color": "#ffffff",
+          "section_padding_top": 80,
+          "section_padding_bottom": 80,
           "heading_color": "#2c3e50",
           "subheading_color": "#7f8c8d",
           "title_color": "#000000",
+          "title_hover_color": "#ff6b6b",
           "description_color": "#7f8c8d",
-          "box-shadow_color": "rgba(0,0,0,0)",
-          "bg_hover_bolor": "rgba(0,0,0,0)",
-          "bg_hover_color": "rgba(0,0,0,0)"
-        }
-      },
-      "product_tab_model_AUG86x": {
-        "type": "product-tab-model",
-        "name": "Product Tab",
-        "settings": {
-          "bg_color": "#ffffff",
-          "main_title": "Промоции",
-          "main_title_clr": "#000000",
-          "description_1": "",
-          "desc_color": "#000000",
-          "heading_image_need": true,
-          "heading_image": "shopify://shop_images/icon-image_7e8da680-2df2-47a3-9128-41a7052320b0.webp",
-          "collection": "промоционални-продукти",
-          "products_per_view": 4,
-          "products_per_column": 2
-        }
-      },
-      "wide_banner_type_5_caDkdc": {
-        "type": "wide-banner-type-5",
-        "name": "Wide Banner",
-        "settings": {
-          "border_color": "#00ccf9",
-          "gradient_color_1": "#fa42ab",
-          "gradient_color_2": "#3196ed",
-          "gradient_color_3": "#fff5f0",
-          "use_bg_image": false,
-          "show_overlay_clr": false,
-          "overlay_color": "#ffffffd9",
-          "title_1": "Персонализирани подаръци",
-          "title_color": "#ffffff",
-          "titleshadow_1": "Ръчно изработени",
-          "shadowtext_color": "#ffffff",
-          "text_1": "",
-          "text_color": "#ffffff",
-          "button_1": "Виж всички",
-          "link_1": "shopify://collections/персонализирани-подаръци",
-          "button_bg_color": "#ffb3d9",
-          "button_bg_hover_color": "#ff8fb3",
-          "button_text_color": "#ffffff",
-          "button_text_hover_color": "#ffffff",
-          "button_shadow_color": "#ffb3d966",
-          "button_shadow_hover_color": "#ffb3d999",
-          "decoration_color_1": "#ffe5f1",
-          "decoration_color_2": "#e5f3ff",
-          "decoration_color_3": "#fff5e5"
-        }
-      },
-      "grid_banner_epwbEn": {
-        "type": "grid-banner",
-        "name": "Grid Banner",
-        "settings": {
-          "image_1": "shopify://shop_images/1_9eb787e2-9333-4c95-9246-7b5be92efe08.webp",
-          "title_1": "",
-          "overlay1": false,
-          "overlay_1": "#ffffff",
-          "link_1": "",
-          "image_3": "shopify://shop_images/2_312ecd6e-ce61-4de6-ac5e-f1cf88d245e3.webp",
-          "overlay3": false,
-          "overlay_3": "#ffffff",
-          "title_3": "",
-          "title_1_color": "#000000",
-          "text_1_color": "#000000",
-          "text_1": "",
-          "hot_text": "#000000",
-          "desc": "",
-          "desc_color": "#000000",
-          "button_1": "",
-          "button_1_bg_color": "#000000",
-          "button_1_txt_color": "#ffffff",
-          "button_1_hover_bg_color": "#000000",
-          "button_1_hover_txt_color": "#ffffff",
-          "link_3": "",
-          "image_4": "shopify://shop_images/3.webp",
-          "overlay4": false,
-          "overlay_4": "#ffffff",
-          "title_4": "",
-          "title_2_color": "#000000",
-          "text_2": "",
-          "text_2_color": "#000000",
-          "offer": "",
-          "offer_text": "",
-          "offer_text_clr": "#000000",
-          "button_2": "",
-          "button_2_bg_color": "#000000",
-          "button_2_txt_color": "#ffffff",
-          "button_2_hover_bg_color": "#000000",
-          "button_2_hover_txt_color": "#ffffff",
-          "link_4": "",
-          "image_2": "shopify://shop_images/4.webp",
-          "title_2": "",
-          "overlay2": false,
-          "overlay_2": "#ffffff",
-          "link_2": ""
+          "count_color": "#999999",
+          "card_bg_color": "#ffffff",
+          "card_border_color": "#f0f0f0",
+          "card_hover_border_color": "#ff6b6b",
+          "placeholder_color": "#cccccc",
+          "badge_bg_color": "#ff6b6b",
+          "badge_text_color": "#ffffff"
         }
       },
       "blog_post_type_1_KB4V8a": {
@@ -2563,34 +2485,6 @@
           "button_hover__bg_color": "#ffffff"
         }
       },
-      "home_product_grid_type_17_E6Q74d": {
-        "type": "home-product-grid-type-17",
-        "blocks": {
-          "text_block_zjpDDN": {
-            "type": "text_block",
-            "settings": {
-              "align_text": "none",
-              "letter": "",
-              "title": "New arrivals",
-              "btn": "",
-              "collection": "промоционални-продукти",
-              "products_per_column": "4"
-            }
-          }
-        },
-        "block_order": [
-          "text_block_zjpDDN"
-        ],
-        "name": "Home Product Grid",
-        "settings": {
-          "main_title": "Нови Продукти",
-          "main_title_clr": "#000000",
-          "description_1": "",
-          "desc_color": "#000000",
-          "heading_image_need": true,
-          "heading_image": "shopify://shop_images/icon-image_7e8da680-2df2-47a3-9128-41a7052320b0.webp"
-        }
-      },
       "custom_content_PHKni7": {
         "type": "custom-content",
         "custom_css": [
@@ -2605,16 +2499,48 @@
           "top_margin": true,
           "bottom_margin": true
         }
+      },
+      "home_product_grid_type_14_jKxrpC": {
+        "type": "home-product-grid-type-14",
+        "name": "Vertical Product Grid",
+        "settings": {
+          "bg_color": "#fff",
+          "main_title": "За Момичета",
+          "main_title_clr": "#000",
+          "description_1": "",
+          "desc_color": "#000",
+          "heading_image_need": true,
+          "heading_image": "shopify://shop_images/icon-image.webp",
+          "collection": "момичета",
+          "show_vendor": true,
+          "grid": "4",
+          "rows": "2"
+        }
+      },
+      "home_product_grid_type_14_TqcHmY": {
+        "type": "home-product-grid-type-14",
+        "name": "Vertical Product Grid",
+        "settings": {
+          "bg_color": "#fff",
+          "main_title": "За Момчета",
+          "main_title_clr": "#000",
+          "description_1": "",
+          "desc_color": "#000",
+          "heading_image_need": true,
+          "heading_image": "shopify://shop_images/icon-image.webp",
+          "collection": "момичета",
+          "show_vendor": true,
+          "grid": "4",
+          "rows": "2"
+        }
       }
     },
     "content_for_index": [
       "grid_banner_type_20_bCWAhW",
       "custom_content_PHKni7",
       "category_listing_8DW9MC",
-      "home_product_grid_type_17_E6Q74d",
-      "wide_banner_type_5_caDkdc",
-      "product_tab_model_AUG86x",
-      "grid_banner_epwbEn",
+      "home_product_grid_type_14_jKxrpC",
+      "home_product_grid_type_14_TqcHmY",
       "blog_post_type_1_KB4V8a",
       "support_section_2_EABpnF",
       "newsletter_fERNA7"
