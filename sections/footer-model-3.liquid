@@ -1,9 +1,9 @@
 <div data-section-id="{{ section.id }}"  data-section-type="Footer-model-9" class="footer-model-9">
-  <footer class="site-footer" style="background:{{ section.settings.footer_bg }};">      
+  <footer class="site-footer" style="background:{{ section.settings.footer_bg }};">
     <div class="container">
-    <div class="grid-uniform">         
+    <div class="grid-uniform">
 
-          {% assign num_footer_columns = 0 %}     
+          {% assign num_footer_columns = 0 %}
           {%- assign footer_linklist1 = section.settings.footer_menu_1 %}
           {% if linklists[footer_linklist1].links.size > 0 %}
           {% assign num_footer_columns = num_footer_columns | plus: 1 %}
@@ -18,7 +18,7 @@
           {% if linklists[footer_linklist3].links.size > 0 %}
           {% assign num_footer_columns = num_footer_columns | plus: 1 %}
           {% endif %}
-          
+
           {% if section.settings.show_contact %}
           {% assign num_footer_columns = num_footer_columns | plus: 1 %}
           {% endif %}
@@ -30,16 +30,35 @@
           {% when 2 %}
           {% assign footer_num_column_width = 'wide--one-half post-large--one-half large--one-half medium--one-half' %}
           {% when 3 %}
-          {% assign footer_num_column_width = 'wide--one-third post-large--one-third large--one-third medium--one-half' %} 
+          {% assign footer_num_column_width = 'wide--one-third post-large--one-third large--one-third medium--one-half' %}
           {% when 4 %}
-          {% assign footer_num_column_width = 'wide--one-quarter post-large--one-quarter large--one-quarter medium--one-half' %} 
-          {% endcase %} 
+          {% assign footer_num_column_width = 'wide--one-quarter post-large--one-quarter large--one-quarter medium--one-half' %}
+          {% endcase %}
 
-
+          {% if section.settings.show_contact %}
+            <div class="grid__item {{ footer_num_column_width }}">
+              {% if section.settings.footer_contact_title != blank %}
+              <h4 style="color:{{ section.settings.footer_text }};">{{ section.settings.footer_contact_title}}</h4>
+              {% endif %}
+              {% if section.settings.footer_address != blank or section.settings.footer_contact_no != blank %}
+              <div class="address">
+                {% if section.settings.footer_address != blank %}
+                <p style="color:{{ section.settings.footer_link }};">   {{ section.settings.footer_address }}</p>
+                {% endif %}
+                {% if section.settings.footer_contact_no != blank %}
+                <p style="color:{{ section.settings.footer_link }};"> <i class="fa fa-phone"></i>{{ section.settings.footer_contact_no }}</p>
+                {% endif %}
+              </div>
+              {% endif %}
+              {% if  section.settings.footer_contact_link != blank and section.settings.footer_contact_id != blank %}
+              <i class="icon-envelope icons"></i> <a class="mail-address" style="color:{{ section.settings.footer_link }};" href="mailto:{{ section.settings.footer_contact_link }}">{{ section.settings.footer_contact_id }}</a>
+              {% endif %}
+            </div>
+          {% endif %}
 
           {%- assign footer_linklist1 = section.settings.footer_menu_1 %}
           {% if linklists[footer_linklist1].links.size > 0 %}
-          <div class="grid__item {{ footer_num_column_width }}">   
+          <div class="grid__item {{ footer_num_column_width }}">
             {% if section.settings.footer_menu_1_title != blank %}
             <h4 style="color:{{ section.settings.footer_text }};">{{ section.settings.footer_menu_1_title }}</h4>
             {% endif %}
@@ -47,14 +66,13 @@
               {% for link in linklists[section.settings.footer_menu_1].links %}
               <li><a style="color:{{ section.settings.footer_link }};"  href="{{ link.url }}">{{ link.title }}</a></li>
               {% endfor %}
-            </ul>          
+            </ul>
           </div>
-          {% endif %}    
-
+          {% endif %}
 
           {%- assign footer_linklist2 = section.settings.footer_menu_2 %}
           {% if linklists[footer_linklist2].links.size > 0 %}
-          <div class="grid__item {{ footer_num_column_width }}">          
+          <div class="grid__item {{ footer_num_column_width }}">
             {% if section.settings.footer_menu_2_title != blank %}
             <h4 style="color:{{ section.settings.footer_text }};"> {{ section.settings.footer_menu_2_title }}</h4>
             {% endif %}
@@ -62,13 +80,13 @@
               {% for link in linklists[section.settings.footer_menu_2].links %}
               <li><a style="color:{{ section.settings.footer_link }};"  href="{{ link.url }}">{{ link.title }}</a></li>
               {% endfor %}
-            </ul>         
+            </ul>
           </div>
           {% endif %}
 
           {%- assign footer_linklist3 = section.settings.footer_menu_3 %}
           {% if linklists[footer_linklist3].links.size > 0 %}
-          <div class="grid__item {{ footer_num_column_width }}">          
+          <div class="grid__item {{ footer_num_column_width }}">
             {% if section.settings.footer_menu_3_title != blank %}
             <h4 style="color:{{ section.settings.footer_text }};">{{ section.settings.footer_menu_3_title }}</h4>
             {% endif %}
@@ -76,47 +94,22 @@
               {% for link in linklists[section.settings.footer_menu_3].links %}
               <li><a style="color:{{ section.settings.footer_link }};"  href="{{ link.url }}">{{ link.title }}</a></li>
               {% endfor %}
-            </ul>         
+            </ul>
           </div>
           {% endif %}
 
-          {% if section.settings.show_contact %}
-          <div class="grid__item {{ footer_num_column_width }}">     
-            {% if section.settings.footer_contact_title != blank %}        
-            <h4 style="color:{{ section.settings.footer_text }};">{{ section.settings.footer_contact_title}}</h4> 
-            {% endif %}        
-            {% if section.settings.footer_address != blank or section.settings.footer_contact_no != blank %}        
-            <div class="address">
-              {% if section.settings.footer_address != blank %}
-              <p style="color:{{ section.settings.footer_link }};">   {{ section.settings.footer_address }}</p>
-              {% endif %}          
-              {% if section.settings.footer_contact_no != blank %}
-              <p style="color:{{ section.settings.footer_link }};"> <i class="fa fa-phone"></i>{{ section.settings.footer_contact_no }}</p>
-              {% endif %}
-            </div>
-            {% endif %}
-            {% if  section.settings.footer_contact_link != blank and section.settings.footer_contact_id != blank %}
-            <i class="icon-envelope icons"></i> <a class="mail-address" style="color:{{ section.settings.footer_link }};" href="mailto:{{ section.settings.footer_contact_link }}">{{ section.settings.footer_contact_id }}</a>
-            {% endif %}        
-
-            
-          </div>
-          {% endif %}    
-      
-      
-      
-        </div>      
+        </div>
     </div>
   </footer>
 
-  
-  {% if section.settings.footer_social_enable or section.settings.footer_show_app_store  %}  
-<div class="grid__item"> 
-  
-  
-     <div class="social_icons_bg" style="float:left;width:100%;background:{{ section.settings.footer_icons_bg }}">   
+
+  {% comment %} {% if section.settings.footer_social_enable or section.settings.footer_show_app_store  %}
+<div class="grid__item">
+
+
+     <div class="social_icons_bg" style="float:left;width:100%;background:{{ section.settings.footer_icons_bg }}">
   <div class="container">
-      {% if section.settings.footer_social_enable %}  
+      {% if section.settings.footer_social_enable %}
           <div class="grid__item wide--one-half post-large--one-half large--one-half medium--one-half">
             <div class="footer_social_links">
                {% if section.settings.social_title != blank %}
@@ -126,59 +119,53 @@
             </div>
       </div>
             {% endif %}
-      
+
        {% if section.settings.footer_show_app_store %}
                 <div class="grid__item wide--one-half post-large--one-half large--one-half medium--one-half">
 
-    <div class="app_store">    
-        <div class="footer-icons">  
-          {% if section.settings.app_title != blank %}        
-          <h4 style="color:{{ section.settings.footer_text }}">{{ section.settings.app_title }}</h4> 
-          {% endif %}           
+    <div class="app_store">
+        <div class="footer-icons">
+          {% if section.settings.app_title != blank %}
+          <h4 style="color:{{ section.settings.footer_text }}">{{ section.settings.app_title }}</h4>
+          {% endif %}
           <ul class="inline-list">
             {% if section.settings.app_store_1 != blank %}<li><a href="{{ section.settings.app_store_1_link }}" target="_blank"><img src="{{ section.settings.app_store_1 | img_url }}" alt="{{ section.settings.app_title }}" /></a></li>{% endif %}
             {% if section.settings.app_store_2 != blank  %}<li><a href="{{ section.settings.app_store_2link }}" target="_blank"><img src="{{ section.settings.app_store_2 | img_url }}" alt="{{ section.settings.app_title }}" /></a></li>{% endif %}
             {% if section.settings.app_store_3 != blank  %}<li><a href="{{ section.settings.app_store_3_link }}" target="_blank"><img src="{{ section.settings.app_store_3| img_url }}" alt="{{ section.settings.app_title }}" /></a></li>{% endif %}
           </ul>
-        </div>         
+        </div>
     </div>
       </div>
     {% endif %}
   </div>
-       
-  </div>  
-      </div>
-  {% endif %}
 
-  <div class="grid__item"> 
-   
-    
-    
+  </div>
+      </div>
+  {% endif %} {% endcomment %}
+
+  <div class="grid__item">
+
+
+
   <div style="background:{{ section.settings.copyright_bg }};" class="grid__item copyright-section {% unless section.settings.footer_show_methods_of_payment %}text-center{% endunless %}">
     <div class="container">
     {% if section.settings.show_powered_by and section.settings.copyright != blank %}
-    <p style="color:{{ section.settings.copyright_text }};"  class="copyright">{{ section.settings.copyright }} {{ powered_by_link }}</p>
-    {% endif %}       
-       {% if section.settings.footer_show_methods_of_payment %}      
-        <div class="payment_section">                 
-          <div class="footer-icons">        
+    <p style="color:{{ section.settings.copyright_text }};"  class="copyright">© {{ 'now' | date: "%Y" }} {{ shop.name }}. All Rights Reserved.</p>
+    {% endif %}
+       {% if section.settings.footer_show_methods_of_payment %}
+        <div class="payment_section">
+          <div class="footer-icons">
             <ul class="inline-list payment-icons">
-              {% if section.settings.payment_icon_1 != blank %}<li><a href="/cart"><img src="{{ section.settings.payment_icon_1 | img_url: "55x" }}" alt="payment_icon_1" /></a></li>{% endif %}
-              {% if section.settings.payment_icon_2 != blank %}<li><a href="/cart"><img src="{{ section.settings.payment_icon_2 | img_url: "55x" }}" alt="payment_icon_2" /></a></li>{% endif %}
-              {% if section.settings.payment_icon_3 != blank %}<li><a href="/cart"><img src="{{ section.settings.payment_icon_3 | img_url: "55x" }}" alt="payment_icon_3" /></a></li>{% endif %}
-              {% if section.settings.payment_icon_4 != blank %}<li><a href="/cart"><img src="{{ section.settings.payment_icon_4 | img_url: "55x" }}" alt="payment_icon_4" /></a></li>{% endif %}
-              {% if section.settings.payment_icon_5 != blank %}<li><a href="/cart"><img src="{{ section.settings.payment_icon_5 | img_url: "55x" }}" alt="payment_icon_5" /></a></li>{% endif %}
-              {% if section.settings.payment_icon_6 != blank %}<li><a href="/cart"><img src="{{ section.settings.payment_icon_6 | img_url: "55x" }}" alt="payment_icon_6" /></a></li>{% endif %}            
-              {% if section.settings.payment_icon_7 != blank %}<li><a href="/cart"><img src="{{ section.settings.payment_icon_7 | img_url: "55x" }}" alt="payment_icon_7" /></a></li>{% endif %}            
-              {% if section.settings.payment_icon_8 != blank %}<li><a href="/cart"><img src="{{ section.settings.payment_icon_8 | img_url: "55x" }}" alt="payment_icon_8" /></a></li>{% endif %}            
-              {% if section.settings.payment_icon_9 != blank %}<li><a href="/cart"><img src="{{ section.settings.payment_icon_9 | img_url: "55x" }}" alt="payment_icon_9" /></a></li>{% endif %}            
-              {% if section.settings.payment_icon_10 != blank %}<li><a href="/cart"><img src="{{ section.settings.payment_icon_10 |img_url: "55x"}}" alt="payment_icon_10" /></a></li>{% endif %}            
-            </ul>                    
-          </div>           
+              <li><a href="/cart"><svg class="icon icon--payment" xmlns="http://www.w3.org/2000/svg" width="55" height="35" viewBox="0 0 38 24"><title>Visa</title><path d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z" fill="#fff"/><path d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32" fill="#F3F4F4"/><path d="M28.3 10.1H28c-.4 1-.7 1.5-1 3h1.9c-.3-1.5-.3-2.2-.6-3zm2.9 5.9h-1.7c-.1 0-.1 0-.2-.1l-.2-.9-.1-.2h-2.4c-.1 0-.2 0-.2.2l-.3.9c0 .1-.1.1-.1.1h-2.1l.2-.5L27 8.7c0-.5.3-.7.8-.7h1.5c.1 0 .2 0 .2.2l1.4 6.5c.1.4.2.7.2 1.1.1.1.1.1.1.2zm-13.4-.3l.4-1.8c.1 0 .2.1.2.1.7.3 1.4.5 2.1.4.2 0 .5-.1.7-.2.5-.2.5-.7.1-1.1-.2-.2-.5-.3-.8-.5-.4-.2-.8-.4-1.1-.7-1.2-1-.8-2.4-.1-3.1.6-.4.9-.8 1.7-.8 1.2 0 2.5 0 3.1.2h.1c-.1.6-.2 1.1-.4 1.7-.5-.2-1-.4-1.5-.4-.3 0-.6 0-.9.1-.2 0-.3.1-.4.2-.2.2-.2.5 0 .7l.5.4c.4.2.8.4 1.1.6.5.3 1 .8 1.1 1.4.2.9-.1 1.7-.9 2.3-.5.4-.7.6-1.4.6-1.4 0-2.5.1-3.4-.2-.1.2-.1.2-.2.1zm-3.5.3c.1-.7.1-.7.2-1 .5-2.2 1-4.5 1.4-6.7.1-.2.1-.3.3-.3H18c-.2 1.2-.4 2.1-.7 3.2-.3 1.5-.6 3-1 4.5 0 .2-.1.2-.3.2M5 8.2c0-.1.2-.2.3-.2h3.4c.5 0 .9.3 1 .8l.9 4.4c0 .1 0 .1.1.2 0-.1.1-.1.1-.1l2.1-5.1c-.1-.1 0-.2.1-.2h2.1c0 .1 0 .1-.1.2l-3.1 7.3c-.1.2-.1.3-.2.4-.1.1-.3 0-.5 0H9.7c-.1 0-.2 0-.2-.2L7.9 9.5c-.2-.2-.5-.5-.9-.6-.6-.3-1.7-.5-1.9-.5L5 8.2z" fill="#142688"/></svg></a></li>
+              <li><a href="/cart"><svg class="icon icon--payment" xmlns="http://www.w3.org/2000/svg" width="55" height="35" viewBox="0 0 38 24"><title>Mastercard</title><path d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z" fill="#fff"/><path d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32" fill="#F3F4F4"/><circle fill="#EB001B" cx="15" cy="12" r="7"/><circle fill="#F79E1B" cx="23" cy="12" r="7"/><path fill="#FF5F00" d="M22 12c0-2.4-1.2-4.5-3-5.7-1.8 1.3-3 3.4-3 5.7s1.2 4.5 3 5.7c1.8-1.2 3-3.3 3-5.7z"/></svg></a></li>
+              <li><a href="/cart"><svg class="icon icon--payment" xmlns="http://www.w3.org/2000/svg" width="55" height="35" viewBox="0 0 38 24"><title>Apple Pay</title><path d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z" fill="#000"/><path d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32" fill="#FFF"/><path d="M19.0833 5.6842c-.4383.4267-.7267 1.0183-.6633 1.61.6117.0483 1.2233-.4017 1.6167-.8283.3933-.4267.6633-1.0183.6117-1.61-.6117-.0367-1.2233.4017-1.5651.8283zm-.1517 1.9833c-.8633 0-1.5651.5833-1.9583.5833-.4033 0-1.0267-.5717-1.6917-.5717-.8633 0-1.6667.5017-2.1117 1.2717-.9167 1.5767-.2333 3.9083.65 5.1917.4383.6233.95 1.3283 1.6283 1.3067.65-.0217 1.0267-.4267 1.7017-.4267.6633 0 1.0267.4267 1.7017.4267.7033 0 1.1483-.6233 1.5867-1.2467.5033-.7267.7033-1.4317.7167-1.4667-.0117-.0117-1.3867-.5367-1.3867-2.1117 0-1.3283 1.0817-1.9617 1.1267-2.0033-.6117-.9167-1.5651-1.0183-1.8917-1.0433z" fill="#000"/></svg></a></li>
+              <li><a href="/cart"><svg class="icon icon--payment" xmlns="http://www.w3.org/2000/svg" width="55" height="35" viewBox="0 0 38 24"><title>Google Pay</title><path d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z" fill="#000"/><path d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32" fill="#FFF"/><path d="M18.093 11.976v3.2h-1.018v-7.9h2.691a2.447 2.447 0 0 1 1.747.692 2.28 2.28 0 0 1 .11 3.224l-.11.116c-.47.447-1.098.69-1.747.674l-1.673-.006zm0-3.732v2.788h1.698c.377.012.741-.135 1.005-.404a1.391 1.391 0 0 0-1.005-2.354l-1.698-.03zm6.484 1.348c.65-.03 1.286.188 1.778.613.445.43.682 1.03.65 1.649v3.334h-.969v-.766h-.049a1.93 1.93 0 0 1-1.673.931 2.17 2.17 0 0 1-1.496-.533 1.667 1.667 0 0 1-.613-1.324 1.606 1.606 0 0 1 .613-1.336 2.746 2.746 0 0 1 1.698-.515c.517-.02 1.03.093 1.49.331v-.208a1.134 1.134 0 0 0-.417-.901 1.416 1.416 0 0 0-.98-.368 1.545 1.545 0 0 0-1.319.717l-.895-.564a2.488 2.488 0 0 1 2.182-1.06zM23.29 13.52a.79.79 0 0 0 .337.662c.223.176.5.269.785.263.429-.001.84-.17 1.146-.472.305-.286.478-.685.478-1.103a2.047 2.047 0 0 0-1.324-.374 1.716 1.716 0 0 0-1.146.374.883.883 0 0 0-.276.65zm9.286-3.75l-3.39 7.79h-1.048l1.281-2.728-2.224-5.062h1.103l1.612 3.885 1.569-3.885h1.097z" fill="#5F6368"/><path d="M13.986 11.284c0-.308-.024-.616-.073-.92h-4.29v1.747h2.451a2.096 2.096 0 0 1-.9 1.373v1.127h1.464a4.433 4.433 0 0 0 1.348-3.327z" fill="#4285F4"/><path d="M9.629 15.721a4.352 4.352 0 0 0 3.01-1.097l-1.466-1.14a2.752 2.752 0 0 1-4.094-1.44H5.577v1.17a4.53 4.53 0 0 0 4.052 2.507z" fill="#34A853"/><path d="M7.079 12.05a2.709 2.709 0 0 1 0-1.735v-1.17H5.577a4.505 4.505 0 0 0 0 4.075l1.502-1.17z" fill="#FBBC04"/><path d="M9.629 8.44a2.452 2.452 0 0 1 1.74.68l1.3-1.293a4.37 4.37 0 0 0-3.065-1.183 4.53 4.53 0 0 0-4.027 2.5l1.502 1.171a2.715 2.715 0 0 1 2.55-1.875z" fill="#EA4335"/></svg></a></li>
+            </ul>
+          </div>
         </div>
-        {% endif %}       
-          
-    </div>    
+        {% endif %}
+
+    </div>
   </div>
   </div>
 </div>
@@ -262,7 +249,7 @@
 "type": "checkbox",
 "id": "show_contact",
 "label": "Show contact"
-},        
+},
 {
 "type": "text",
 "id": "footer_contact_title",
@@ -272,17 +259,17 @@
 {
 "type": "textarea",
 "id": "footer_address",
-"label": "Address"      
+"label": "Address"
 },
 {
 "type": "text",
 "id": "footer_contact_no",
-"label": "Phone"      
+"label": "Phone"
 },
 {
 "type": "text",
 "id": "footer_contact_id",
-"label": "E-Mail"      
+"label": "E-Mail"
 },
 {
 "type": "text",
@@ -310,7 +297,7 @@
 {
 "type": "checkbox",
 "id": "footer_social_enable",
-"label": "Show social media icons"       
+"label": "Show social media icons"
 },
 {
   "type": "text",
@@ -332,22 +319,22 @@
   "type": "image_picker",
   "id": "app_store_1",
   "label": "Image"
-  },     
+  },
 {
   "type": "text",
   "id": "app_store_1_link",
   "label": "Link"
-  },     
+  },
   {
   "type": "image_picker",
   "id": "app_store_2",
   "label": "Image"
-  },     
+  },
 {
   "type": "text",
   "id": "app_store_2_link",
   "label": "Link"
-  },     
+  },
   {
   "type": "image_picker",
   "id": "app_store_3",
@@ -403,61 +390,61 @@
 "id": "footer_show_methods_of_payment",
 "label": "Show payment method",
 "default": false
-}, 	
+},
 {
 "type": "image_picker",
 "id": "payment_icon_1",
 "label": "Image",
 "info": "Size: 57x35"
-},      
+},
 {
 "type": "image_picker",
 "id": "payment_icon_2",
 "label": "Image",
 "info": "Size: 57x35"
-},      
+},
 {
 "type": "image_picker",
 "id": "payment_icon_3",
 "label": "Image",
 "info": "Size: 57x35"
-},      
+},
 {
 "type": "image_picker",
 "id": "payment_icon_4",
 "label": "Image",
 "info": "Size: 57x35"
-},      
+},
 {
 "type": "image_picker",
 "id": "payment_icon_5",
 "label": "Image",
 "info": "Size: 57x35"
-},      
+},
 {
 "type": "image_picker",
 "id": "payment_icon_6",
 "label": "Image",
 "info": "Size: 57x35"
-}, 
+},
 {
 "type": "image_picker",
 "id": "payment_icon_7",
 "label": "Image",
 "info": "Size: 57x35"
-}, 
+},
 {
 "type": "image_picker",
 "id": "payment_icon_8",
 "label": "Image",
 "info": "Size: 57x35"
-}, 
+},
 {
 "type": "image_picker",
 "id": "payment_icon_9",
 "label": "Image",
 "info": "Size: 57x35"
-}, 
+},
 {
 "type": "image_picker",
 "id": "payment_icon_10",
