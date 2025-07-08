@@ -2379,12 +2379,23 @@
               "description": "Short category description",
               "url": "shopify://collections/подаръчни-сетове"
             }
+          },
+          "image_zkFQ4K": {
+            "type": "image",
+            "settings": {
+              "image": "shopify://shop_images/img-8_250x_2713f439-e08b-412e-ac64-32f5615f8b70.avif",
+              "bg_bolor": "#f7e0fa",
+              "title": "Персонализирани подаръци",
+              "description": "Short category description",
+              "url": ""
+            }
           }
         },
         "block_order": [
           "image_TBYcjh",
           "image_F9EGMr",
-          "image_Dcg9xh"
+          "image_Dcg9xh",
+          "image_zkFQ4K"
         ],
         "custom_css": [
           ".category-listing_inner {cursor: pointer;}",
