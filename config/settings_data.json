@@ -2355,8 +2355,8 @@
             "settings": {
               "image": "shopify://shop_images/img-8_250x_2713f439-e08b-412e-ac64-32f5615f8b70.avif",
               "bg_bolor": "#daf5f3",
-              "title": "Бебешки продукти",
-              "description": "Short category description",
+              "title": "Момчета",
+              "description": "",
               "url": "shopify://collections/бебешки-продукти"
             }
           },
@@ -2365,13 +2365,14 @@
             "settings": {
               "image": "shopify://shop_images/img-5_250x_e91ab109-d565-4565-b7e0-1deef32109d3.avif",
               "bg_bolor": "#f7dfda",
-              "title": "Бебешки дрехи",
-              "description": "Short category description",
+              "title": "Момичета",
+              "description": "",
               "url": "shopify://collections/бебешки-дрехи"
             }
           },
           "image_Dcg9xh": {
             "type": "image",
+            "disabled": true,
             "settings": {
               "image": "shopify://shop_images/img-5_250x_e91ab109-d565-4565-b7e0-1deef32109d3.avif",
               "bg_bolor": "#e2f5e1",
@@ -2382,6 +2383,7 @@
           },
           "image_zkFQ4K": {
             "type": "image",
+            "disabled": true,
             "settings": {
               "image": "shopify://shop_images/img-8_250x_2713f439-e08b-412e-ac64-32f5615f8b70.avif",
               "bg_bolor": "#f7e0fa",
@@ -2403,8 +2405,8 @@
         ],
         "name": "Category Icons",
         "settings": {
-          "heading": "Shop by Category",
-          "subheading": "Discover our wonderful collection of baby products",
+          "heading": "Категории",
+          "subheading": "Открийте нашата прекрасни колекции от дрехи за бебета",
           "heading_color": "#2c3e50",
           "subheading_color": "#7f8c8d",
           "title_color": "#000000",
