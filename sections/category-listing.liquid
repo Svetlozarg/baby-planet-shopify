@@ -1,7 +1,6 @@
-
 <div data-section-id="{{ section.id }}" data-section-type="category-listing-type-1" class="category-listing-type-1">
   <div class="grid-uniform">
-    <div class="container">
+    <div class="container" style="max-width: 1800px;">
       {% if section.settings.heading != blank %}
         <div class="section-header text-center">
           <h2 class="section-title">{{ section.settings.heading }}</h2>
@@ -11,250 +10,349 @@
         </div>
       {% endif %}
 
-      <ul class="category-listing_block">
+      <div class="category-grid">
         {% if section.blocks.size > 0 %}
           {% for block in section.blocks %}
-            {% case section.blocks.size %}
-              {% when 1 %}
-                {%- assign block_width = 'one-whole text-center' -%}
-              {% when 2 %}
-                {%- assign block_width = 'wide--one-half post-large--one-half large--one-half medium--one-half small--one-half' -%}
-              {% when 3 %}
-                {%- assign block_width = 'wide--one-third post-large--one-third large--one-third medium--one-third small--one-half' -%}
-              {% when 4 %}
-                {%- assign block_width = 'wide--one-quarter post-large--one-quarter large--one-quarter medium--one-quarter small--one-half' -%}
-              {% when 5 %}
-                {%- assign block_width = 'wide--one-fifth post-large--one-fifth large--one-fifth medium--one-third small--one-half' -%}
-              {% else %}
-                {%- assign block_width = 'wide--one-quarter post-large--one-quarter large--one-quarter medium--one-quarter small--one-half' -%}
-            {% endcase %}
+            <div class="category-card" data-wow-delay="{{ settings.time_lazy_load }}ms">
+              {% if block.settings.url != blank %}
+                <a href="{{block.settings.url}}" class="category-link">
+              {% endif %}
 
-            <li class="grid__item {{ block_width }} wow fadeInUp animated" data-wow-delay="{{ settings.time_lazy_load }}ms">
-              <div class="category-listing_section">
-                <div class="category-listing_inner" style="background:{{ block.settings.bg_bolor }};">
-                  {% if block.settings.url != blank %}
-                    <a href="{{block.settings.url}}" class="category-link">
-                  {% endif %}
+                <div class="category-card-inner" style="background: {{ block.settings.bg_bolor }};">
+                  <div class="category-image-wrapper">
+                    {% if block.settings.image != blank %}
+                      <img src="{{ block.settings.image | img_url: '300x300', crop: 'center' }}" alt="{{ block.settings.title }}" class="category-image" />
+                    {% else %}
+                      <img src="//via.placeholder.com/300x300" alt="placeholder" class="category-image" />
+                    {% endif %}
+                  </div>
 
-                    <div class="category_image category_image--circle">
-                      {% if block.settings.image != blank %}
-                        <img src="{{ block.settings.image | img_url: '250x250', crop: 'center' }}" alt="{{ block.settings.title }}" />
-                      {% else %}
-                        <img src="//via.placeholder.com/250x250" alt="placeholder" />
-                      {% endif %}
-                    </div>
-
-                    <div class="category_text">
-                      {% if block.settings.title != blank %}
-                        <h4>{{ block.settings.title }}</h4>
-                      {% endif %}
-                      {% if block.settings.description != blank %}
-                        <p class="category-description">{{ block.settings.description }}</p>
-                      {% endif %}
-                    </div>
-
-                  {% if block.settings.url != blank %}
-                    </a>
-                  {% endif %}
+                  <div class="category-content">
+                    {% if block.settings.title != blank %}
+                      <h3 class="category-title">{{ block.settings.title }}</h3>
+                    {% endif %}
+                    {% if block.settings.description != blank %}
+                      <p class="category-description">{{ block.settings.description }}</p>
+                    {% endif %}
+                  </div>
                 </div>
-              </div>
-            </li>
+
+              {% if block.settings.url != blank %}
+                </a>
+              {% endif %}
+            </div>
           {% endfor %}
         {% endif %}
-      </ul>
+      </div>
     </div>
   </div>
 </div>
 
 <style type="text/css">
   .category-listing-type-1 {
-    padding: 60px 0;
+    padding: 80px 0;
   }
 
   .category-listing-type-1 .section-header {
-    margin-bottom: 40px;
+    margin-bottom: 60px;
   }
 
   .category-listing-type-1 .section-title {
-    font-size: 32px;
-    margin-bottom: 15px;
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 16px;
     color: {{ section.settings.heading_color }};
+    letter-spacing: -0.5px;
+    line-height: 1.2;
   }
 
   .category-listing-type-1 .section-subheading {
-    font-size: 16px;
+    font-size: 18px;
     color: {{ section.settings.subheading_color }};
     line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 400;
   }
 
-  .category-listing-type-1 .category-listing_block {
+  .category-grid {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 -15px;
-    list-style: none;
-    padding: 0;
+    justify-content: center;
+    gap: 32px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
   }
 
-  .category-listing-type-1 .grid__item {
-    padding: 15px;
-    flex: 1 0 25%; /* Default: 4 per row */
-    max-width: 25%;
-    box-sizing: border-box;
+  .category-card {
+    flex: 0 1 280px;
+    max-width: 280px;
+    min-width: 280px;
+    height: 380px;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
-  .category-listing-type-1 .category_image {
-    width: 200px;
-    height: 200px;
-  }
-
-  @media screen and (max-width: 1200px) {
-    .category-listing-type-1 .grid__item {
-      flex: 1 0 33.3333%; /* 3 per row */
-      max-width: 33.3333%;
-    }
-    .category-listing-type-1 .category_image {
-      width: 160px;
-      height: 160px;
+  @media screen and (min-width: 1500px) {
+    .category-card {
+      flex: 1 1 300px;
+      max-width: 320px;
     }
   }
 
-  @media screen and (max-width: 900px) {
-    .category-listing-type-1 .grid__item {
-      flex: 1 0 50%; /* 2 per row */
-      max-width: 50%;
-    }
-    .category-listing-type-1 .category_image {
-      width: 120px;
-      height: 120px;
-    }
-  }
-
-  @media screen and (max-width: 600px) {
-    .category-listing-type-1 .grid__item {
-      flex: 1 0 100%; /* 1 per row */
-      max-width: 100%;
-      padding: 8px;
-    }
-    .category-listing-type-1 .category_image {
-      width: 90vw;
+  @media screen and (min-width: 1100px) and (max-width: 1499px) {
+    .category-card {
+      flex: 1 1 280px;
       max-width: 300px;
-      height: 90vw;
-      max-height: 300px;
-    }
-    .category-listing-type-1 .category_text {
-      padding: 10px 0 0 0;
-    }
-    .category-listing-type-1 .category_text h4 {
-      font-size: 15px;
-    }
-    .category-listing-type-1 .category-description {
-      font-size: 13px;
     }
   }
 
-  .category-listing-type-1 .category-listing_inner {
-    position: relative;
-    border-radius: 20px;
-    overflow: hidden;
-    transition: all 0.3s ease;
+  .category-card:hover {
+    transform: translateY(-8px);
   }
 
-  .category-listing-type-1 .category-link {
+  .category-link {
     text-decoration: none;
     display: block;
+    height: 100%;
   }
 
-  .category-listing-type-1 .category_image {
+  .category-card-inner {
+    width: 100%;
+    min-width: 280px;
+    max-width: 280px;
+    height: 380px;
+    border-radius: 28px;
+    padding: 40px 24px 32px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    width: 250px;
-    height: 250px;
-    margin: 0 auto 20px auto;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background: linear-gradient(135deg, var(--card-bg, #f8fdff) 0%, rgba(255, 255, 255, 0.9) 100%);
+  }
+
+  .category-card:hover .category-card-inner {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+    transform: scale(1.02);
+  }
+
+  .category-image-wrapper {
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
-    background: #eaf8ee; /* soft green background */
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
     overflow: hidden;
     position: relative;
-    padding: 0;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    flex-shrink: 0;
   }
-  .category-listing-type-1 .category_image img {
+
+  .category-card:hover .category-image-wrapper {
+    transform: scale(1.05);
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.15);
+  }
+
+  .category-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
-    position: static;
-    box-shadow: none;
-    margin: 0;
-    display: block;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
-  .category-listing-type-1 .category_text {
-    position: static;
-    padding: 20px 0 0 0;
-    background: none;
-    text-align: center;
-  }
-
-  .category-listing-type-1 .category_text h4 {
-    color: {{ section.settings.title_color }};
-    font-size: 18px;
-    margin: 0;
-    font-weight: 600;
-    text-transform: capitalize;
-  }
-
-  .category-listing-type-1 .category-description {
-    color: {{ section.settings.description_color }};
-    font-size: 14px;
-    margin: 5px 0 0;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-  }
-
-  .category-listing-type-1 .category-listing_inner:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px -10px {{ section.settings.box-shadow_color }};
-  }
-
-  .category-listing-type-1 .category-listing_inner:hover .category_image img {
+  .category-card:hover .category-image {
     transform: scale(1.1);
   }
 
-  .category-listing-type-1 .category-listing_inner:hover .category_text {
-    background: linear-gradient(to top, {{ section.settings.bg_hover_bolor }}, transparent);
+  .category-content {
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 24px;
+    min-height: 100px;
   }
 
-  .category-listing-type-1 .category-listing_inner:hover .category_text h4 {
-    color: {{ section.settings.bg_hover_color }};
+  .category-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    color: {{ section.settings.title_color }};
+    line-height: 1.3;
+    letter-spacing: -0.2px;
+    transition: color 0.3s ease;
   }
 
-  .category-listing-type-1 .category-listing_inner:hover .category-description {
+  .category-card:hover .category-title {
+    color: {{ section.settings.title_color }};
+  }
+
+  .category-description {
+    font-size: 15px;
+    color: {{ section.settings.description_color }};
+    line-height: 1.5;
+    margin: 0;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  .category-card:hover .category-description {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(-2px);
   }
 
-  @media screen and (max-width: 767px) {
+  /* Responsive Design */
+  @media screen and (max-width: 1200px) {
+    .category-grid {
+      gap: 28px;
+      padding: 0 16px;
+    }
+
+    .category-card {
+      flex: 0 1 260px;
+      min-width: 240px;
+      max-width: 320px;
+    }
+
+    .category-card-inner {
+      height: 360px;
+      padding: 36px 20px 28px;
+      max-width: none;
+      min-width: 240px;
+    }
+
+    .category-image-wrapper {
+      width: 160px;
+      height: 160px;
+    }
+
+    .category-title {
+      font-size: 20px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .category-listing-type-1 {
+      padding: 60px 0;
+    }
+
+    .category-listing-type-1 .section-header {
+      margin-bottom: 40px;
+    }
+
+    .category-listing-type-1 .section-title {
+      font-size: 32px;
+    }
+
+    .category-listing-type-1 .section-subheading {
+      font-size: 16px;
+    }
+
+    .category-grid {
+      gap: 24px;
+      padding: 0 12px;
+    }
+
+    .category-card {
+      flex: 0 1 240px;
+      min-width: 220px;
+      max-width: 280px;
+    }
+
+    .category-card-inner {
+      height: 340px;
+      padding: 32px 16px 24px;
+    }
+
+    .category-image-wrapper {
+      width: 140px;
+      height: 140px;
+    }
+
+    .category-title {
+      font-size: 18px;
+    }
+
+    .category-description {
+      font-size: 14px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
     .category-listing-type-1 {
       padding: 40px 0;
     }
 
-    .category-listing-type-1 .section-title {
-      font-size: 24px;
+    .category-grid {
+      gap: 20px;
+      padding: 0 16px;
     }
 
-    .category-listing-type-1 .grid__item {
-      padding: 10px;
+    .category-card {
+      flex: 1 1 100%;
+      min-width: 100%;
+      max-width: 100%;
     }
 
-    .category-listing-type-1 .category_text {
-      padding: 15px;
+    .category-card-inner {
+      height: 320px;
+      padding: 28px 20px 20px;
     }
 
-    .category-listing-type-1 .category_text h4 {
+    .category-image-wrapper {
+      width: 120px;
+      height: 120px;
+    }
+
+    .category-content {
+      padding-top: 20px;
+      min-height: 80px;
+    }
+
+    .category-title {
       font-size: 16px;
+      margin-bottom: 8px;
     }
+
+    .category-description {
+      font-size: 13px;
+    }
+  }
+
+  /* Enhanced animations for baby theme */
+  .category-card {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .category-card:nth-child(1) { animation-delay: 0.1s; }
+  .category-card:nth-child(2) { animation-delay: 0.2s; }
+  .category-card:nth-child(3) { animation-delay: 0.3s; }
+  .category-card:nth-child(4) { animation-delay: 0.4s; }
+  .category-card:nth-child(5) { animation-delay: 0.5s; }
+  .category-card:nth-child(6) { animation-delay: 0.6s; }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Improved loading state */
+  .category-image {
+    background: linear-gradient(90deg, #f0f0f0 25%, transparent 37%, #f0f0f0 63%);
+    background-size: 400% 100%;
   }
 </style>
 
@@ -280,25 +378,25 @@
       "type": "color",
       "id": "heading_color",
       "label": "Heading Color",
-      "default": "#333333"
+      "default": "#2c3e50"
     },
     {
       "type": "color",
       "id": "subheading_color",
       "label": "Subheading Color",
-      "default": "#666666"
+      "default": "#7f8c8d"
     },
     {
       "type": "color",
       "id": "title_color",
       "label": "Category Title Color",
-      "default": "#ffffff"
+      "default": "#2c3e50"
     },
     {
       "type": "color",
       "id": "description_color",
       "label": "Description Color",
-      "default": "#ffffff"
+      "default": "#7f8c8d"
     },
     {
       "type": "color",
@@ -316,7 +414,7 @@
       "type": "color",
       "id": "bg_hover_color",
       "label": "Hover Text Color",
-      "default": "#ffffff"
+      "default": "#e74c3c"
     }
   ],
   "blocks": [
@@ -334,7 +432,7 @@
           "type": "color",
           "id": "bg_bolor",
           "label": "Background Color",
-          "default": "#ffffff"
+          "default": "#f8fdff"
         },
         {
           "type": "text",

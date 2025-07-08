@@ -2,55 +2,53 @@
 <div class="support-section" data-section-id="{{ section_id }}" data-section-type="support-section">
   <div class="container">
     <div class="support-grid">
-      <!-- 24/7 Support Card -->
-      <div class="support-card">
-        <div class="support-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+      {% for block in section.blocks %}
+        <div class="support-card" {{ block.shopify_attributes }}>
+          <div class="support-icon" style="background-color: {{ block.settings.icon_bg_color }};">
+            {% case forloop.index %}
+              {% when 1 %}
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              {% when 2 %}
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M8 11L11 14L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              {% when 3 %}
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 7L12 3L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4 7V17L12 21L20 17V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M12 12L12 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4 7L12 11L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              {% when 4 %}
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              {% else %}
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            {% endcase %}
+          </div>
+          {% if block.settings.title != blank %}
+            <h3 style="color: {{ block.settings.title_color }};">
+              {% if block.settings.link != blank %}
+                <a href="{{ block.settings.link }}" style="color: inherit; text-decoration: none;">{{ block.settings.title }}</a>
+              {% else %}
+                {{ block.settings.title }}
+              {% endif %}
+            </h3>
+          {% endif %}
+          {% if block.settings.desc != blank %}
+            <p style="color: {{ block.settings.desc_color }};">{{ block.settings.desc }}</p>
+          {% endif %}
         </div>
-        <h3>24/7 Обслужване</h3>
-        <p>Винаги на ваше разположение за въпроси и съдействие</p>
-      </div>
-
-      <!-- Secure Payment Card -->
-      <div class="support-card">
-        <div class="support-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-            <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M8 11L11 14L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Сигурно плащане</h3>
-        <p>Защитени и надеждни методи за разплащане</p>
-      </div>
-
-      <!-- Package Tracking Card -->
-      <div class="support-card">
-        <div class="support-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-            <path d="M4 7L12 3L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M4 7V17L12 21L20 17V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 12L12 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M4 7L12 11L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Преглед на пратката</h3>
-        <p>Проследяване на вашата поръчка в реално време</p>
-      </div>
-
-      <!-- Quality Guarantee Card -->
-      <div class="support-card">
-        <div class="support-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Гаранция за качество</h3>
-        <p>100% гаранция за всички наши продукти</p>
-      </div>
+      {% endfor %}
     </div>
   </div>
 </div>
@@ -92,7 +90,6 @@
 }
 
 .support-icon {
-  background: #FFF0F5;
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -105,7 +102,6 @@
 }
 
 .support-card:hover .support-icon {
-  background: #FFE6E6;
   color: #FF6B81;
   transform: scale(1.1);
 }
@@ -118,14 +114,16 @@
 .support-card h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #FF6B81;
   margin-bottom: 0.75rem;
   font-family: var(--font-heading-family);
 }
 
+.support-card h3 a:hover {
+  opacity: 0.8;
+}
+
 .support-card p {
   font-size: 0.95rem;
-  color: #666666;
   line-height: 1.6;
   margin: 0;
   font-family: var(--font-body-family);
@@ -170,10 +168,95 @@
   "name": "Support Features",
   "class": "index-section",
   "settings": [],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Support Feature",
+      "settings": [
+        {
+          "type": "color",
+          "id": "icon_bg_color",
+          "label": "Icon Background Color",
+          "default": "#FFF0F5"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Feature Title"
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Title Color",
+          "default": "#FF6B81"
+        },
+        {
+          "type": "textarea",
+          "id": "desc",
+          "label": "Description",
+          "default": "Feature description"
+        },
+        {
+          "type": "color",
+          "id": "desc_color",
+          "label": "Description Color",
+          "default": "#666666"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link URL (optional)"
+        }
+      ]
+    }
+  ],
   "presets": [
     {
       "name": "Support Features",
-      "category": "Content"
+      "category": "Content",
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "icon_bg_color": "#f9f9d5",
+            "title": "24/7 Обслужване",
+            "title_color": "#000000",
+            "desc": "Винаги на ваше разположение",
+            "desc_color": "#666666"
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "icon_bg_color": "#fde6ec",
+            "title": "Сигурно плащане",
+            "title_color": "#000000",
+            "desc": "Защитени методи за плащане",
+            "desc_color": "#666666"
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "icon_bg_color": "#e5f7f7",
+            "title": "Преглед на пратката",
+            "title_color": "#000000",
+            "desc": "Проследяване в реално време",
+            "desc_color": "#666666"
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "icon_bg_color": "#eefce3",
+            "title": "Гаранция за качество",
+            "title_color": "#000000",
+            "desc": "100% гаранция за качество",
+            "desc_color": "#666666"
+          }
+        }
+      ]
     }
   ]
 }

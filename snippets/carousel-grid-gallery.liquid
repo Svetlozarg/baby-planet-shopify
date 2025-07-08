@@ -12,9 +12,9 @@
 
 <li class="grid__item item-row {% if sold_out %} sold-out{% endif %}{% if on_sale %} on-sale{% endif %}" id="product-{{ product.id }}">
   <div class="products">
-    <div class="product-container grid__item wide--one-half post-large--one-half large--one-half medium-down--grid__item">  
+    <div class="product-container grid__item wide--one-half post-large--one-half large--one-half medium-down--grid__item">
 
-      <div class="product-photo-container">      
+      <div class="product-photo-container">
         <a href="{{ product.url | within: collection }}" class="grid-link" >
           {% if on_sale and settings.collections_show_sale_circle %}
           <div class="featured-tag">
@@ -28,7 +28,7 @@
           <span class="badge badge--sold-out">
             <span class="badge__text{% if sold_out_text.size > 9 %} badge__text--small{% endif %}">{{ 'products.product.sold_out' | t }}</span>
           </span>
-          {% endif %}  
+          {% endif %}
 
           <img src="{{ product.featured_image | img_url: 'master' }}" alt="{{ product.featured_image.alt | escape }}" class="{{ product.title | handle }} featured-image">
         </a>
@@ -49,7 +49,7 @@
     </div>
     <div class="product-detail product_single_detail_section grid__item wide--one-half post-large--one-half large--one-half medium-down--grid__item">
     <h2 class="product-single__title grid-link__title">{{ product.title }}</h2>
-     
+
     {% if collection %}
     {% if collection.previous_product or collection.next_product %}
     <p class="product-arrows">
@@ -74,8 +74,8 @@
     {% endif %}
     {% endif %}
     <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
-   
-    
+
+
     <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
       {% assign variant = product.selected_or_first_available_variant %}
       <meta itemprop="priceCurrency" content="{{ shop.currency }}">
@@ -89,7 +89,7 @@
       {% endif %}
       <div class="product_single_price grid-link__meta">
       <label>{{ 'products.product.product_price' | t }}</label>
-      
+
         <div class="product_price">
           {% capture price %}{{ product.price | money }}{% endcapture %}
            <div class="grid-link__org_price">
@@ -104,31 +104,31 @@
 
 
 
-      
+
       </div>
       {% if section.settings.product_option_show %}
       <div class="single-item-swatch" id="itemSwatchID-{{ product.id }}">
         <label>{{ 'products.product.color' | t }} </label>
         {% include 'item-swatch-2' %}
-       <a href="javascript:void(0)" id="{{ product.handle }}" class="quick-view-text for-home">                      
+       <a href="javascript:void(0)" id="{{ product.handle }}" class="quick-view-text for-home">
             {{ section.settings.product_option_text }}
-          </a>       
+          </a>
       </div>
       {% endif %}
-      
-       {% if product.available %}    
-      <form  action="/cart/add" method="post" class="variants" id="cart-form-{{ product.id }}">  
+
+       {% if product.available %}
+      <form  action="/cart/add" method="post" class="variants" id="cart-form-{{ product.id }}">
         <div class="product_single_buttons">
           <div class="product-single__quantity"{% unless settings.product_quantity_enable %} style="display:none !important";{% endunless %}>
             <div class="quantity-box-section">
-        
+
           <label>{{ 'products.product.quantity' | t }}</label>
           <div class="quantity-box">
           <select name="quantity" class="quantity">
             {% for i in (1..10) %}
             <option value="{{i}}">{{i}}</option>
             {% endfor %}
-          </select>              
+          </select>
         </div>
               </div>
          {% if settings.display_availability or settings.display_product_type or settings.display_vendor %}
@@ -141,13 +141,13 @@
         {% endif %}
         {% if settings.display_product_type %}
         <p class="product-type">
-          <label>{{ 'products.product.product_type' | t }} </label>  
+          <label>{{ 'products.product.product_type' | t }} </label>
           <span>{{ product.type }}</span>
         </p>
         {% endif %}
         {% if settings.display_availability %}
         <p class="product-inventory">
-          <label>{{ 'products.product.availability' | t  }}  </label>              
+          <label>{{ 'products.product.availability' | t  }}  </label>
           <span>
             {% if product.selected_or_first_available_variant.inventory_management %}
             {% assign first_inventory = product.selected_or_first_available_variant.inventory_quantity %}
@@ -163,53 +163,51 @@
         </p>
         {% endif %}
       </div>
-      {% endif %}     
+      {% endif %}
         </div>
 </div>
          {% if settings.enable_add_cart %}
-        <input type="hidden" name="id" value="{{ product.variants[0].id }}" />  
+        <input type="hidden" name="id" value="{{ product.variants[0].id }}" />
         <a class="add-cart-btn btn">
           {{ 'products.product.add_to_cart' | t }}
         </a>
-      </form>  
+      </form>
       {% else %}
       <span class="sold_icon btn">{{ 'products.product.sold_out' | t }}</span>
       {% endif %}
-     
+
      {% endif %}
-     
-      
+
+
     </div>
       {% if settings.enable_wishlist %}
       {% include 'wishlist-product' %}
       {% endif %}
-           
+
   </div>
   </div>
-  <script>        
+  <script>
     $('.thumbs-{{ product.title | handle }} a').click(function(e){
       e.preventDefault();
     var photo_fullsize =  $(this).find('img').attr('src');
     $('.grid-link img.{{ product.title | handle }}').attr('src', photo_fullsize);
       });
-    
+
      if($('#itemSwatchID-{{product.id}} .item-swatch li').length > 0)
           {
-    $('.for-home').click(function() {   
-	$('.quick-view').addClass('option-loader , open-in'); 
+    $('.for-home').click(function() {
+	$('.quick-view').addClass('option-loader , open-in');
        console.log("Watch");
 	});
-        
-      $('.quick-view .close-window').click(function() {  			
+
+      $('.quick-view .close-window').click(function() {
 			$('.quick-view').switchClass("open-in","open-out");
 		});
-    
+
     }
     else
     {
-    $('#itemSwatchID-{{product.id}}').css('display','none');  
+    $('#itemSwatchID-{{product.id}}').css('display','none');
     }
   </script>
 </li>
-
-

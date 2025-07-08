@@ -5,132 +5,585 @@
 {% assign img_url = '//via.placeholder.com/1920x800' %}
 {% endif %}
 {% endif %}
-<div data-section-id="{{ section.id }}" data-section-type="wide-banner-type-2" class="wide-banner-type-2" style="background-image:url('{{img_url}}');background-repeat:no-repeat;background-position:center;background-color:{{section.settings.border_color}};">  
-  <div class="grid-uniform">    
-  
-    <div class="grid__item ">
-    
-      <div class="wide-banner-type-2-block wow fadeInUp animated" >      
-          <div class="wide-banner-type-2-content">  
-            <div class="wide-banner-type-2-rounded wow ">
-             {% if section.settings.titleshadow_1 != blank %}             
-                <h5 style="color:{{ section.settings.shadowtext_color }}"  class="small-title">{{ section.settings.titleshadow_1 }}</h5>             
-              {% endif %}
-              {% if section.settings.title_1 != blank %}
-              <h2 style="color:{{ section.settings.title_color }}">{{ section.settings.title_1 }}</h2>
-             
-              {% endif %}
-               
-              {% if section.settings.text_1 != blank %}
-              <p style="color:{{ section.settings.text_color }}">{{ section.settings.text_1 }}</p>
-              <div class="dt-sc-hr-invisible-very-small"></div>
-              {% endif %}
-              {% if section.settings.button_1 != blank %}
-              <a class="btn" href="{{ section.settings.link_1 }}">{{ section.settings.button_1 }}</a>    
-              {% endif %}              
-            </div> 
-          </div>
-          <style>
-   			 {% if section.settings.show_overlay_clr != blank %}.wide-banner-type-2::before { background:{{section.settings.border_color}};}{% endif %}
-          </style>
+
+<div data-section-id="{{ section.id }}" data-section-type="modern-wide-banner" class="modern-wide-banner">
+  {% if section.settings.use_bg_image %}
+  <div class="modern-banner-bg" style="background-image: url('{{ img_url }}');"></div>
+  {% endif %}
+
+  <div class="modern-banner-container">
+    <div class="modern-banner-content">
+      <div class="modern-banner-text-wrapper">
+        {% if section.settings.titleshadow_1 != blank %}
+        <h5 class="modern-banner-subtitle" style="color: {{ section.settings.shadowtext_color }};">
+          {{ section.settings.titleshadow_1 }}
+        </h5>
+        {% endif %}
+
+        {% if section.settings.title_1 != blank %}
+        <h2 class="modern-banner-title" style="color: {{ section.settings.title_color }};">
+          {{ section.settings.title_1 }}
+        </h2>
+        {% endif %}
+
+        {% if section.settings.text_1 != blank %}
+        <p class="modern-banner-description" style="color: {{ section.settings.text_color }};">
+          {{ section.settings.text_1 }}
+        </p>
+        {% endif %}
+
+        {% if section.settings.button_1 != blank %}
+        <div class="modern-banner-button-wrapper">
+          <a class="modern-banner-btn" href="{{ section.settings.link_1 }}">
+            <span>{{ section.settings.button_1 }}</span>
+            <svg class="modern-btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
         </div>
-
+        {% endif %}
       </div>
-
     </div>
-
-
   </div>
-      <div class="dt-sc-hr-invisible-large"></div>
 
-  {% schema %}
-  {
-  "name": "Wide Banner",
-  "class": "index-section",
-  "settings": [
-  {
-  "type": "color",
-  "id": "border_color",
-  "label":"Bg color",
-  "default": "#000"
-  },
-  {
-  "type": "checkbox",
-  "id": "use_bg_image",
-  "label":"Use BG Image" 
-  },
-   {
-  "type": "checkbox",
-  "id": "show_overlay_clr",
-  "label":"Show Overlay Color"
- 
-  },
-  {
-  "type": "image_picker",
-  "id": "image_1",
-  "label": "Image",
-  "info": "Size: 1920x808"
-  },
-  {
-  "type": "text",
-  "id": "title_1",
-  "label": "Heading",
-   "default": "Heading"
-  },
-  {
-  "type": "color",
-  "id": "title_color",
-  "label":"Title color",
-  "default": "#fff"
-  },
-  {
-  "type": "text",
-  "id": "titleshadow_1",
-  "label": "Sub Heading",
-   "default": "Sub Heading"
-  },
-  {
-  "type": "color",
-  "id": "shadowtext_color",
-  "label":"Text color",
-  "default": "#fff"
-  },
-  {
-  "type": "textarea",
-  "id": "text_1",
-  "label": "Description",
-  "default": "Lorem ipsum dolor sit amet, consectetur adipis cing elit. Nullam id arcu tortor. Sed eget sit ame egestas, cursus felis quis, vestibulum."
-  },
-  {
-  "type": "color",
-  "id": "text_color",
-  "label":"Text color",
-  "default": "#fff"
-  },
-  
-  {
-  "type": "text",
-  "id": "button_1",
-  "label": "Button text",
-  "default": "Shop Now"
-  },
+  <!-- Decorative elements for baby theme -->
+  <div class="modern-banner-decorations">
+    <div class="modern-decoration modern-decoration-1">
+      <svg width="60" height="60" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="45" fill="{{ section.settings.decoration_color_1 }}" opacity="0.3"/>
+        <circle cx="50" cy="50" r="30" fill="{{ section.settings.decoration_color_1 }}" opacity="0.5"/>
+        <circle cx="50" cy="50" r="15" fill="{{ section.settings.decoration_color_1 }}" opacity="0.4"/>
+      </svg>
+    </div>
+    <div class="modern-decoration modern-decoration-2">
+      <svg width="40" height="40" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="35" fill="{{ section.settings.decoration_color_2 }}" opacity="0.4"/>
+        <circle cx="50" cy="50" r="20" fill="{{ section.settings.decoration_color_2 }}" opacity="0.3"/>
+      </svg>
+    </div>
+    <div class="modern-decoration modern-decoration-3">
+      <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="40" fill="{{ section.settings.decoration_color_3 }}" opacity="0.3"/>
+        <circle cx="50" cy="50" r="25" fill="{{ section.settings.decoration_color_3 }}" opacity="0.4"/>
+      </svg>
+    </div>
+  </div>
+</div>
 
-  {
-  "type": "url",
-  "id": "link_1",
-  "label": "Link URL"
+<style>
+.modern-wide-banner {
+  position: relative;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, {{ section.settings.gradient_color_1 }} 0%, {{ section.settings.gradient_color_2 }} 50%, {{ section.settings.gradient_color_3 }} 100%);
+  {% if section.settings.show_overlay_clr != blank %}
+  background-color: {{ section.settings.border_color }};
+  {% endif %}
+  overflow: hidden;
+  padding: 80px 20px;
+  margin: 40px 0;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.modern-banner-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+.modern-banner-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: {{ section.settings.overlay_color }};
+  z-index: 2;
+}
+
+.modern-banner-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.modern-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 340px;
+}
+
+.modern-banner-text-wrapper {
+  text-align: center;
+  max-width: 600px;
+  padding: 0 20px;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.modern-banner-subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0 0 16px 0;
+  opacity: 0.8;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.modern-banner-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 24px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.modern-banner-description {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin: 0 0 32px 0;
+  opacity: 0.9;
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+.modern-banner-button-wrapper {
+  animation: fadeInUp 0.8s ease-out 0.8s both;
+}
+
+.modern-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, {{ section.settings.button_bg_color }}, {{ section.settings.button_bg_hover_color }});
+  color: {{ section.settings.button_text_color }};
+  padding: 16px 32px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px {{ section.settings.button_shadow_color }};
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-banner-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.modern-banner-btn:hover::before {
+  left: 100%;
+}
+
+.modern-banner-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px {{ section.settings.button_shadow_hover_color }};
+  background: linear-gradient(135deg, {{ section.settings.button_bg_hover_color }}, {{ section.settings.button_bg_color }});
+  color: {{ section.settings.button_text_hover_color }};
+}
+
+.modern-btn-icon {
+  transition: transform 0.3s ease;
+}
+
+.modern-banner-btn:hover .modern-btn-icon {
+  transform: translateX(4px);
+}
+
+.modern-banner-decorations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.modern-decoration {
+  position: absolute;
+  animation: float 6s ease-in-out infinite;
+}
+
+.modern-decoration-1 {
+  top: 10%;
+  right: 15%;
+  animation-delay: 0s;
+}
+
+.modern-decoration-2 {
+  bottom: 20%;
+  left: 10%;
+  animation-delay: 2s;
+}
+
+.modern-decoration-3 {
+  top: 30%;
+  left: 8%;
+  animation-delay: 4s;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+  66% {
+    transform: translateY(-10px) rotate(-3deg);
+  }
+}
+
+/* Responsive Design */
+@media only screen and (max-width: 1199px) {
+  .modern-wide-banner {
+    margin: 30px 15px;
+    border-radius: 20px;
   }
 
- 
-  ],
-  "presets": [
-  {
-  "name": "Wide Banner",
-  "category": "Image",
-  "blocks": []
+  .modern-banner-title {
+    font-size: 3rem;
   }
-  ]
+}
+
+@media only screen and (max-width: 967px) {
+  .modern-wide-banner {
+    min-height: 450px;
+    padding: 60px 15px;
   }
-  {% endschema %}
 
+  .modern-banner-title {
+    font-size: 2.5rem;
+  }
 
+  .modern-banner-description {
+    font-size: 1rem;
+  }
+
+  .modern-decoration-1 {
+    right: 5%;
+    top: 5%;
+  }
+
+  .modern-decoration-3 {
+    left: 5%;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .modern-wide-banner {
+    min-height: 400px;
+    padding: 50px 15px;
+    margin: 20px 10px;
+    border-radius: 16px;
+  }
+
+  .modern-banner-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+
+  .modern-banner-subtitle {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .modern-banner-description {
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+  }
+
+  .modern-banner-btn {
+    padding: 14px 28px;
+    font-size: 15px;
+  }
+
+  .modern-decoration {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 567px) {
+  .modern-wide-banner {
+    min-height: 350px;
+    padding: 40px 10px;
+    margin: 15px 5px;
+  }
+
+  .modern-banner-title {
+    font-size: 1.75rem;
+  }
+
+  .modern-banner-text-wrapper {
+    padding: 0 10px;
+  }
+
+  .modern-banner-btn {
+    padding: 12px 24px;
+    font-size: 14px;
+    gap: 8px;
+  }
+
+  .modern-btn-icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .modern-wide-banner {
+    background: linear-gradient(135deg, #2D1B4E 0%, #1A1A2E 50%, #16213E 100%);
+  }
+
+  .modern-banner-bg::before {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .modern-banner-text-wrapper,
+  .modern-banner-subtitle,
+  .modern-banner-title,
+  .modern-banner-description,
+  .modern-banner-button-wrapper {
+    animation: none;
+  }
+
+  .modern-decoration {
+    animation: none;
+  }
+
+  .modern-banner-btn {
+    transition: none;
+  }
+}
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+  .modern-wide-banner {
+    border: 2px solid #333;
+  }
+
+  .modern-banner-btn {
+    border: 2px solid #000;
+  }
+}
+</style>
+
+{% schema %}
+{
+"name": "Modern Wide Banner",
+"class": "index-section",
+"settings": [
+{
+"type": "header",
+"content": "Background Settings"
+},
+{
+"type": "color",
+"id": "border_color",
+"label":"Solid Background Color",
+"default": "#FFF8FC",
+"info": "Used when 'Show Overlay Color' is enabled"
+},
+{
+"type": "color",
+"id": "gradient_color_1",
+"label":"Gradient Color 1 (Start)",
+"default": "#FFF8FC"
+},
+{
+"type": "color",
+"id": "gradient_color_2",
+"label":"Gradient Color 2 (Middle)",
+"default": "#F0F8FF"
+},
+{
+"type": "color",
+"id": "gradient_color_3",
+"label":"Gradient Color 3 (End)",
+"default": "#FFF5F0"
+},
+{
+"type": "checkbox",
+"id": "use_bg_image",
+"label":"Use Background Image"
+},
+{
+"type": "checkbox",
+"id": "show_overlay_clr",
+"label":"Use Solid Color Instead of Gradient"
+},
+{
+"type": "image_picker",
+"id": "image_1",
+"label": "Background Image",
+"info": "Recommended size: 1920x800px. Image will be overlaid with transparency for better text readability."
+},
+{
+"type": "color",
+"id": "overlay_color",
+"label":"Image Overlay Color",
+"default": "rgba(255, 255, 255, 0.85)",
+"info": "Overlay color for background image (use rgba for transparency)"
+},
+{
+"type": "header",
+"content": "Text Content"
+},
+{
+"type": "text",
+"id": "title_1",
+"label": "Main Heading",
+"default": "Welcome to Our Baby Store"
+},
+{
+"type": "color",
+"id": "title_color",
+"label":"Main Heading Color",
+"default": "#2D1B4E"
+},
+{
+"type": "text",
+"id": "titleshadow_1",
+"label": "Sub Heading",
+"default": "Premium Quality"
+},
+{
+"type": "color",
+"id": "shadowtext_color",
+"label":"Sub Heading Color",
+"default": "#FF8FB3"
+},
+{
+"type": "textarea",
+"id": "text_1",
+"label": "Description",
+"default": "Discover our beautiful collection of baby products designed with love and care for your little ones. Safe, comfortable, and stylish."
+},
+{
+"type": "color",
+"id": "text_color",
+"label":"Description Color",
+"default": "#5A5A5A"
+},
+{
+"type": "header",
+"content": "Button Settings"
+},
+{
+"type": "text",
+"id": "button_1",
+"label": "Button Text",
+"default": "Shop Now"
+},
+{
+"type": "url",
+"id": "link_1",
+"label": "Button Link URL"
+},
+{
+"type": "color",
+"id": "button_bg_color",
+"label":"Button Background Color",
+"default": "#FFB3D9"
+},
+{
+"type": "color",
+"id": "button_bg_hover_color",
+"label":"Button Hover Background Color",
+"default": "#FF8FB3"
+},
+{
+"type": "color",
+"id": "button_text_color",
+"label":"Button Text Color",
+"default": "#FFFFFF"
+},
+{
+"type": "color",
+"id": "button_text_hover_color",
+"label":"Button Hover Text Color",
+"default": "#FFFFFF"
+},
+{
+"type": "color",
+"id": "button_shadow_color",
+"label":"Button Shadow Color",
+"default": "rgba(255, 179, 217, 0.4)"
+},
+{
+"type": "color",
+"id": "button_shadow_hover_color",
+"label":"Button Hover Shadow Color",
+"default": "rgba(255, 179, 217, 0.6)"
+},
+{
+"type": "header",
+"content": "Decorative Elements"
+},
+{
+"type": "color",
+"id": "decoration_color_1",
+"label":"Decoration Color 1 (Pink Circles)",
+"default": "#FFE5F1"
+},
+{
+"type": "color",
+"id": "decoration_color_2",
+"label":"Decoration Color 2 (Blue Circles)",
+"default": "#E5F3FF"
+},
+{
+"type": "color",
+"id": "decoration_color_3",
+"label":"Decoration Color 3 (Orange Circles)",
+"default": "#FFF5E5"
+}
+],
+"presets": [
+{
+"name": "Modern Wide Banner",
+"category": "Baby Store",
+"blocks": []
+}
+]
+}
+{% endschema %}

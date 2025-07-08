@@ -1,427 +1,234 @@
-<div data-section-id="{{ section.id }}" data-section-type="grid-banner-type-20" class="grid-banner-type-20">   
-  <div class="grid-uniform featuredItems">  
-
-    {% if section.blocks.size > 0 %}  
-    {% assign row = "grid__item wide--two-thirds post-large--two-thirds large--two-thirds medium--grid__item small--grid__item small--text-center center-section center-section" %}
-    {% assign row1 = "grid__item wide--one-third post-large--one-third large--one-third medium--grid__item small--grid__item small--text-center right-side" %}
-    {% else %}
-    {% assign row = "grid__item" %}
-    {% endif %}
-
-{% if section.blocks.size > 0 %}     
-    <div class="{% if section.settings.disable_right_promo %}grid__item{% else %}{{ row }}{% endif %}">
+<div data-section-id="{{ section.id }}" data-section-type="grid-banner-type-20" class="grid-banner-type-20">
+  <div class="slider-full-width">
+    {% if section.blocks.size > 0 %}
       <div id="home-slider-wrapper">
         <ul class="loop owl-carousel owl-theme">
           {% for block in section.blocks %}
-          <li class="slider_{{forloop.index }}_loop">
-            <div class="ovrly31 overlay_1">
-            {% if block.settings.slide_1_link != blank %}<a href="{{ block.settings.slide_1_link }}">{% endif %}
-            
-            {% if block.settings.slideshow_1_img != blank %}
-             {% if section.settings.disable_right_promo %}
-            <img src="{{ block.settings.slideshow_1_img | img_url: "1920x" }}" alt="{{ block.settings.slider1_title  }}" title="{{ block.settings.slider1_title  }}"  />    
-          <div class="ovrly"></div>
-            {% else %}
-            <img src="{{ block.settings.slideshow_1_img | img_url: "1230x" }}" alt="{{ block.settings.slider1_title  }}" title="{{ block.settings.slider1_title  }}"  />       
-          <div class="ovrly"></div>
-{% endif %}
-            
-            {% else %}
-             {% if section.settings.disable_right_promo %}
-            <img src="//via.placeholder.com/1920x700">
-            {% else%}
-            <img src="//via.placeholder.com/1230x595">
-            {% endif %}
-            {% endif %}
-            <div class="slider-des">
-              {% if block.settings.slider1_title != blank %}<h2 style="color:{{ block.settings.slide_1_heading }}">{{ block.settings.slider1_title  }}</h2>{% endif %}
-              {% if block.settings.slider1_subtitle != blank %}<h3 style="color:{{ block.settings.slide_1_subheading }}">{{ block.settings.slider1_subtitle  }}</h3>{% endif %}
-              {% if block.settings.slider1_content != blank %}<p style="color:{{ block.settings.slide_1_desc }}"> {{ block.settings.slider1_content }} </p>{% endif %}
-              {% if block.settings.slide_1_btn_txt != blank %}<a class="" href="{{ block.settings.slide_1_link }}"> {{ block.settings.slide_1_btn_txt }} </a>{% endif %}
-            </div>
-            {% if block.settings.slide_1_link != blank %}</a>{% endif %}        
+          <li class="slider_{{forloop.index}}_loop">
+            <div class="slider-image-bg" style="background-image: url('{% if block.settings.slideshow_1_img != blank %}{{ block.settings.slideshow_1_img | img_url: '1920x' }}{% else %}//via.placeholder.com/1920x700?text=Baby+Slider{% endif %}');">
+              <div class="slider-des">
+                {% if block.settings.slider1_title != blank %}<h2 style="color:{{ block.settings.slide_1_heading }}">{{ block.settings.slider1_title }}</h2>{% endif %}
+                {% if block.settings.slider1_subtitle != blank %}<h3 style="color:{{ block.settings.slide_1_subheading }}">{{ block.settings.slider1_subtitle }}</h3>{% endif %}
+                {% if block.settings.slider1_content != blank %}<p style="color:{{ block.settings.slide_1_desc }}">{{ block.settings.slider1_content }}</p>{% endif %}
+                {% if block.settings.slide_1_btn_txt != blank %}<a class="slider-btn" href="{{ block.settings.slide_1_link }}">{{ block.settings.slide_1_btn_txt }}</a>{% endif %}
+              </div>
             </div>
           </li>
-
           {% endfor %}
-        </ul>	
+        </ul>
         <div class="divas-navigation"></div>
-      </div>	
-    </div>      
+      </div>
     {% endif %}
-{% unless section.settings.disable_right_promo %}
-    <div class="grid__item {{row1}}">
-      <div class="middle-top grid__item"> 
-        <div class="ovrly31 overlay_2">
-          {% if section.settings.link_1 != blank %}<a class="banner_half_img" href="{{ section.settings.link_1 }}">{% endif%}
-          {% if section.settings.image_1 != blank %}
-          <img src="{{ section.settings.image_1 | img_url: '900x' }}" alt="{{ section.settings.title_1 }}" />
-          <div class="ovrly"></div>
-          {% else %}
-          <img src="//via.placeholder.com/600x290">
-          {% endif%}           
-          {% if section.settings.link_1 != blank %}  </a>
+  </div>
+  <style>
+    .grid-banner-type-20 {
+      width: 100%;
+      padding: 0;
+      background: linear-gradient(135deg, #f8fafc 0%, #fce4ec 100%);
 
-          {% endif%}
-          <div class="featured-content">       
-            {% if section.settings.title_1 != blank %}
-            <h6 style="color:{{ section.settings.title_1_clr }};">{{ section.settings.title_1 }}</h6>
-            {% endif %}
-            {% if section.settings.text_1 != blank %}
-            <h3 style="color:{{ section.settings.text_1_clr }};">{{ section.settings.text_1}}</h3>    
-            {% endif %}  
-            {% if section.settings.button_1 != blank %}
-            <a class="one" href="{{ section.settings.link_1 }}" style="padding:0;color:{{ section.settings.button_1_txt}};background:none;border-bottom:2px solid {{ section.settings.button_1_bg}};">{{ section.settings.button_1}}</a>    
-            {% endif %}               
-          </div> 
-        </div>
-      </div>
-      <div class="middle-bottom grid__item">        
-        <div class="ovrly31 overlay_3">
-          {% if section.settings.link_2 != blank %}<a class="banner_half_img" href="{{ section.settings.link_2 }}">{% endif%}
-          {% if section.settings.image_2 != blank %}
-          <img src="{{ section.settings.image_2 | img_url: '900x' }}" alt="{{ section.settings.title_2 }}" />
-          <div class="ovrly"></div>
-          {% else %}
-
-          <img src="//via.placeholder.com/600x290">
-          {% endif%}           
-          {% if section.settings.link_2 != blank %}  </a>
-
-          {% endif%}
-          <div class="featured-content">       
-            {% if section.settings.title_2 != blank %}
-            <h6 style="color:{{ section.settings.title_2_clr }};">{{ section.settings.title_2 }}</h6>
-            {% endif %}
-            {% if section.settings.text_2 != blank %}
-            <h3 style="color:{{ section.settings.text_2_clr }};">{{ section.settings.text_2}}</h3>    
-            {% endif %}  
-            {% if section.settings.button_2 != blank %}
-            <a class="two" href="{{ section.settings.link_2 }}" style="padding:0;color:{{ section.settings.button_2_txt}};background:none;border-bottom:2px solid {{ section.settings.button_2_bg}};">{{ section.settings.button_2}}</a>    
-            {% endif %}   
-          </div>  
-        </div>
-      </div>
-    </div>
-    {% endunless %}
-
-    <style>
-      .grid-banner-type-20 .featured-content .two:hover { color:{{ section.settings.hover_button_2_txt}} !important;border-bottom:2px solid {{ section.settings.hover_button_2_bg}} !important; }
-      .grid-banner-type-20 .featured-content .one:hover { color:{{ section.settings.hover_button_1_txt}} !important;border-bottom:2px solid {{ section.settings.hover_button_1_bg}} !important; }
-      {% if section.settings.overlay_1_use %} .grid-banner-type-20 .ovrly31.overlay_2 .ovrly { background:{{ section.settings.overlay_1 | color_modify: 'alpha', 0.3 }};  } {% endif %}
-      {% if section.settings.overlay_2_use %}.grid-banner-type-20 .ovrly31.overlay_3 .ovrly { background:{{ section.settings.overlay_2 | color_modify: 'alpha', 0.3 }};  } {% endif %}
-      {% if section.settings.overlay_5_use %} .grid-banner-type-20 .ovrly31.overlay_1 .ovrly { background:{{ section.settings.overlay_5 | color_modify: 'alpha', 0.3 }};  } {% endif %}
-
-      #home-slider-wrapper:hover .divas-navigation a.next,#home-slider-wrapper:hover .divas-navigation a.prev {opacity:1; }
-      {% for block in section.blocks %}
-      #home-slider-wrapper ul li.slider_{{forloop.index }}_loop .slider-des a { background:none;padding:0;color:{{ block.settings.slide_1_btn }};border-bottom:2px solid {{ block.settings.slide_1_btn }};  }       
-      #home-slider-wrapper ul li.slider_{{forloop.index }}_loop .slider-des a:hover { color:{{ block.settings.slide_1_btn_hover_txt }};border-bottom:2px solid {{ block.settings.slide_1_btn_hover_txt }};  }
-      {% if block.settings.overlay_5_use %} .grid-banner-type-20 #home-slider-wrapper ul li.slider_{{forloop.index }}_loop  .ovrly31.overlay_1 .ovrly { background:{{ block.settings.overlay_5 | color_modify: 'alpha', 0.3 }};  } {% endif %}
-      
-      {% endfor %}
-    </style>
-  </div>    
-        <div class="dt-sc-hr-invisible-large"></div>
-
+    }
+    .slider-full-width {
+      max-width: 100vw;
+      margin: 0 auto;
+      position: relative;
+    }
+    #home-slider-wrapper {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 24px;
+      box-shadow: 0 4px 24px rgba(252, 228, 236, 0.25);
+      background: #fff;
+    }
+    .owl-carousel .slider-image-bg {
+      position: relative;
+      width: 100%;
+      min-height: 350px;
+      height: 48vw;
+      max-height: 700px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: 24px;
+      box-shadow: 0 2px 12px rgba(252, 228, 236, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slider-des {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.85);
+      border-radius: 18px;
+      padding: 2rem 2.5rem;
+      box-shadow: 0 2px 8px rgba(252, 228, 236, 0.10);
+      text-align: center;
+      min-width: 250px;
+      max-width: 90vw;
+    }
+    .slider-des h2 {
+      font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+      font-size: 2.2rem;
+      margin: 0 0 0.5rem 0;
+      color: #f48fb1;
+      letter-spacing: 1px;
+    }
+    .slider-des h3 {
+      font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+      font-size: 1.3rem;
+      margin: 0 0 0.5rem 0;
+      color: #90caf9;
+      letter-spacing: 0.5px;
+    }
+    .slider-des p {
+      font-size: 1rem;
+      color: #6d6d6d;
+      margin-bottom: 1rem;
+    }
+    .slider-btn {
+      display: inline-block;
+      background: #f8bbd0;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 24px;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(252, 228, 236, 0.10);
+      transition: background 0.2s, color 0.2s;
+      border: none;
+    }
+    .slider-btn:hover {
+      background: #f48fb1;
+      color: #fff;
+    }
+    .divas-navigation a.prev, .divas-navigation a.next {
+      opacity: 1;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(252, 228, 236, 0.10);
+      color: #f48fb1;
+      font-size: 1.5rem;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 8px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .divas-navigation a.prev:hover, .divas-navigation a.next:hover {
+      background: #f8bbd0;
+      color: #fff;
+    }
+    .divas-navigation {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .divas-navigation a {
+      pointer-events: all;
+      opacity: 1 !important; /* Always visible */
+      transition: background 0.2s, color 0.2s;
+    }
+    @media (max-width: 900px) {
+      .slider-des {
+        padding: 1.2rem 1rem;
+        font-size: 0.95rem;
+      }
+      .slider-des h2 {
+        font-size: 1.3rem;
+      }
+      .slider-des h3 {
+        font-size: 1rem;
+      }
+      .owl-carousel .slider-image-bg {
+        height: 56vw;
+        min-height: 220px;
+      }
+    }
+    @media (max-width: 600px) {
+      .slider-des {
+        padding: 0.7rem 0.5rem;
+        min-width: 120px;
+      }
+      .slider-des h2 {
+        font-size: 1rem;
+      }
+      .slider-des h3 {
+        font-size: 0.85rem;
+      }
+      .slider-btn {
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+      }
+      .owl-carousel .slider-image-bg {
+        height: 60vw;
+        min-height: 120px;
+      }
+    }
+  </style>
 </div>
-
 <script>
   jQuery(document).ready(function($) {
     $('.loop').owlCarousel({
       center: true,
       items:1,
-      loop:true,      
+      loop:true,
       dots: false,
       navContainer: ".divas-navigation",
       navText: ['<a class="prev btn"><i class="icon-arrow-left" ></i></a>','<a class="next btn"><i class="icon-arrow-right" ></i></a>'],
       autoplay: true,
       autoplayTimeout: 3500,
       responsive:{
-        0:{
-          items: 1
-        },
-        600:{
-          items:1
-        },
-        1000:{
-          items: 1
-        }
+        0:{ items: 1 },
+        600:{ items:1 },
+        1000:{ items: 1 }
       }
-
-
     });
   });
-
 </script>
-
 {% schema %}
 {
-"name": "Slider Grid",
-"class": "index-section",
-"settings": [
-{
-"type": "image_picker",
-"id": "image_1",
-"label": "Image",
-"info": "Size: 700x600"
-},
-{
-        "type": "checkbox",
-        "id": "disable_right_promo",
-        "label": "Disable Right Side Promo",
-        "default":false
-      },
-{
-"type": "text",
-"id": "title_1",
-"label": "Heading"
-},
-{
-"type": "color",
-"id": "title_1_clr",
-"label": "Heading color",
-"default": "#000"
-},
-{
-"type": "textarea",
-"id": "text_1",
-"label": "Description"
-},
-{
-"type": "color",
-"id": "text_1_clr",
-"label": "Description color",
-"default": "#000"
-},
-{
-"type": "text",
-"id": "button_1",
-"label": "Button text"
-},
-{
-"type": "color",
-"id": "button_1_bg",
-"label": "Button Border color",
-"default": "#000"
-},
-{
-"type": "color",
-"id": "button_1_txt",
-"label": "Button text color",
-"default": "#fff"
-},
-{
-"type": "color",
-"id": "hover_button_1_bg",
-"label": "Button hover Border",
-"default": "#000"
-},
-{
-"type": "color",
-"id": "hover_button_1_txt",
-"label": "Button hover text",
-"default": "#fff"
-},
-{
-"type": "checkbox",
-"id": "overlay_1_use",
-"label": "Use Overlay ?"
-
-},
-{
-"type": "color",
-"id": "overlay_1",
-"label": "Overlay",
-"default": "#fff"
-},
-{
-"type": "url",
-"id": "link_1",
-"label": "Link URL"
-},
-{
-"type": "image_picker",
-"id": "image_2",
-"label": "Image",
-"info": "Size: 700x600"
-},
-
-{
-"type": "text",
-"id": "title_2",
-"label": "Heading"
-},
-{
-"type": "color",
-"id": "title_2_clr",
-"label": "Heading color",
-"default": "#000"
-},
-{
-"type": "textarea",
-"id": "text_2",
-"label": "Description"
-},
-{
-"type": "color",
-"id": "text_2_clr",
-"label": "Description color",
-"default": "#000"
-},
-{
-"type": "text",
-"id": "button_2",
-"label": "Button text"
-},
-{
-"type": "color",
-"id": "button_2_bg",
-"label": "Button Border color",
-"default": "#000"
-},
-{
-"type": "color",
-"id": "button_2_txt",
-"label": "Button text color",
-"default": "#fff"
-},
-{
-"type": "color",
-"id": "hover_button_2_bg",
-"label": "Button hover Border",
-"default": "#000"
-},
-{
-"type": "color",
-"id": "hover_button_2_txt",
-"label": "Button hover text",
-"default": "#fff"
-},
-{
-"type": "checkbox",
-"id": "overlay_2_use",
-"label": "Use Overlay ?"
-
-},
-{
-"type": "color",
-"id": "overlay_2",
-"label": "Overlay",
-"default": "#fff"
-},
-{
-"type": "url",
-"id": "link_2",
-"label": "Link URL"
-}
-],
-
-"blocks": [
-{
-"type": "image",
-"name": "Slider Images",
-"settings": [ 		
-{
-"type": "image_picker",
-"id": "slideshow_1_img",
-"label": "Image",
-"info": "Size: 880x755"
-},
-{
-"type": "text",
-"id": "slider1_title",
-"label": "Slider sub title"
-},
-{
-"type": "color",
-"id": "slide_1_heading",
-"label": "Slider sub title",
-"default": "#000000"
-},
-{
-"type": "text",
-"id": "slider1_subtitle",
-"label": "Slider title"
-},
-{
-"type": "color",
-"id": "slide_1_subheading",
-"label": "Slider title",
-"default": "#ffffff"
-},
-{
-"type": "textarea",
-"id": "slider1_content",
-"label": "Slider Content"
-},
-{
-"type": "color",
-"id": "slide_1_desc",
-"label": "Slider Content",
-"default": "#ffffff"
-},
-{
-"type": "text",
-"id": "slide_1_link",
-"label": "Links to",
-"default": "/collections/all"
-},
-{
-"type": "text",
-"id": "slide_1_btn_txt",
-"label": "Slider Btn Text"
-},
-{
-"type": "color",
-"id": "slide_1_btn",
-"label": "Slider Btn Color",
-"default": "#000"
-},
-
-{
-"type": "color",
-"id": "slide_1_btn_hover_txt",
-"label": "Slider Btn Hover Text",
-"default": "#000"
-},
-{
-"type": "checkbox",
-"id": "overlay_5_use",
-"label": "Use Overlay ?"
-
-},
-{
-"type": "color",
-"id": "overlay_5",
-"label": "Overlay",
-"default": "#fff"
-}
-
-
-
-]
-}
-],
-
-"presets": [
-{
-"name": "Slider Grid",
-"category": "Image",
-"blocks": [
-{
-"type": "image"
-},
-{
-"type": "image"
-},
-{
-"type": "image"
-}
-]
-}
-]
+  "name": "Slider Grid",
+  "class": "index-section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Slider Images",
+      "settings": [
+        { "type": "image_picker", "id": "slideshow_1_img", "label": "Image", "info": "Size: 1920x700" },
+        { "type": "text", "id": "slider1_title", "label": "Slider sub title" },
+        { "type": "color", "id": "slide_1_heading", "label": "Slider sub title", "default": "#f48fb1" },
+        { "type": "text", "id": "slider1_subtitle", "label": "Slider title" },
+        { "type": "color", "id": "slide_1_subheading", "label": "Slider title", "default": "#90caf9" },
+        { "type": "textarea", "id": "slider1_content", "label": "Slider Content" },
+        { "type": "color", "id": "slide_1_desc", "label": "Slider Content", "default": "#6d6d6d" },
+        { "type": "text", "id": "slide_1_link", "label": "Links to", "default": "/collections/all" },
+        { "type": "text", "id": "slide_1_btn_txt", "label": "Slider Btn Text" },
+        { "type": "color", "id": "slide_1_btn", "label": "Slider Btn Color", "default": "#f8bbd0" },
+        { "type": "color", "id": "slide_1_btn_hover_txt", "label": "Slider Btn Hover Text", "default": "#fff" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Slider Grid",
+      "category": "Image",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ]
 }
 {% endschema %}
-
-
-
