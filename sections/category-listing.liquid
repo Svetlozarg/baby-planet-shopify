@@ -1,342 +1,338 @@
-<div data-section-id="{{ section.id }}" data-section-type="category-listing-type-1" class="category-listing-type-1">
-  <div class="grid-uniform">
-    <div class="container" style="max-width: 1800px;">
-      {% if section.settings.heading != blank %}
-        <div class="section-header text-center">
+<div data-section-id="{{ section.id }}" data-section-type="category-listing" class="category-listing-section">
+  <div class="container">
+    {% if section.settings.heading != blank or section.settings.subheading != blank %}
+      <div class="section-header">
+        {% if section.settings.heading != blank %}
           <h2 class="section-title">{{ section.settings.heading }}</h2>
-          {% if section.settings.subheading != blank %}
-            <div class="section-subheading">{{ section.settings.subheading }}</div>
-          {% endif %}
-        </div>
-      {% endif %}
-
-      <div class="category-grid">
-        {% if section.blocks.size > 0 %}
-          {% for block in section.blocks %}
-            <div class="category-card" data-wow-delay="{{ settings.time_lazy_load }}ms">
-              {% if block.settings.url != blank %}
-                <a href="{{block.settings.url}}" class="category-link">
-              {% endif %}
-
-                <div class="category-card-inner" style="background: {{ block.settings.bg_bolor }};">
-                  <div class="category-image-wrapper">
-                    {% if block.settings.image != blank %}
-                      <img src="{{ block.settings.image | img_url: '300x300', crop: 'center' }}" alt="{{ block.settings.title }}" class="category-image" />
-                    {% else %}
-                      <img src="//via.placeholder.com/300x300" alt="placeholder" class="category-image" />
-                    {% endif %}
-                  </div>
-
-                  <div class="category-content">
-                    {% if block.settings.title != blank %}
-                      <h3 class="category-title">{{ block.settings.title }}</h3>
-                    {% endif %}
-                    {% if block.settings.description != blank %}
-                      <p class="category-description">{{ block.settings.description }}</p>
-                    {% endif %}
-                  </div>
-                </div>
-
-              {% if block.settings.url != blank %}
-                </a>
-              {% endif %}
-            </div>
-          {% endfor %}
+        {% endif %}
+        {% if section.settings.subheading != blank %}
+          <p class="section-subtitle">{{ section.settings.subheading }}</p>
         {% endif %}
       </div>
-    </div>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="categories-grid">
+        {% for block in section.blocks %}
+          <div class="category-item" {{ block.shopify_attributes }}>
+            {% if block.settings.url != blank %}
+              <a href="{{ block.settings.url }}" class="category-link">
+            {% endif %}
+
+            <div class="category-card" style="background: {{ block.settings.bg_bolor | default: '#ffffff' }};">
+              <div class="category-image-container">
+                {% if block.settings.image != blank %}
+                  <img
+                    src="{{ block.settings.image | img_url: '400x400' }}"
+                    alt="{{ block.settings.title | escape }}"
+                    class="category-image"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="category-placeholder">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21,15 16,10 5,21"/>
+                    </svg>
+                  </div>
+                {% endif %}
+
+                {% if block.settings.badge != blank %}
+                  <span class="category-badge">{{ block.settings.badge }}</span>
+                {% endif %}
+              </div>
+
+              <div class="category-content">
+                {% if block.settings.title != blank %}
+                  <h3 class="category-title">{{ block.settings.title }}</h3>
+                {% endif %}
+                {% if block.settings.description != blank %}
+                  <p class="category-description">{{ block.settings.description }}</p>
+                {% endif %}
+                {% if block.settings.product_count != blank %}
+                  <span class="category-count">{{ block.settings.product_count }} {{ block.settings.product_count | pluralize: 'item', 'items' }}</span>
+                {% endif %}
+                            </div>
+            </div>
+
+            {% if block.settings.url != blank %}
+              </a>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state-content">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21,15 16,10 5,21"/>
+          </svg>
+          <h3>No categories yet</h3>
+          <p>Add some categories to showcase your products</p>
+        </div>
+      </div>
+    {% endif %}
   </div>
 </div>
 
-<style type="text/css">
-  .category-listing-type-1 {
-    padding: 80px 0;
+<style>
+  .category-listing-section {
+    padding: {{ section.settings.section_padding_top }}px 0 {{ section.settings.section_padding_bottom }}px;
+    background: {{ section.settings.section_bg_color }};
   }
 
-  .category-listing-type-1 .section-header {
-    margin-bottom: 60px;
-  }
-
-  .category-listing-type-1 .section-title {
-    font-size: 42px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: {{ section.settings.heading_color }};
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-  }
-
-  .category-listing-type-1 .section-subheading {
-    font-size: 18px;
-    color: {{ section.settings.subheading_color }};
-    line-height: 1.6;
-    max-width: 600px;
-    margin: 0 auto;
-    font-weight: 400;
-  }
-
-  .category-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 32px;
-    width: 100%;
+  .category-listing-section .container {
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
   }
 
-  .category-card {
-    flex: 0 1 280px;
-    max-width: 280px;
-    min-width: 280px;
-    height: 380px;
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* Section Header */
+  .section-header {
+    text-align: center;
+    margin-bottom: 60px;
   }
 
-  @media screen and (min-width: 1500px) {
-    .category-card {
-      flex: 1 1 300px;
-      max-width: 320px;
-    }
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 16px 0;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
-  @media screen and (min-width: 1100px) and (max-width: 1499px) {
-    .category-card {
-      flex: 1 1 280px;
-      max-width: 300px;
-    }
+  .section-subtitle {
+    font-size: 1.125rem;
+    color: {{ section.settings.subheading_color }};
+    margin: 0;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
-  .category-card:hover {
-    transform: translateY(-8px);
+  /* Categories Grid */
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    align-items: stretch;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* Category Item */
+  .category-item {
+    position: relative;
   }
 
   .category-link {
     text-decoration: none;
+    color: inherit;
     display: block;
     height: 100%;
   }
 
-  .category-card-inner {
-    width: 100%;
-    min-width: 280px;
-    max-width: 280px;
-    height: 380px;
-    border-radius: 28px;
-    padding: 40px 24px 32px;
+  .category-card {
+    background: {{ section.settings.card_bg_color }};
+    border-radius: 16px;
+    overflow: hidden;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid {{ section.settings.card_border_color }};
     position: relative;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    max-height: 260px;
+  }
+
+  .category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    border-color: {{ section.settings.card_hover_border_color }};
+  }
+
+  /* Image Container */
+  .category-image-container {
+    position: relative;
+    aspect-ratio: 1;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    background: linear-gradient(135deg, var(--card-bg, #f8fdff) 0%, rgba(255, 255, 255, 0.9) 100%);
-  }
-
-  .category-card:hover .category-card-inner {
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
-    transform: scale(1.02);
-  }
-
-  .category-image-wrapper {
-    width: 180px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     height: 180px;
-    border-radius: 50%;
-    overflow: hidden;
-    position: relative;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    flex-shrink: 0;
-  }
-
-  .category-card:hover .category-image-wrapper {
-    transform: scale(1.05);
-    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.15);
   }
 
   .category-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .category-card:hover .category-image {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 
+  .category-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: {{ section.settings.placeholder_color }};
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  }
+
+  .category-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: {{ section.settings.badge_bg_color }};
+    color: {{ section.settings.badge_text_color }};
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Content */
   .category-content {
-    text-align: center;
+    padding: 16px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: 24px;
-    min-height: 100px;
+    text-align: center;
   }
 
   .category-title {
-    font-size: 22px;
+    font-size: 1.1rem;
     font-weight: 600;
-    margin: 0 0 12px 0;
     color: {{ section.settings.title_color }};
+    margin: 0 0 6px 0;
     line-height: 1.3;
-    letter-spacing: -0.2px;
     transition: color 0.3s ease;
   }
 
   .category-card:hover .category-title {
-    color: {{ section.settings.title_color }};
+    color: {{ section.settings.title_hover_color }};
   }
 
   .category-description {
-    font-size: 15px;
+    font-size: 0.875rem;
     color: {{ section.settings.description_color }};
+    margin: 0 0 12px 0;
     line-height: 1.5;
-    margin: 0;
     opacity: 0.8;
-    transition: all 0.3s ease;
-    max-width: 200px;
-    margin: 0 auto;
   }
 
-  .category-card:hover .category-description {
-    opacity: 1;
-    transform: translateY(-2px);
+  .category-count {
+    font-size: 0.75rem;
+    color: {{ section.settings.count_color }};
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: auto;
+  }
+
+
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+  }
+
+  .empty-state-content svg {
+    color: #cbd5e1;
+    margin-bottom: 20px;
+  }
+
+  .empty-state-content h3 {
+    font-size: 1.5rem;
+    color: #64748b;
+    margin: 0 0 8px 0;
+  }
+
+  .empty-state-content p {
+    color: #94a3b8;
+    margin: 0;
   }
 
   /* Responsive Design */
-  @media screen and (max-width: 1200px) {
-    .category-grid {
-      gap: 28px;
-      padding: 0 16px;
-    }
-
-    .category-card {
-      flex: 0 1 260px;
-      min-width: 240px;
-      max-width: 320px;
-    }
-
-    .category-card-inner {
-      height: 360px;
-      padding: 36px 20px 28px;
-      max-width: none;
-      min-width: 240px;
-    }
-
-    .category-image-wrapper {
-      width: 160px;
-      height: 160px;
-    }
-
-    .category-title {
-      font-size: 20px;
+  @media (max-width: 1200px) {
+    .categories-grid {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
     }
   }
 
-  @media screen and (max-width: 768px) {
-    .category-listing-type-1 {
-      padding: 60px 0;
+  @media (max-width: 768px) {
+    .category-listing-section {
+      padding: {{ section.settings.section_padding_top | divided_by: 1.5 }}px 0 {{ section.settings.section_padding_bottom | divided_by: 1.5 }}px;
     }
 
-    .category-listing-type-1 .section-header {
+    .category-listing-section .container {
+      padding: 0 16px;
+    }
+
+    .section-header {
       margin-bottom: 40px;
     }
 
-    .category-listing-type-1 .section-title {
-      font-size: 32px;
+    .section-title {
+      font-size: 2rem;
     }
 
-    .category-listing-type-1 .section-subheading {
-      font-size: 16px;
+    .section-subtitle {
+      font-size: 1rem;
     }
 
-    .category-grid {
-      gap: 24px;
-      padding: 0 12px;
-    }
-
-    .category-card {
-      flex: 0 1 240px;
-      min-width: 220px;
-      max-width: 280px;
-    }
-
-    .category-card-inner {
-      height: 340px;
-      padding: 32px 16px 24px;
-    }
-
-    .category-image-wrapper {
-      width: 140px;
-      height: 140px;
-    }
-
-    .category-title {
-      font-size: 18px;
-    }
-
-    .category-description {
-      font-size: 14px;
-    }
-  }
-
-  @media screen and (max-width: 480px) {
-    .category-listing-type-1 {
-      padding: 40px 0;
-    }
-
-    .category-grid {
-      gap: 20px;
-      padding: 0 16px;
-    }
-
-    .category-card {
-      flex: 1 1 100%;
-      min-width: 100%;
-      max-width: 100%;
-    }
-
-    .category-card-inner {
-      height: 320px;
-      padding: 28px 20px 20px;
-    }
-
-    .category-image-wrapper {
-      width: 120px;
-      height: 120px;
+    .categories-grid {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
     }
 
     .category-content {
-      padding-top: 20px;
-      min-height: 80px;
+      padding: 12px;
     }
 
-    .category-title {
-      font-size: 16px;
-      margin-bottom: 8px;
-    }
-
-    .category-description {
-      font-size: 13px;
+    .category-image-container {
+      height: 140px;
     }
   }
 
-  /* Enhanced animations for baby theme */
-  .category-card {
-    animation: fadeInUp 0.6s ease-out;
+  @media (max-width: 480px) {
+    .categories-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .category-content {
+      padding: 16px;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+    }
   }
 
-  .category-card:nth-child(1) { animation-delay: 0.1s; }
-  .category-card:nth-child(2) { animation-delay: 0.2s; }
-  .category-card:nth-child(3) { animation-delay: 0.3s; }
-  .category-card:nth-child(4) { animation-delay: 0.4s; }
-  .category-card:nth-child(5) { animation-delay: 0.5s; }
-  .category-card:nth-child(6) { animation-delay: 0.6s; }
+  /* Animation */
+  .category-item {
+    animation: fadeInUp 0.6s ease-out both;
+  }
+
+  .category-item:nth-child(1) { animation-delay: 0.1s; }
+  .category-item:nth-child(2) { animation-delay: 0.2s; }
+  .category-item:nth-child(3) { animation-delay: 0.3s; }
+  .category-item:nth-child(4) { animation-delay: 0.4s; }
+  .category-item:nth-child(5) { animation-delay: 0.5s; }
+  .category-item:nth-child(6) { animation-delay: 0.6s; }
 
   @keyframes fadeInUp {
     from {
@@ -349,19 +345,28 @@
     }
   }
 
-  /* Improved loading state */
-  .category-image {
-    background: linear-gradient(90deg, #f0f0f0 25%, transparent 37%, #f0f0f0 63%);
-    background-size: 400% 100%;
+    @media (prefers-reduced-motion: reduce) {
+    .category-item {
+      animation: none;
+    }
+
+    .category-card,
+    .category-image {
+      transition: none;
+    }
   }
 </style>
 
 {% schema %}
 {
-  "name": "Category Icons",
+  "name": "Category Listing",
   "class": "index-section",
   "max_blocks": 12,
   "settings": [
+    {
+      "type": "header",
+      "content": "Section Content"
+    },
     {
       "type": "text",
       "id": "heading",
@@ -369,53 +374,126 @@
       "default": "Shop by Category"
     },
     {
-      "type": "text",
+      "type": "textarea",
       "id": "subheading",
       "label": "Subheading",
-      "default": "Discover our wonderful collection of baby products"
+      "default": "Discover our wonderful collection of baby products organized by category"
+    },
+    {
+      "type": "header",
+      "content": "Section Styling"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Section Padding Top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Section Padding Bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Text Colors"
     },
     {
       "type": "color",
       "id": "heading_color",
       "label": "Heading Color",
-      "default": "#2c3e50"
+      "default": "#1a1a1a"
     },
     {
       "type": "color",
       "id": "subheading_color",
       "label": "Subheading Color",
-      "default": "#7f8c8d"
+      "default": "#666666"
     },
     {
       "type": "color",
       "id": "title_color",
       "label": "Category Title Color",
-      "default": "#2c3e50"
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "title_hover_color",
+      "label": "Category Title Hover Color",
+      "default": "#ff6b6b"
     },
     {
       "type": "color",
       "id": "description_color",
       "label": "Description Color",
-      "default": "#7f8c8d"
+      "default": "#666666"
     },
     {
       "type": "color",
-      "id": "box-shadow_color",
-      "label": "Hover Shadow Color",
-      "default": "rgba(0,0,0,0.1)"
+      "id": "count_color",
+      "label": "Product Count Color",
+      "default": "#999999"
+    },
+    {
+      "type": "header",
+      "content": "Card Styling"
     },
     {
       "type": "color",
-      "id": "bg_hover_bolor",
-      "label": "Hover Background Color",
-      "default": "rgba(176,210,53,0.9)"
+      "id": "card_bg_color",
+      "label": "Card Background",
+      "default": "#ffffff"
     },
     {
       "type": "color",
-      "id": "bg_hover_color",
-      "label": "Hover Text Color",
-      "default": "#e74c3c"
-    }
+      "id": "card_border_color",
+      "label": "Card Border Color",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "color",
+      "id": "card_hover_border_color",
+      "label": "Card Hover Border Color",
+      "default": "#ff6b6b"
+    },
+    {
+      "type": "color",
+      "id": "placeholder_color",
+      "label": "Image Placeholder Color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "header",
+      "content": "Badge Styling"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Badge Background",
+      "default": "#ff6b6b"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge Text Color",
+      "default": "#ffffff"
+    },
+
   ],
   "blocks": [
     {
@@ -425,7 +503,7 @@
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Image",
+          "label": "Category Image",
           "info": "Recommended size: 600x600px"
         },
         {
@@ -437,39 +515,71 @@
         {
           "type": "text",
           "id": "title",
-          "label": "Category Name",
+          "label": "Category Title",
           "default": "Category Name"
         },
         {
           "type": "textarea",
           "id": "description",
           "label": "Description",
-          "default": "Short category description"
+          "default": "Browse our amazing selection"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge Text",
+          "info": "Optional badge to display on the category (e.g., 'New', 'Sale')"
+        },
+        {
+          "type": "text",
+          "id": "product_count",
+          "label": "Product Count",
+          "info": "Number of products in this category"
         },
         {
           "type": "url",
           "id": "url",
-          "label": "Link"
+          "label": "Category Link",
+          "info": "Link to collection or page"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Category Icons",
-      "category": "image",
+      "name": "Category Listing",
       "blocks": [
         {
-          "type": "image"
+          "type": "image",
+          "settings": {
+            "title": "Baby Clothes",
+            "description": "Soft and comfortable clothing for your little one",
+            "product_count": "24"
+          }
         },
         {
-          "type": "image"
+          "type": "image",
+          "settings": {
+            "title": "Toys & Games",
+            "description": "Educational and fun toys for development",
+            "product_count": "18"
+          }
         },
         {
-          "type": "image"
+          "type": "image",
+          "settings": {
+            "title": "Baby Care",
+            "description": "Essential care products for daily routines",
+            "product_count": "32"
+          }
         },
         {
-          "type": "image"
+          "type": "image",
+          "settings": {
+            "title": "Feeding",
+            "description": "Everything you need for feeding time",
+            "product_count": "15"
+          }
         }
       ]
     }
