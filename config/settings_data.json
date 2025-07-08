@@ -2513,7 +2513,7 @@
           "heading_image": "shopify://shop_images/icon-image.webp",
           "collection": "момичета",
           "show_vendor": true,
-          "grid": "3",
+          "grid": "4",
           "rows": "2"
         }
       },
@@ -2530,7 +2530,7 @@
           "heading_image": "shopify://shop_images/icon-image.webp",
           "collection": "момичета",
           "show_vendor": true,
-          "grid": "3",
+          "grid": "4",
           "rows": "2"
         }
       }
