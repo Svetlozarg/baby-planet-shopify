@@ -2632,10 +2632,22 @@
           "heading_image_need": true,
           "heading_image": "shopify://shop_images/icon-image_7e8da680-2df2-47a3-9128-41a7052320b0.webp"
         }
+      },
+      "custom_content_PHKni7": {
+        "type": "custom-content",
+        "name": "Custom content",
+        "settings": {
+          "heading_text": "",
+          "heading_color": "#3a3a3a",
+          "background_color": "",
+          "top_margin": true,
+          "bottom_margin": true
+        }
       }
     },
     "content_for_index": [
       "grid_banner_type_20_bCWAhW",
+      "custom_content_PHKni7",
       "category_listing_8DW9MC",
       "home_product_grid_type_17_E6Q74d",
       "wide_banner_type_5_caDkdc",
