@@ -1,311 +1,694 @@
-<div class="desktop-megamenu">
-      <div class="nav-bar-mobile">
-        <nav class="nav-bar" role="navigation" aria-label="{{ 'general.accessibility.nav_main' | t | default: 'Main navigation' }}">
-          <div class="site-nav-dropdown_inner">
-            {% include 'site-nav' %}
-          </div>
-        </nav>
-      </div>
-</div>
+{% comment %}
+  Modern Responsive Navigation with Megamenu Support
+  Features: Clean desktop navigation, responsive design, megamenu blocks
+{% endcomment %}
 
 <style>
-  /* Enhanced Navigation Responsive Styles */
-  .desktop-megamenu {
+  /* Modern Navigation Styles */
+  .modern-navigation {
     position: relative;
-    z-index: 10;
+    z-index: 50;
   }
 
-  .nav-bar {
-    display: block;
+  .nav-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
   }
 
+  /* Main Navigation */
   .site-nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2px;
+  }
+
+  .site-nav > li {
+    position: relative;
+    margin: 0;
+  }
+
+  .site-nav > li > a {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    color: #7b6b8a;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  .site-nav > li > a:hover,
+  .site-nav > li > a.current {
+    color: #ff6b9d;
+    background: transparent;
+  }
+
+  .site-nav > li > a::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: #ff6b9d;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    border-radius: 1px;
+  }
+
+  .site-nav > li > a:hover::after,
+  .site-nav > li > a.current::after {
+    width: 80%;
+  }
+
+  /* Dropdown Indicators */
+  .site-nav > li.dropdown > a::before {
+    content: '\f107';
+    font-family: 'FontAwesome';
+    font-size: 14px;
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+    opacity: 0.8;
+    font-weight: 600;
+  }
+
+  .site-nav > li.dropdown:hover > a::before {
+    transform: rotate(180deg);
+    opacity: 1;
+    color: #ff6b9d;
+  }
+
+  /* Dropdown Menus */
+  .site-nav-dropdown {
+    position: absolute;
+    top: calc(100% + 15px);
+    left: 0;
+    background: #fff;
+    border: 1px solid #f0e8f3;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(123, 107, 138, 0.15);
+    z-index: 1000;
+    min-width: 220px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .site-nav > li.dropdown:hover .site-nav-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  /* Dropdown Arrow */
+  .site-nav-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 30px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #f0e8f3;
+  }
+
+  .site-nav-dropdown::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 32px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #fff;
+  }
+
+  /* Dropdown Links */
+  .site-nav-dropdown ul {
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+  }
+
+  .site-nav-dropdown li {
+    margin: 0;
+  }
+
+  .site-nav-dropdown a {
+    display: block;
+    padding: 12px 20px;
+    color: #7b6b8a;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #f8f5fa;
+  }
+
+  .site-nav-dropdown li:last-child a {
+    border-bottom: none;
+  }
+
+  .site-nav-dropdown a:hover {
+    color: #ff6b9d;
+    background: linear-gradient(90deg, #ffeef0 0%, transparent 100%);
+    padding-left: 25px;
+  }
+
+  /* Megamenu Support */
+  .site-nav > li.mega-menu .site-nav-dropdown {
+    min-width: 600px;
+    max-width: 800px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+  }
+
+  .site-nav > li.mega-menu:hover .site-nav-dropdown {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .megamenu-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    padding: 25px;
+  }
+
+  .megamenu-column h4 {
+    color: #7b6b8a;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .megamenu-column ul {
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  .site-nav > li {
-    margin: 0;
-    position: relative;
+  .megamenu-column li {
+    margin: 0 0 8px 0;
   }
 
-  .site-nav > li > a {
-    display: block;
-    padding: 15px 20px;
+  .megamenu-column a {
+    color: #9b8ba8;
     text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-  }
-
-  /* Ensure dropdowns work properly on all screen sizes */
-  .site-nav .dropdown:hover .site-nav-dropdown {
+    font-size: 13px;
+    transition: color 0.3s ease;
+    padding: 4px 0;
     display: block;
   }
 
-  .site-nav-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: #fff;
-    border: 1px solid #e8e9eb;
+  .megamenu-column a:hover {
+    color: #ff6b9d;
+  }
+
+  /* Featured Products in Megamenu */
+  .megamenu-featured {
+    border-left: 2px solid #f0e8f3;
+    padding-left: 25px;
+  }
+
+  .megamenu-product {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 0;
+    border-bottom: 1px solid #f8f5fa;
+  }
+
+  .megamenu-product:last-child {
+    border-bottom: none;
+  }
+
+  .megamenu-product img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
     border-radius: 8px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    min-width: 220px;
-    display: none;
   }
 
-  /* Large Desktop Screens */
-  @media only screen and (min-width: 1200px) {
+  .megamenu-product-info h5 {
+    margin: 0 0 5px 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #7b6b8a;
+  }
+
+  .megamenu-product-price {
+    font-size: 12px;
+    color: #ff6b9d;
+    font-weight: 600;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1199px) {
     .site-nav > li > a {
-      padding: 18px 25px;
-      font-size: 16px;
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
+    .site-nav {
+      gap: 1px;
+    }
+
+    .site-nav > li.dropdown > a::before {
+      font-size: 13px;
     }
   }
 
-  /* Desktop Screens */
-  @media only screen and (max-width: 1199px) and (min-width: 968px) {
-    .site-nav > li > a {
-      padding: 15px 18px;
-      font-size: 15px;
-    }
-  }
-
-  /* Hide desktop navigation on tablets and mobile */
-  @media only screen and (max-width: 1050px) {
-    .desktop-megamenu {
+  @media (max-width: 1050px) {
+    .modern-navigation {
       display: none !important;
     }
   }
+
+  @media (max-width: 967px) {
+    .modern-navigation {
+      display: none !important;
+    }
+  }
+
+  /* High DPI Display Adjustments */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .site-nav-dropdown {
+      border-width: 0.5px;
+    }
+  }
+
+  /* Focus States for Accessibility */
+  .site-nav > li > a:focus {
+    outline: 2px solid #ff6b9d;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  .site-nav-dropdown a:focus {
+    outline: 2px solid #ff6b9d;
+    outline-offset: -2px;
+    background: #ffeef0;
+    color: #ff6b9d;
+  }
+
+  /* Animation Delays for Staggered Effect */
+  .site-nav > li:nth-child(1) > a { animation-delay: 0.1s; }
+  .site-nav > li:nth-child(2) > a { animation-delay: 0.2s; }
+  .site-nav > li:nth-child(3) > a { animation-delay: 0.3s; }
+  .site-nav > li:nth-child(4) > a { animation-delay: 0.4s; }
+  .site-nav > li:nth-child(5) > a { animation-delay: 0.5s; }
+  .site-nav > li:nth-child(6) > a { animation-delay: 0.6s; }
+
+  @keyframes navFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .site-nav > li > a {
+    animation: navFadeIn 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  /* Ensure dropdowns stay visible during hover transition */
+  .site-nav > li.dropdown:hover .site-nav-dropdown,
+  .site-nav-dropdown:hover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .site-nav > li.mega-menu:hover .site-nav-dropdown,
+  .site-nav > li.mega-menu .site-nav-dropdown:hover {
+    transform: translateX(-50%) translateY(0);
+  }
 </style>
 
+<div class="modern-navigation">
+  <div class="nav-container">
+    <nav class="nav-bar" role="navigation" aria-label="{{ 'general.accessibility.nav_main' | t | default: 'Main navigation' }}">
+      <div class="site-nav-dropdown_inner">
+        {% include 'site-nav' %}
+      </div>
+    </nav>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Enhanced dropdown functionality
+  const dropdownItems = document.querySelectorAll('.site-nav > li.dropdown');
+
+  dropdownItems.forEach(item => {
+    const link = item.querySelector('> a');
+    const dropdown = item.querySelector('.site-nav-dropdown');
+
+    if (link && dropdown) {
+      let hoverTimeout;
+
+      // Mouse enter
+      item.addEventListener('mouseenter', function() {
+        clearTimeout(hoverTimeout);
+        dropdown.style.display = 'block';
+
+        // Update aria-expanded
+        link.setAttribute('aria-expanded', 'true');
+      });
+
+      // Mouse leave
+      item.addEventListener('mouseleave', function() {
+        hoverTimeout = setTimeout(() => {
+          dropdown.style.display = 'none';
+          link.setAttribute('aria-expanded', 'false');
+        }, 100);
+      });
+
+      // Keyboard navigation
+      link.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const isVisible = dropdown.style.display === 'block';
+          dropdown.style.display = isVisible ? 'none' : 'block';
+          link.setAttribute('aria-expanded', !isVisible);
+        }
+
+        if (e.key === 'Escape') {
+          dropdown.style.display = 'none';
+          link.setAttribute('aria-expanded', 'false');
+          link.focus();
+        }
+      });
+    }
+  });
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.site-nav')) {
+      dropdownItems.forEach(item => {
+        const link = item.querySelector('> a');
+        const dropdown = item.querySelector('.site-nav-dropdown');
+        if (dropdown) {
+          dropdown.style.display = 'none';
+          if (link) link.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+  });
+
+  // Improved megamenu positioning
+  const megaMenuItems = document.querySelectorAll('.site-nav > li.mega-menu');
+
+  function positionMegaMenu() {
+    megaMenuItems.forEach(item => {
+      const dropdown = item.querySelector('.site-nav-dropdown');
+      if (dropdown) {
+        const rect = item.getBoundingClientRect();
+        const dropdownRect = dropdown.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+
+        // Reset transform
+        dropdown.style.transform = 'translateX(-50%) translateY(-10px)';
+
+        // Check if dropdown goes outside viewport
+        const dropdownLeft = rect.left + (rect.width / 2) - (dropdownRect.width / 2);
+        const dropdownRight = dropdownLeft + dropdownRect.width;
+
+        if (dropdownLeft < 20) {
+          dropdown.style.transform = 'translateX(-20px) translateY(-10px)';
+        } else if (dropdownRight > viewportWidth - 20) {
+          dropdown.style.transform = `translateX(-${dropdownRect.width - rect.width + 20}px) translateY(-10px)`;
+        }
+      }
+    });
+  }
+
+  // Position megamenus on hover
+  megaMenuItems.forEach(item => {
+    item.addEventListener('mouseenter', positionMegaMenu);
+  });
+
+  // Reposition on window resize
+  window.addEventListener('resize', positionMegaMenu);
+
+  // Initialize ARIA attributes
+  document.querySelectorAll('.site-nav > li.dropdown > a').forEach(link => {
+    link.setAttribute('aria-expanded', 'false');
+    link.setAttribute('aria-haspopup', 'true');
+  });
+});
+</script>
 
 {% schema %}
-  {
-    "name": "Navigation",
-	"max_blocks": 10,
-    "settings": [
+{
+  "name": "Navigation",
+  "max_blocks": 10,
+  "settings": [
     {
-    "type": "checkbox",
-    "id": "display_megamenu",
-    "label": "Display Mega Menu?",
-    "default": true
+      "type": "checkbox",
+      "id": "display_megamenu",
+      "label": "Display Mega Menu",
+      "default": true,
+      "info": "Enable advanced megamenu functionality with featured products and multi-column layouts"
+    },
+    {
+      "type": "range",
+      "id": "dropdown_delay",
+      "label": "Dropdown Hover Delay (ms)",
+      "min": 0,
+      "max": 500,
+      "step": 50,
+      "default": 100,
+      "info": "Delay before dropdown closes on mouse leave"
     }
-],
-"blocks": [
-	  {
-	  	"type": "style_1",
-      	"name": "Style 1",
-      	"settings": [
-		  {
-            "type": "text",
-            "id": "title",
-            "label": "Menu - Style 1",
-            "default": "Menu - Style 1"
-          },
-		  {
-            "type": "text",
-            "id": "megamenu_items_1",
-            "label": "Mega Menu Items for Style 1",
-            "default": "Catalog"
-
-          },
-		  {
-            "type": "link_list",
-            "id": "main_linklist_1",
-            "label": "Collection"
-          },
-		  {
-            "type": "image_picker",
-            "id": "banner_first_style_1",
-            "label": "Upload a new image",
-            "info": "224px x 337px recommended"
-          },
-		  {
-			"type": "url",
-			"id": "link_banner_first_style_1",
-			"label": "Banner link"
-		  }
-
-		]
-      },
-	  {
-	  	"type": "style_2",
-      	"name": "Style 2",
-      	"settings": [
-		  {
-            "type": "text",
-            "id": "title",
-            "label": "Menu - Style 2",
-            "default": "Menu - Style 2"
-          },
-		  {
-            "type": "text",
-            "id": "megamenu_items_2",
-            "label": "Mega Menu Items for Style 2",
-            "default": "Catalog"
-          },
-		  {
-            "type": "link_list",
-            "id": "main_linklist_2",
-            "label": "Collection"
-          },
-
-		  {
-            "type": "image_picker",
-            "id": "banner_second_style_2",
-            "label": "Upload a new image",
-            "info": "224px x 165px recommended"
-          },
-		  {
-			"type": "url",
-			"id": "link_banner_second_style_2",
-			"label": "Link image 1"
-		  },
-		  {
-            "type": "image_picker",
-            "id": "banner_third_style_2",
-            "label": "Upload a new image",
-            "info": "224px x 165px recommended"
-          },
-		  {
-			"type": "url",
-			"id": "link_banner_third_style_2",
-			"label": "Link image 2"
-		  },
-		 {
-            "type": "image_picker",
-            "id": "banner_first_style_2",
-            "label": "Upload a new image",
-            "info": "224px x 337px recommended"
-          },
-		  {
-			"type": "url",
-			"id": "link_banner_first_style_2",
-			"label": "Link image 3"
-		  }
-		]
-      },
-	  {
-	  	"type": "style_3",
-      	"name": "Style 3",
-      	"settings": [
-		  {
-            "type": "text",
-            "id": "title",
-            "label": "Menu - Style 3",
-            "default": "Menu - Style 3"
-          },
-		  {
-            "type": "text",
-            "id": "megamenu_items_3",
-            "label": "Mega Menu Items for Style 3",
-            "default": "Catalog"
-          },
-		  {
-            "type": "link_list",
-            "id": "main_linklist_3",
-            "label": "Collection"
-          },
-
-		  {
-            "type": "text",
-            "id": "title_featured_product_3",
-            "label": "Title Product"
-          },
-		  {
-            "type": "product",
-            "id": "featured_product_3",
-            "label": "Product"
-          },
-
-		  {
-            "type": "image_picker",
-            "id": "banner_first_style_3",
-            "label": "Upload a new image",
-            "info": "224px x 337px recommended"
-          },
-		  {
-			"type": "url",
-			"id": "link_banner_first_style_3",
-			"label": "Link image"
-		  }
-		]
-      },
-	  {
-	  	"type": "style_4",
-      	"name": "Style 4",
-      	"settings": [
-		  {
-            "type": "text",
-            "id": "title",
-            "label": "Menu - Style 4",
-            "default": "Menu - Style 4"
-          },
-		  {
-            "type": "text",
-            "id": "megamenu_items_4",
-            "label": "Mega Menu Items for Style 4",
-            "default": "Catalog"
-          },
-		  {
-            "type": "link_list",
-            "id": "main_linklist_4",
-            "label": "Collection"
-          }
-		]
-      },
-	{
-	  	"type": "style_5",
-      	"name": "Style 5",
-      	"settings": [
-		  {
-            "type": "text",
-            "id": "title",
-            "label": "Menu - Style 5",
-            "default": "Menu - Style 5"
-          },
-		  {
-            "type": "text",
-            "id": "megamenu_items_5",
-            "label": "Mega Menu Items for Style 5",
-            "default": "Catalog"
-          },
-		  {
-            "type": "link_list",
-            "id": "main_linklist_5",
-            "label": "Collection"
-          },
-		{
-            "type": "image_picker",
-            "id": "banner_first_style_5",
-            "label": "Upload a new image",
-            "info": "610px x 350px recommended"
-          },
-		  {
-			"type": "url",
-			"id": "link_banner_first_style_5",
-			"label": "Link image 1"
-		  },
-		 {
-            "type": "image_picker",
-            "id": "banner_second_style_5",
-            "label": "Upload a new image",
-            "info": "610px x 350px recommended"
-          },
-		  {
-			"type": "url",
-			"id": "link_banner_second_style_5",
-			"label": "Link image 2"
-		  }
-		]
-      }
-	]
-  }
+  ],
+  "blocks": [
+    {
+      "type": "style_1",
+      "name": "Basic Megamenu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Title",
+          "default": "Collection Menu",
+          "info": "This should match your main menu item name"
+        },
+        {
+          "type": "text",
+          "id": "megamenu_items_1",
+          "label": "Menu Handle",
+          "default": "main-menu",
+          "info": "The handle of the menu item this applies to"
+        },
+        {
+          "type": "link_list",
+          "id": "main_linklist_1",
+          "label": "Collections to Display",
+          "info": "Select the collections to show in this megamenu"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_first_style_1",
+          "label": "Featured Banner",
+          "info": "224px x 337px recommended"
+        },
+        {
+          "type": "url",
+          "id": "link_banner_first_style_1",
+          "label": "Banner Link"
+        }
+      ]
+    },
+    {
+      "type": "style_2",
+      "name": "Multi-Banner Megamenu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Title",
+          "default": "Products Menu"
+        },
+        {
+          "type": "text",
+          "id": "megamenu_items_2",
+          "label": "Menu Handle",
+          "default": "products"
+        },
+        {
+          "type": "link_list",
+          "id": "main_linklist_2",
+          "label": "Collections to Display"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_second_style_2",
+          "label": "Banner 1",
+          "info": "224px x 165px recommended"
+        },
+        {
+          "type": "url",
+          "id": "link_banner_second_style_2",
+          "label": "Banner 1 Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_third_style_2",
+          "label": "Banner 2",
+          "info": "224px x 165px recommended"
+        },
+        {
+          "type": "url",
+          "id": "link_banner_third_style_2",
+          "label": "Banner 2 Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_first_style_2",
+          "label": "Main Banner",
+          "info": "224px x 337px recommended"
+        },
+        {
+          "type": "url",
+          "id": "link_banner_first_style_2",
+          "label": "Main Banner Link"
+        }
+      ]
+    },
+    {
+      "type": "style_3",
+      "name": "Product Featured Megamenu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Title",
+          "default": "Featured Menu"
+        },
+        {
+          "type": "text",
+          "id": "megamenu_items_3",
+          "label": "Menu Handle",
+          "default": "featured"
+        },
+        {
+          "type": "link_list",
+          "id": "main_linklist_3",
+          "label": "Collections to Display"
+        },
+        {
+          "type": "text",
+          "id": "title_featured_product_3",
+          "label": "Featured Product Title",
+          "default": "Featured Product"
+        },
+        {
+          "type": "product",
+          "id": "featured_product_3",
+          "label": "Featured Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_first_style_3",
+          "label": "Banner Image",
+          "info": "224px x 337px recommended"
+        },
+        {
+          "type": "url",
+          "id": "link_banner_first_style_3",
+          "label": "Banner Link"
+        }
+      ]
+    },
+    {
+      "type": "style_4",
+      "name": "Simple Dropdown",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Title",
+          "default": "Simple Menu"
+        },
+        {
+          "type": "text",
+          "id": "megamenu_items_4",
+          "label": "Menu Handle",
+          "default": "simple"
+        },
+        {
+          "type": "link_list",
+          "id": "main_linklist_4",
+          "label": "Menu Links"
+        }
+      ]
+    },
+    {
+      "type": "style_5",
+      "name": "Dual Banner Megamenu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Title",
+          "default": "Promotional Menu"
+        },
+        {
+          "type": "text",
+          "id": "megamenu_items_5",
+          "label": "Menu Handle",
+          "default": "promo"
+        },
+        {
+          "type": "link_list",
+          "id": "main_linklist_5",
+          "label": "Collections to Display"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_first_style_5",
+          "label": "Banner 1",
+          "info": "610px x 350px recommended"
+        },
+        {
+          "type": "url",
+          "id": "link_banner_first_style_5",
+          "label": "Banner 1 Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_second_style_5",
+          "label": "Banner 2",
+          "info": "610px x 350px recommended"
+        },
+        {
+          "type": "url",
+          "id": "link_banner_second_style_5",
+          "label": "Banner 2 Link"
+        }
+      ]
+    }
+  ]
+}
 {% endschema %}

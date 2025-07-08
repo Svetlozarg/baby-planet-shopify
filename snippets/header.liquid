@@ -1,116 +1,390 @@
+{% comment %}
+  Modern Responsive Header for Baby Planet Shopify Theme
+  Features: Logo, Navigation, Search, User Account, Wishlist, Cart, Mobile Menu
+{% endcomment %}
+
 {% include 'search-bar' %}
-<div class="quick-view"></div>  
-<header class="site-header">
-  <div class="header-sticky">
-    <div id="header-landing" class="sticky-animate">
+<div class="quick-view"></div>
 
-      <div class="grid--full site-header__menubar"> 
-        <div class="header_top">
-          {% if template == 'index' %}
-          <h1 class="site-header__logo" itemscope itemtype="http://schema.org/Organization">
-            {% else %}
-            <div class="h1 site-header__logo" itemscope itemtype="http://schema.org/Organization">
-              {% endif %}
-              {% if settings.logo_use_image %}
-              <a href="/">
-                <img class="normal-logo" src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" itemprop="logo">
-                
-              </a>
-              {% else %}
-              <a href="/">{{ shop.name }}</a>
-              {% endif %}
-              {% if template == 'index' %}
-              </h1>
-            {% else %}
-            </div>
-          {% endif %}   
+<style>
+  /* Modern Header Styles */
+  .modern-header {
+    background: #fff;
+    border-bottom: 1px solid #f0e8f3;
+    position: relative;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
 
+  /* Top Bar */
+  .header-top-bar {
+    background: linear-gradient(135deg, #f8f4f9 0%, #fef9ff 100%);
+    border-bottom: 1px solid #f0e8f3;
+    padding: 8px 0;
+    font-size: 13px;
+    color: #7b6b8a;
+  }
 
-          <div class="header_custom">
-            {% if settings.display_header_notes %}
-            <div class="header_notes">
-              <p>{{ settings.header_notes }}</p>
-            </div>
-            {% endif %}
+  .header-top-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-          </div>
-          <div class="header_currency">
-            <ul class="tbl-list">
-              <li class="currency dropdown-parent uppercase currency-block">
-                {% if settings.display_currency %}    
-                {% include 'currencies-switcher' %}
-                {% endif %}
-              </li>
-            </ul>
-          </div>
+  .header-announcements {
+    flex: 1;
+    text-align: center;
+  }
 
+  .header-currency {
+    flex: 0 0 auto;
+  }
 
+  /* Main Header */
+  .header-main {
+    padding: 15px 0;
+  }
 
-          {% if settings.header_search_enable %}
-          <div class="header-search">
-            <div class="header_toggle"><span class="icon-magnifier"></span></div>
-            <div class="slidersearch header_slide_element">
-              <form action="/search" method="get" class="search-bar__table-cell search-bar__form" role="search">							
-                <input type="text" id="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" aria-label="{{ 'general.search.placeholder' | t }}" class="search-bar__input sb-search-input">
-                <button class="sb-search-submit" type="submit" value=""><i class="icon-magnifier"></i></button>
-              </form>
-            </div>
-          </div>
-          {% endif %} 
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+  }
 
-          <div class="customer_account header_user">  
-            <div class="header_toggle">
-              <span><i class="icon-user"></i></span>    
-            </div>
-            <div class="header_slide_element">
-              <ul>
-                {% if shop.customer_accounts_enabled %}
-                {% if customer %}
-                <li>
-                  <a href="/account"><i class="fa fa-user"></i>{{ 'layout.customer.account' | t }}</a>
-                </li>
-                <li class="logout-link">
-                  <i class="fa fa-user-times" aria-hidden="true"></i>{{ 'layout.customer.log_out' | t | customer_logout_link }}
-                </li>
-                {% else %}
-                <li>
-                  <a href="/account/login"><i class="fa fa-sign-in"></i>{{ 'layout.customer.log_in' | t }}</a>
-                </li>
-                <li>
-                  <a href="/account/register"><i class="icon-user"></i>{{ 'layout.customer.create_account' | t }}</a>
-                </li>          
-                {% endif %}  
-                {% endif %} 
-                {% if settings.header_wishlist_enable %}   
-                <li>
-                  {% include 'wish-list' %} 
-                </li>
-                {% endif %} 
-              </ul>
-            </div>
-          </div>
+  /* Logo Section */
+  .header-logo {
+    flex: 0 0 auto;
+    z-index: 2;
+  }
 
-          <div class="header-bar__module cart header_cart">
-            {% if settings.display_minicart %}
-            {% include 'mini-cart' %} 
-            {% endif %} 
-          </div> 
-        </div>
+  .header-logo a {
+    display: block;
+    text-decoration: none;
+  }
+
+  .header-logo img {
+    height: auto;
+    max-height: 50px;
+    width: auto;
+    transition: all 0.3s ease;
+  }
+
+  .header-logo h1,
+  .header-logo .h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #7b6b8a;
+    text-decoration: none;
+  }
+
+  /* Navigation Section */
+  .header-navigation {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Right Section */
+  .header-actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  /* Mobile Menu Button */
+  .mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 20px;
+    color: #7b6b8a;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1001;
+  }
+
+  .mobile-menu-btn:hover {
+    color: #ff6b9d;
+    background: rgba(255, 107, 157, 0.1);
+  }
+
+  .mobile-menu-btn.active {
+    color: #ff6b9d;
+  }
+
+  /* Search Integration */
+  .header-search-wrapper {
+    display: none; /* Hidden by default, shown in header-model-2 */
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1199px) {
+    .header-container {
+      gap: 20px;
+      padding: 0 15px;
+    }
+  }
+
+  @media (max-width: 967px) {
+    .header-navigation {
+      display: none !important;
+    }
+
+    .mobile-menu-btn {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header-container {
+      gap: 15px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .header-top-bar {
+      padding: 6px 0;
+      font-size: 12px;
+    }
+
+    .header-top-content {
+      padding: 0 15px;
+    }
+
+    .header-main {
+      padding: 12px 0;
+    }
+
+    .header-container {
+      padding: 0 15px;
+      gap: 12px;
+    }
+
+    .header-logo img {
+      max-height: 40px;
+    }
+
+    .header-logo h1,
+    .header-logo .h1 {
+      font-size: 22px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header-top-bar {
+      display: none; /* Hide top bar on very small screens */
+    }
+
+    .header-main {
+      padding: 10px 0;
+    }
+
+    .header-logo img {
+      max-height: 35px;
+    }
+
+    .header-logo h1,
+    .header-logo .h1 {
+      font-size: 18px;
+    }
+
+    .header-container {
+      gap: 10px;
+    }
+  }
+
+  /* Accessibility */
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  /* Focus States */
+  .mobile-menu-btn:focus {
+    outline: 2px solid #ff6b9d;
+    outline-offset: 2px;
+  }
+
+  .header-logo a:focus {
+    outline: 2px solid #ff6b9d;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+</style>
+
+<header class="modern-header site-header" role="banner">
+
+  <!-- Top Bar -->
+  {% if settings.display_header_notes or settings.display_currency %}
+  <div class="header-top-bar">
+    <div class="header-top-content">
+
+      <!-- Announcements -->
+      <div class="header-announcements">
+        {% if settings.display_header_notes and settings.header_notes != blank %}
+          <p>{{ settings.header_notes }}</p>
+        {% endif %}
       </div>
 
-      <div class="grid__item menubar-section medium-down--hide">
-        <div class="menu-tool">
-          {% include 'site-nav' %}
-        </div>
-      </div>          
+      <!-- Currency Selector -->
+      <div class="header-currency">
+        {% if settings.display_currency %}
+          {% include 'currencies-switcher' %}
+        {% endif %}
+      </div>
+
     </div>
   </div>
+  {% endif %}
+
+  <!-- Main Header -->
+  <div class="header-main">
+    <div class="header-container">
+
+      <!-- Logo -->
+      <div class="header-logo">
+        {% if template == 'index' %}
+          <h1 class="site-header__logo" itemscope itemtype="http://schema.org/Organization">
+        {% else %}
+          <div class="h1 site-header__logo" itemscope itemtype="http://schema.org/Organization">
+        {% endif %}
+
+        {% if settings.logo_use_image %}
+          <a href="/" aria-label="{{ shop.name }} - {{ 'general.accessibility.home' | t | default: 'Home' }}">
+            <img src="{{ 'logo.png' | asset_url }}"
+                 alt="{{ shop.name }}"
+                 itemprop="logo"
+                 loading="eager">
+          </a>
+        {% else %}
+          <a href="/" aria-label="{{ shop.name }} - {{ 'general.accessibility.home' | t | default: 'Home' }}">
+            {{ shop.name }}
+          </a>
+        {% endif %}
+
+        {% if template == 'index' %}
+          </h1>
+        {% else %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Desktop Navigation -->
+      <nav class="header-navigation" role="navigation" aria-label="{{ 'general.accessibility.nav_main' | t | default: 'Main navigation' }}">
+        {% section 'navigation' %}
+      </nav>
+
+      <!-- Header Actions (Search, User, Cart) -->
+      <div class="header-actions">
+        {% section 'header-model-2' %}
+
+        <!-- Mobile Menu Button -->
+        <button type="button"
+                class="mobile-menu-btn"
+                id="showRightPush"
+                aria-label="{{ 'general.accessibility.menu' | t | default: 'Menu' }}"
+                aria-expanded="false"
+                aria-controls="mobile-menu">
+          <i class="fa fa-bars" aria-hidden="true"></i>
+          <span class="sr-only">{{ 'general.accessibility.menu' | t | default: 'Menu' }}</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 </header>
-<div class="wrapper mobile-nav-section wide--hide post-large--hide large--hide">
-  <button type="button" class="mobile-nav-trigger" id="MobileNavTrigger">
-    <span class="icon-menu" aria-hidden="true"></span>
-    
-  </button>
-  
-</div>
-{% include 'mobile-nav' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Mobile menu functionality
+  const mobileMenuBtn = document.getElementById('showRightPush');
+  const body = document.body;
+
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const isOpen = body.classList.contains('cbp-spmenu-push-toleft');
+
+      // Toggle menu state
+      body.classList.toggle('cbp-spmenu-push-toleft');
+      body.classList.toggle('menu-open');
+
+      const menu = document.getElementById('cbp-spmenu-s1');
+      if (menu) {
+        menu.classList.toggle('cbp-spmenu-open');
+      }
+
+      mobileMenuBtn.classList.toggle('active');
+
+      // Update aria-expanded
+      mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
+
+      // Prevent body scroll when menu is open
+      if (!isOpen) {
+        body.style.overflow = 'hidden';
+        // Change icon to close
+        const icon = mobileMenuBtn.querySelector('i');
+        if (icon) {
+          icon.classList.remove('fa-bars');
+          icon.classList.add('fa-times');
+        }
+      } else {
+        body.style.overflow = '';
+        // Change icon back to hamburger
+        const icon = mobileMenuBtn.querySelector('i');
+        if (icon) {
+          icon.classList.remove('fa-times');
+          icon.classList.add('fa-bars');
+        }
+      }
+    });
+  }
+
+  // Close menu when clicking outside
+  document.addEventListener('click', function(e) {
+    if (mobileMenuBtn &&
+        !e.target.closest('#cbp-spmenu-s1') &&
+        !e.target.closest('#showRightPush') &&
+        mobileMenuBtn.classList.contains('active')) {
+      mobileMenuBtn.click();
+    }
+  });
+
+  // Close menu on window resize if desktop
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 967 && mobileMenuBtn && mobileMenuBtn.classList.contains('active')) {
+      mobileMenuBtn.click();
+    }
+  });
+
+  // Keyboard accessibility
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && mobileMenuBtn && mobileMenuBtn.classList.contains('active')) {
+      mobileMenuBtn.click();
+      mobileMenuBtn.focus();
+    }
+  });
+});
+</script>
