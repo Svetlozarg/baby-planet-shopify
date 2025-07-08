@@ -83,58 +83,116 @@ b){this.getPanes().slideUp(200);this.getPanes().eq(d).slideDown(400,b)},ajax:fun
    var body = $('body');
     var doc = $(document);
 
-    var showLeftPush = $('#showLeftPush');
+    var showRightPush = $('#showRightPush');
     var nav = $('#cbp-spmenu-s1');
 
-        showLeftPush.on('click', function(e) {
+        showRightPush.on('click', function(e) {
       e.stopPropagation();
 
-      body.toggleClass('cbp-spmenu-push-toright');
+      body.toggleClass('cbp-spmenu-push-toleft');
       body.toggleClass('menu-open'); // Add this for backdrop
       nav.toggleClass('cbp-spmenu-open');
-      showLeftPush.toggleClass('active');
+      showRightPush.toggleClass('active');
 
       // Prevent body scroll when menu is open
-      if (body.hasClass('cbp-spmenu-push-toright')) {
+      if (body.hasClass('cbp-spmenu-push-toleft')) {
         body.css('overflow', 'hidden');
         // Update hamburger icon
-        showLeftPush.find('i').removeClass('fa-bars').addClass('fa-times');
+        showRightPush.find('i').removeClass('fa-bars').addClass('fa-times');
       } else {
         body.css('overflow', '');
         // Restore hamburger icon
-        showLeftPush.find('i').removeClass('fa-times').addClass('fa-bars');
+        showRightPush.find('i').removeClass('fa-times').addClass('fa-bars');
       }
     });
 
     $('.gf-menu-device-wrapper .close-menu').on('click', function() {
-    	showLeftPush.trigger('click');
+    	showRightPush.trigger('click');
     });
 
     // Close menu when clicking backdrop
     doc.on('click', function(e) {
       if (!$(e.target).closest('#cbp-spmenu-s1').length &&
-          !$(e.target).closest('#showLeftPush').length &&
-          showLeftPush.hasClass('active')) {
-        showLeftPush.trigger('click');
+          !$(e.target).closest('#showRightPush').length &&
+          showRightPush.hasClass('active')) {
+        showRightPush.trigger('click');
       }
     });
 
     // Handle window resize
     $(window).on('resize', function() {
-      if ($(window).width() > 967 && body.hasClass('cbp-spmenu-push-toright')) {
-        showLeftPush.trigger('click');
+      if ($(window).width() > 967 && body.hasClass('cbp-spmenu-push-toleft')) {
+        showRightPush.trigger('click');
       }
     });
 
-    // Ensure mobile menu content is populated on page load
-    if ($(window).width() <= 967) {
-      // Force initialization of mobile menu
-      setTimeout(function() {
-        if (typeof t !== 'undefined' && t.initMobileMenu) {
-          t.initMobileMenu();
-        }
-      }, 100);
-    }
+    // Mobile search toggle functionality
+    $('.mobile-search-toggle').on('click', function() {
+      var $searchForm = $(this).next('.mobile-search-form');
+      $searchForm.slideToggle(300);
+      $(this).toggleClass('active');
+    });
+
+              // Populate mobile menu content
+     function populateMobileMenu() {
+       var $menuContainer = $('.gf-menu-device-container');
+
+       if ($menuContainer.length === 0) {
+         console.log('Mobile menu container not found');
+         return;
+       }
+
+       if ($menuContainer.find('.site-nav').length === 0) {
+         console.log('Populating mobile menu...');
+
+         // Try to find navigation content from different sources
+         var $sourceNav = $('.desktop-megamenu .site-nav').first();
+
+         if ($sourceNav.length === 0) {
+           $sourceNav = $('.nav-bar .site-nav').first();
+         }
+
+         if ($sourceNav.length === 0) {
+           $sourceNav = $('.site-nav').first();
+         }
+
+         if ($sourceNav.length > 0) {
+           console.log('Found source navigation, cloning...');
+           // Clone the navigation structure
+           var $clonedNav = $sourceNav.clone();
+           $clonedNav.find('.site-nav-dropdown').remove(); // Remove dropdown menus for mobile
+           $menuContainer.html($clonedNav);
+           console.log('Mobile menu populated with', $clonedNav.find('li').length, 'items');
+         } else {
+           // Last resort: create simple navigation
+           console.log('Creating fallback navigation for mobile menu');
+           var $fallbackNav = $('<ul class="site-nav"><li><a href="/">Home</a></li><li><a href="/collections/all">Shop</a></li><li><a href="/pages/about">About</a></li><li><a href="/pages/contact">Contact</a></li></ul>');
+           $menuContainer.html($fallbackNav);
+         }
+       } else {
+         console.log('Mobile menu already has content');
+       }
+     }
+
+        // Initialize mobile menu content
+    populateMobileMenu();
+
+    // Handle window resize to repopulate menu if needed
+    $(window).on('resize', function() {
+      if ($(window).width() <= 967) {
+        setTimeout(function() {
+          populateMobileMenu();
+        }, 100);
+      }
+    });
+
+    // Force initialization after DOM is fully loaded
+    setTimeout(function() {
+      populateMobileMenu();
+      if (typeof window.theme !== 'undefined' && window.theme.initMobileMenu) {
+        window.theme.initMobileMenu();
+      }
+    }, 500);
   });
 
 

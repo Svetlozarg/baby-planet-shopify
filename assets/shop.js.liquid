@@ -173,7 +173,8 @@
             this.initelevateZoom();
             this.initShortcode();
             this.initScrollTop();
-            {% if settings.use_sticky_header %}
+            {% comment %} Sticky header disabled {% endcomment %}
+            {% if false %}
             this.initHeaderSticky();
             {% endif %}
             this.initSidebar();
