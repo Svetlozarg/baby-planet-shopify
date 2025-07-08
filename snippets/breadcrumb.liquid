@@ -1,4 +1,4 @@
-{% if settings.use_breadcrumb %}
+{% comment %} {% if settings.use_breadcrumb %}
 {% unless template == 'index'%}
 <nav class="breadcrumb" aria-label="breadcrumbs">
 
@@ -6,11 +6,11 @@
   {% if template contains 'product' %}
   <h1>{{ product.title }}</h1>
   {% if collection %}
-  <a href="/" title="{{ 'general.breadcrumbs.home_link_title' | t }}">{{ 'general.breadcrumbs.home' | t }}</a> 
+  <a href="/" title="{{ 'general.breadcrumbs.home_link_title' | t }}">{{ 'general.breadcrumbs.home' | t }}</a>
   <span aria-hidden="true" class="breadcrumb__sep">&#47;</span>
   {% if collection.handle %}
   {% capture url %}/collections/{{ collection.handle }}{% endcapture %}
-  {{ collection.title | link_to: url }}  
+  {{ collection.title | link_to: url }}
   {% endif %}
    {% else %}
   {% capture url %}/collections/all{% endcapture %}
@@ -37,7 +37,7 @@
   {% else %}
   <span>{{ collection.title }}</span>
 
-  {% endif %}  
+  {% endif %}
   {% endif %}
   {% elsif template == 'blog' %}
   <h1>{{ blog.title }}</h1>
@@ -115,4 +115,4 @@
 </nav>
 
 
-{% endif %}
+{% endif %} {% endcomment %}
