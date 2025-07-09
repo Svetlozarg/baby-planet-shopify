@@ -2165,7 +2165,8 @@
           "style_3_jLxKF6"
         ],
         "settings": {
-          "display_megamenu": false
+          "display_megamenu": false,
+          "dropdown_delay": 100
         }
       },
       "password-header": {
@@ -2255,7 +2256,7 @@
           "image_TBYcjh": {
             "type": "image",
             "settings": {
-              "image": "shopify://shop_images/img-8_250x_2713f439-e08b-412e-ac64-32f5615f8b70.avif",
+              "image": "shopify://shop_images/2.webp",
               "bg_bolor": "#daf5f3",
               "title": "Момчета",
               "description": "",
@@ -2267,7 +2268,7 @@
           "image_F9EGMr": {
             "type": "image",
             "settings": {
-              "image": "shopify://shop_images/img-5_250x_e91ab109-d565-4565-b7e0-1deef32109d3.avif",
+              "image": "shopify://shop_images/girl.webp",
               "bg_bolor": "#f7dfda",
               "title": "Момичета",
               "description": "",
