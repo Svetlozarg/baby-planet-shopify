@@ -1637,7 +1637,7 @@
       "sidebar-category": {
         "type": "sidebar-category",
         "settings": {
-          "enable_sidecategory": true,
+          "enable_sidecategory": false,
           "linkedlist": "",
           "linkedlist_title": "Category"
         }
@@ -2084,59 +2084,16 @@
       },
       "custom-text-type-1": {
         "type": "custom-text-type-1",
-        "blocks": {
-          "1498738614521": {
-            "type": "text",
-            "settings": {
-              "class": "fa fa-truck",
-              "class_color": "#000",
-              "title": "Free Shipping",
-              "title_color": "#000",
-              "desc": "Free On All Products",
-              "desc_color": "#000",
-              "link": "#"
-            }
-          },
-          "1498738616769": {
-            "type": "text",
-            "settings": {
-              "class": "fa fa-gift",
-              "class_color": "#000",
-              "title": "Special Gift Cards",
-              "title_color": "#000",
-              "desc": "Special Gift Cards",
-              "desc_color": "#000",
-              "link": "#"
-            }
-          },
-          "1498738618012": {
-            "type": "text",
-            "settings": {
-              "class": "fa fa-reply",
-              "class_color": "#000",
-              "title": "Free Return",
-              "title_color": "#000",
-              "desc": "Within 7 Days",
-              "desc_color": "#000",
-              "link": "#"
-            }
-          }
-        },
-        "block_order": [
-          "1498738614521",
-          "1498738616769",
-          "1498738618012"
-        ],
         "settings": {}
       },
       "product-sidebar-deals": {
         "type": "product-sidebar-deals",
         "settings": {
-          "show_best_products": true,
+          "show_best_products": false,
           "title": "Weekly featured",
           "dealitems": "frontpage",
-          "dealbtn_border": "#000",
-          "dealbtn": "#000",
+          "dealbtn_border": "#000000",
+          "dealbtn": "#000000",
           "dealbtn_text": "#ffffff",
           "limit": "4"
         }
@@ -2208,7 +2165,8 @@
           "style_3_jLxKF6"
         ],
         "settings": {
-          "display_megamenu": false
+          "display_megamenu": false,
+          "dropdown_delay": 100
         }
       },
       "password-header": {
@@ -2298,7 +2256,7 @@
           "image_TBYcjh": {
             "type": "image",
             "settings": {
-              "image": "shopify://shop_images/img-8_250x_2713f439-e08b-412e-ac64-32f5615f8b70.avif",
+              "image": "shopify://shop_images/2.webp",
               "bg_bolor": "#daf5f3",
               "title": "Момчета",
               "description": "",
@@ -2310,7 +2268,7 @@
           "image_F9EGMr": {
             "type": "image",
             "settings": {
-              "image": "shopify://shop_images/img-5_250x_e91ab109-d565-4565-b7e0-1deef32109d3.avif",
+              "image": "shopify://shop_images/girl.webp",
               "bg_bolor": "#f7dfda",
               "title": "Момичета",
               "description": "",
@@ -2504,11 +2462,11 @@
         "type": "home-product-grid-type-14",
         "name": "Vertical Product Grid",
         "settings": {
-          "bg_color": "#fff",
+          "bg_color": "#ffffff",
           "main_title": "За Момичета",
-          "main_title_clr": "#000",
+          "main_title_clr": "#000000",
           "description_1": "",
-          "desc_color": "#000",
+          "desc_color": "#000000",
           "heading_image_need": true,
           "heading_image": "shopify://shop_images/icon-image.webp",
           "collection": "момичета",
@@ -2521,11 +2479,11 @@
         "type": "home-product-grid-type-14",
         "name": "Vertical Product Grid",
         "settings": {
-          "bg_color": "#fff",
+          "bg_color": "#ffffff",
           "main_title": "За Момчета",
-          "main_title_clr": "#000",
+          "main_title_clr": "#000000",
           "description_1": "",
-          "desc_color": "#000",
+          "desc_color": "#000000",
           "heading_image_need": true,
           "heading_image": "shopify://shop_images/icon-image.webp",
           "collection": "момичета",
