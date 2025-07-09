@@ -1,91 +1,1086 @@
-</div>
-</div>
+{% comment %}
+  Enhanced Baby Planet Collection Template
+  Features: Modern responsive design, sidebar filters, infinite scroll, proper pagination
+{% endcomment %}
 
-{% if settings.collection_sidebar_use == "left_sidebar" or  settings.collection_sidebar_use == "right_sidebar" %}
-{% assign mid_width = "grid__item wide--three-quarters post-large--three-quarters large--three-quarters" %}
-{% else %}
-{% assign mid_width = "grid__item" %}
-{% endif %}
+{% comment %} Grid configuration {% endcomment %}
+{% liquid
+  case settings.collection_grid
+    when '2'
+      assign grid_item_width = 'wide--one-half large--one-half medium--one-half small--one-whole'
+      assign products_per_row = 2
+    when '3'
+      assign grid_item_width = 'wide--one-third large--one-third medium--one-half small--one-whole'
+      assign products_per_row = 3
+    when '4'
+      assign grid_item_width = 'wide--one-quarter large--one-third medium--one-half small--one-whole'
+      assign products_per_row = 4
+    when '5'
+      assign grid_item_width = 'wide--one-fifth large--one-quarter medium--one-half small--one-whole'
+      assign products_per_row = 5
+    else
+      assign grid_item_width = 'wide--one-quarter large--one-third medium--one-half small--one-whole'
+      assign products_per_row = 4
+  endcase
+%}
 
+<div class="collection-page">
+  {% comment %} Collection Header {% endcomment %}
+  <section class="collection-header">
+    <div class="container">
+      {% comment %} Breadcrumb {% endcomment %}
+      <nav class="breadcrumb" role="navigation" aria-label="Breadcrumb">
+        <ol class="breadcrumb__list">
+          <li class="breadcrumb__item">
+            <a href="/" class="breadcrumb__link">{{ 'general.breadcrumbs.home' | t }}</a>
+          </li>
+          <li class="breadcrumb__item">
+            <a href="/collections" class="breadcrumb__link">Колекции</a>
+          </li>
+          <li class="breadcrumb__item breadcrumb__item--current" aria-current="page">
+            <span class="breadcrumb__text">{{ collection.title }}</span>
+          </li>
+        </ol>
+      </nav>
 
-<div class="grid__item">
-  <div class="collection-products position-change">
-	{% if settings.collection_sidebar_use == "left_sidebar" %}    
-    <div class="grid__item wide--one-quarter post-large--one-quarter large--one-quarter left-sidebar">
-      {% include 'collection-sidebar' %}
+      {% comment %} Collection Info {% endcomment %}
+      <div class="collection-info">
+        <h1 class="collection-title">{{ collection.title }}</h1>
+        {% if collection.description != blank %}
+          <div class="collection-description">
+            {{ collection.description }}
+          </div>
+        {% endif %}
+      </div>
     </div>
-    {% endif %}
-    <div class="{{ mid_width }} sidebar-hidden second"> 
-      {% if settings.collection_sidebar_use == "full_width" %}
-      {% include 'collection-sidebar' %}
-      {% endif %}
-      <div class="collection-list">
-        <div class="grid-uniform grid-link__container col-main">            
-          {% paginate collection.products by settings.collection_results_per_page %}   
-          {% include 'tool-grid' %}          
-          <div class="products-grid-view">
-          {% if collection.products.size > 0 %}      
-          <ul>
-            {% case settings.collection_grid %}
-            {% when '2' %}
-            {%- assign grid_item_width = 'wide--one-half post-large--one-half large--one-half medium--one-half small-grid__item' -%}
-            {%- assign image_size = '540x600' -%}
-            {% when '3' %}
-            {%- assign grid_item_width = 'wide--one-third post-large--one-third large--one-third medium--one-half small-grid__item' -%}
-            {%- assign image_size = '345x550' -%}
-            {% when '4' %}
-            {%- assign grid_item_width = 'wide--one-quarter post-large--one-third large--one-third medium--one-half small-grid__item' -%}
-            {%- assign image_size = '250x' -%}
-            {% when '5' %}
-            {%- assign grid_item_width = 'wide--one-fifth post-large--one-quarter large--one-third medium--one-half small-grid__item' -%}
-            {%- assign image_size = '195x' -%}
-            {% endcase %}
-            {% for product in collection.products %}
-            {% include 'product-grid-item' %}
-            {% else %}
-            {% if shop.products_count == 0 %}
-            {% unless emptyState %}
-            {{ 'theme-onboarding.css' | global_asset_url | stylesheet_tag }}
-            {% assign emptyState = true %}
-            {% endunless %}
+  </section>
 
-            <div class="grid__item">
-              <div class="helper-section">
-                <div class="helper-note">
-                  <span class="helper-icon"></span>
-                  <h3>{{ 'home_page.onboarding.modal_title' | t }}</h3>
-                  <p>{{ 'home_page.onboarding.no_products_collection' | t }}</p>
-                  <p><a class="admin-btn-primary" href="/admin/products/new">{{ 'home_page.onboarding.add_product' | t }}</a></p>
+  {% comment %} Main Content {% endcomment %}
+  <main class="collection-main">
+    <div class="container-full">
+      <div class="collection-layout">
+
+        {% comment %} Sidebar Filters {% endcomment %}
+        <aside class="collection-sidebar" role="complementary">
+          <div class="sidebar-header">
+            <h3 class="sidebar-title">Филтри</h3>
+            <button class="clear-filters" id="clear-all-filters" style="display: none;">
+              Изчисти всички
+            </button>
+          </div>
+
+          <div class="sidebar-content">
+            {% comment %} Category Filter {% endcomment %}
+            {% if collections.size > 1 %}
+              <div class="filter-group">
+                <h4 class="filter-title">Категория</h4>
+                <div class="filter-options">
+                  {% for category in collections %}
+                    {% if category.products_count > 0 %}
+                      <label class="filter-option">
+                        <input type="checkbox" name="category" value="{{ category.handle }}"
+                               {% if collection.handle == category.handle %}checked{% endif %}>
+                        <span class="filter-label">{{ category.title }} ({{ category.products_count }})</span>
+                      </label>
+                    {% endif %}
+                  {% endfor %}
                 </div>
               </div>
-            </div>
-            {% else %}
-            <div class="grid__item">
-              <p><em>{{ 'collections.general.no_matches' | t }}</em></p>
-            </div>
             {% endif %}
 
-            {% endfor %}
-          </ul>
-          {% else %}
-          <div class="grid__item">
-            <p><em>{{ 'home_page.onboarding.no_products_html' | t }}</em></p>
+            {% comment %} Price Filter {% endcomment %}
+                         <div class="filter-group">
+               <h4 class="filter-title">Цена</h4>
+               <div class="price-range">
+                 <div class="price-inputs">
+                   <input type="number" id="price-min" placeholder="От" min="0">
+                   <span class="price-separator">-</span>
+                   <input type="number" id="price-max" placeholder="До" min="0">
+                 </div>
+                 <button class="apply-price-filter">Приложи</button>
+               </div>
+             </div>
+
+            {% comment %} Tag Filters (Size, Color, etc.) {% endcomment %}
+            {% assign available_tags = collection.all_tags %}
+            {% if available_tags.size > 0 %}
+              {% assign size_tags = '' %}
+              {% assign color_tags = '' %}
+              {% assign other_tags = '' %}
+
+              {% for tag in available_tags %}
+                {% assign tag_lower = tag | downcase %}
+                {% if tag_lower contains 'size' or tag_lower contains 'cm' or tag_lower contains 'months' or tag_lower contains 'years' %}
+                  {% assign size_tags = size_tags | append: tag | append: ',' %}
+                {% elsif tag_lower contains 'color' or tag_lower contains 'colour' or tag == 'Red' or tag == 'Blue' or tag == 'Pink' or tag == 'White' or tag == 'Black' or tag == 'Green' or tag == 'Yellow' %}
+                  {% assign color_tags = color_tags | append: tag | append: ',' %}
+                {% else %}
+                  {% assign other_tags = other_tags | append: tag | append: ',' %}
+                {% endif %}
+              {% endfor %}
+
+              {% comment %} Size Filter {% endcomment %}
+              {% assign size_array = size_tags | split: ',' %}
+              {% if size_array.size > 1 %}
+                                 <div class="filter-group">
+                   <h4 class="filter-title">Размер</h4>
+                  <div class="filter-options">
+                    {% for size_tag in size_array %}
+                      {% unless size_tag == blank %}
+                        <label class="filter-option">
+                          <input type="checkbox" name="size" value="{{ size_tag | handle }}"
+                                 {% if current_tags contains size_tag %}checked{% endif %}>
+                          <span class="filter-label">{{ size_tag }}</span>
+                        </label>
+                      {% endunless %}
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endif %}
+
+              {% comment %} Color Filter {% endcomment %}
+              {% assign color_array = color_tags | split: ',' %}
+              {% if color_array.size > 1 %}
+                                 <div class="filter-group">
+                   <h4 class="filter-title">Цвят</h4>
+                  <div class="filter-options filter-options--colors">
+                    {% for color_tag in color_array %}
+                      {% unless color_tag == blank %}
+                        <label class="filter-option filter-option--color">
+                          <input type="checkbox" name="color" value="{{ color_tag | handle }}"
+                                 {% if current_tags contains color_tag %}checked{% endif %}>
+                          <span class="color-swatch" style="background-color: {{ color_tag | downcase }};"></span>
+                          <span class="filter-label">{{ color_tag }}</span>
+                        </label>
+                      {% endunless %}
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endif %}
+
+              {% comment %} Other Tags {% endcomment %}
+              {% assign other_array = other_tags | split: ',' %}
+              {% if other_array.size > 1 %}
+                                 <div class="filter-group">
+                   <h4 class="filter-title">Характеристики</h4>
+                  <div class="filter-options">
+                    {% for other_tag in other_array %}
+                      {% unless other_tag == blank %}
+                        <label class="filter-option">
+                          <input type="checkbox" name="features" value="{{ other_tag | handle }}"
+                                 {% if current_tags contains other_tag %}checked{% endif %}>
+                          <span class="filter-label">{{ other_tag }}</span>
+                        </label>
+                      {% endunless %}
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endif %}
+            {% endif %}
           </div>
-          {% endif %}
+        </aside>
+
+        {% comment %} Main Content Area {% endcomment %}
+        <div class="collection-content">
+
+          {% comment %} Top Toolbar {% endcomment %}
+          <div class="collection-toolbar">
+            <div class="toolbar-left">
+                             <div class="results-count">
+                 <span class="count-text">
+                   Показани
+                   <span id="current-count">{{ collection.products.size | at_most: settings.collection_results_per_page }}</span>
+                   от
+                   <span id="total-count">{{ collection.products_count }}</span>
+                   продукта
+                 </span>
+               </div>
+
+                             <button class="mobile-filter-toggle" id="mobile-filter-toggle">
+                 <svg class="icon" viewBox="0 0 24 24">
+                   <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h8v-2h-8V9h8V7h-8V5h8V3h-8v2H3v2h10v2H3v2h10v2H3v2h10v4h-2v2h2v2H3v2h10z"/>
+                 </svg>
+                 Филтри
+               </button>
+            </div>
+
+            <div class="toolbar-right">
+              {% comment %} Sort Dropdown {% endcomment %}
+                             <div class="sort-dropdown">
+                 <label for="sort-by" class="sort-label">Сортиране по:</label>
+                 <select id="sort-by" class="sort-select">
+                   <option value="manual" {% if collection.sort_by == blank %}selected{% endif %}>
+                     Препоръчани
+                   </option>
+                   <option value="best-selling" {% if collection.sort_by == 'best-selling' %}selected{% endif %}>
+                     Най-продавани
+                   </option>
+                   <option value="title-ascending" {% if collection.sort_by == 'title-ascending' %}selected{% endif %}>
+                     А-Я
+                   </option>
+                   <option value="title-descending" {% if collection.sort_by == 'title-descending' %}selected{% endif %}>
+                     Я-А
+                   </option>
+                   <option value="price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>
+                     Цена: Ниска към Висока
+                   </option>
+                   <option value="price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>
+                     Цена: Висока към Ниска
+                   </option>
+                   <option value="created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>
+                     Най-нови
+                   </option>
+                   <option value="created-ascending" {% if collection.sort_by == 'created-ascending' %}selected{% endif %}>
+                     Най-стари
+                   </option>
+                 </select>
+               </div>
+            </div>
           </div>
-          {% if paginate.pages > 1 %}
-          <div class="text-center padding">
-            {% include 'pagination-custom' %}
+
+          {% comment %} Products Grid {% endcomment %}
+          <div class="products-section">
+            {% paginate collection.products by settings.collection_results_per_page %}
+
+              {% if collection.products.size > 0 %}
+                <div class="products-container">
+                  <ul class="products-grid"
+                      id="products-grid"
+                      data-collection-handle="{{ collection.handle }}"
+                      data-current-page="{{ paginate.current_page }}"
+                      data-total-pages="{{ paginate.pages }}"
+                      data-total-products="{{ collection.products_count }}">
+
+                    {% for product in collection.products %}
+                      {% include 'vertical-grid-item-style-2', grid_item_width: grid_item_width %}
+                    {% endfor %}
+                  </ul>
+
+                  {% comment %} Loading indicator {% endcomment %}
+                                     <div class="loading-indicator" id="loading-indicator" style="display: none;">
+                     <div class="spinner"></div>
+                     <span>Зареждане на още продукти...</span>
+                   </div>
+
+                  {% comment %} Load more trigger {% endcomment %}
+                  {% if paginate.pages > 1 %}
+                    <div class="load-more-trigger" id="load-more-trigger">
+                                             {% if paginate.next %}
+                         <a href="{{ paginate.next.url }}" class="load-more-link" id="load-more-link">
+                           Зареди още продукти
+                         </a>
+                       {% endif %}
+                    </div>
+                  {% endif %}
+                </div>
+
+              {% else %}
+                {% comment %} Empty State {% endcomment %}
+                <div class="collection-empty">
+                  <div class="empty-content">
+                    <div class="empty-icon">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                      </svg>
+                    </div>
+                                         <h3 class="empty-title">Няма намерени продукти</h3>
+                     <p class="empty-text">Опитайте да промените филтрите или търсачката</p>
+                     <button class="btn btn--secondary" onclick="clearAllFilters()">
+                       Изчисти всички филтри
+                     </button>
+                  </div>
+                </div>
+              {% endif %}
+
+            {% endpaginate %}
           </div>
-          {% endif %}
-          {% endpaginate %}  
         </div>
       </div>
     </div>
-    {% if settings.collection_sidebar_use == "right_sidebar" %}    
-    <div class="grid__item wide--one-quarter post-large--one-quarter large--one-quarter left-sidebar">
-      {% include 'collection-sidebar' %}
-    </div>
-    {% endif %}
-   
-   
+  </main>
+</div>
+
+<style>
+/* Enhanced Collection Page Styles */
+.collection-page {
+  background: linear-gradient(180deg, #fef9f7 0%, #ffffff 40%);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.container-full {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header */
+.collection-header {
+  padding: 1.5rem 0;
+  background: #ffffff;
+}
+
+.breadcrumb__list {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0 0 1.5rem 0;
+  padding: 0;
+  font-size: 0.875rem;
+  color: #7f8c8d;
+}
+
+.breadcrumb__item:not(:last-child)::after {
+  content: '/';
+  margin: 0 0.75rem;
+  color: #bdc3c7;
+}
+
+.breadcrumb__link {
+  color: #7f8c8d;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb__link:hover {
+  color: #ff6b9d;
+}
+
+.collection-info {
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.collection-title {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.3;
+}
+
+.collection-description {
+  font-size: 1rem;
+  color: #5d6d7e;
+  line-height: 1.6;
+  max-width: 800px;
+}
+
+/* Main Layout */
+.collection-main {
+  padding: 0 0 4rem;
+}
+
+.collection-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Sidebar */
+.collection-sidebar {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 2rem;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.sidebar-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.clear-filters {
+  background: none;
+  border: none;
+  color: #ff6b9d;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.clear-filters:hover {
+  background: rgba(255, 107, 157, 0.1);
+}
+
+.filter-group {
+  margin-bottom: 2rem;
+}
+
+.filter-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+}
+
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.filter-option:hover {
+  background: rgba(255, 107, 157, 0.05);
+}
+
+.filter-option input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  margin: 0;
+}
+
+.filter-option input[type="checkbox"]:checked {
+  background: #ff6b9d;
+  border-color: #ff6b9d;
+}
+
+.filter-label {
+  font-size: 0.875rem;
+  color: #2c3e50;
+  flex: 1;
+}
+
+/* Color Filter */
+.filter-options--colors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.filter-option--color {
+  flex-direction: column;
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+}
+
+.color-swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  margin-bottom: 0.5rem;
+}
+
+/* Price Filter */
+.price-range {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.price-inputs input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.price-separator {
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.apply-price-filter {
+  background: #ff6b9d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.apply-price-filter:hover {
+  background: #e55b8a;
+}
+
+/* Toolbar */
+.collection-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.results-count {
+  font-size: 0.875rem;
+  color: #5d6d7e;
+}
+
+.mobile-filter-toggle {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ff6b9d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.mobile-filter-toggle .icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sort-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-label {
+  font-size: 0.875rem;
+  color: #5d6d7e;
+  font-weight: 500;
+}
+
+.sort-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: white;
+  min-width: 160px;
+}
+
+/* Products Grid */
+.products-container {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 107, 157, 0.05);
+}
+
+.products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0 -15px;
+  padding: 0;
+}
+
+.products-grid .baby-product-card {
+  padding: 0 15px;
+  margin-bottom: 30px;
+}
+
+/* Loading */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #7f8c8d;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 107, 157, 0.3);
+  border-top: 3px solid #ff6b9d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.load-more-trigger {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.load-more-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem;
+  background: #ff6b9d;
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.load-more-link:hover {
+  background: #e55b8a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4);
+}
+
+/* Empty State */
+.collection-empty {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 2px dashed rgba(255, 107, 157, 0.2);
+}
+
+.empty-content {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ffa8c5 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-icon svg {
+  width: 40px;
+  height: 40px;
+  fill: white;
+}
+
+.empty-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+}
+
+.empty-text {
+  font-size: 1rem;
+  color: #7f8c8d;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+}
+
+.btn--secondary {
+  background: #ecf0f1;
+  color: #2c3e50;
+}
+
+.btn--secondary:hover {
+  background: #d5dbdb;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+  .collection-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .collection-sidebar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0;
+    border-radius: 0;
+    max-height: none;
+  }
+
+  .collection-sidebar.sidebar--open {
+    display: block;
+  }
+
+  .sidebar-content {
+    background: #ffffff;
+    width: 90%;
+    max-width: 400px;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    margin-left: auto;
+    animation: slideInRight 0.3s ease;
+  }
+
+  .mobile-filter-toggle {
+    display: flex;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0 15px;
+  }
+
+  .container-full {
+    padding: 0 15px;
+  }
+
+  .collection-header {
+    padding: 1rem 0;
+  }
+
+  .collection-main {
+    padding: 0 0 3rem;
+  }
+
+  .products-container {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+
+  .products-grid {
+    margin: 0 -10px;
+  }
+
+  .products-grid .baby-product-card {
+    padding: 0 10px;
+    margin-bottom: 20px;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .collection-toolbar {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .toolbar-left,
+  .toolbar-right {
+    justify-content: space-between;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .products-grid .baby-product-card {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .collection-toolbar {
+    padding: 1rem;
+  }
+
+  .sort-select {
+    min-width: auto;
+    width: 100%;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+</style>
+
+<script>
+// Enhanced Collection Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  let isLoading = false;
+  let currentPage = parseInt(document.querySelector('#products-grid')?.dataset.currentPage) || 1;
+  const totalPages = parseInt(document.querySelector('#products-grid')?.dataset.totalPages) || 1;
+  const collectionHandle = document.querySelector('#products-grid')?.dataset.collectionHandle;
+
+  // Mobile filter toggle
+  const mobileFilterToggle = document.getElementById('mobile-filter-toggle');
+  const sidebar = document.querySelector('.collection-sidebar');
+
+  if (mobileFilterToggle && sidebar) {
+    mobileFilterToggle.addEventListener('click', function() {
+      sidebar.classList.add('sidebar--open');
+      document.body.style.overflow = 'hidden';
+    });
+
+    // Close sidebar when clicking backdrop
+    sidebar.addEventListener('click', function(e) {
+      if (e.target === sidebar) {
+        sidebar.classList.remove('sidebar--open');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  // Sort functionality
+  const sortSelect = document.getElementById('sort-by');
+  if (sortSelect) {
+    sortSelect.addEventListener('change', function() {
+      const sortValue = this.value;
+      const url = new URL(window.location);
+
+      if (sortValue === 'manual') {
+        url.searchParams.delete('sort_by');
+      } else {
+        url.searchParams.set('sort_by', sortValue);
+      }
+
+      window.location.href = url.toString();
+    });
+  }
+
+  // Filter functionality
+  const filterInputs = document.querySelectorAll('.filter-option input[type="checkbox"]');
+  filterInputs.forEach(input => {
+    input.addEventListener('change', function() {
+      applyFilters();
+    });
+  });
+
+  // Price filter
+  const applyPriceBtn = document.querySelector('.apply-price-filter');
+  if (applyPriceBtn) {
+    applyPriceBtn.addEventListener('click', function() {
+      applyFilters();
+    });
+  }
+
+  // Clear all filters
+  const clearAllBtn = document.getElementById('clear-all-filters');
+  if (clearAllBtn) {
+    clearAllBtn.addEventListener('click', function() {
+      clearAllFilters();
+    });
+  }
+
+  function applyFilters() {
+    const url = new URL(window.location);
+    const selectedTags = [];
+
+    // Collect selected filter tags
+    filterInputs.forEach(input => {
+      if (input.checked) {
+        selectedTags.push(input.value);
+      }
+    });
+
+    // Add price filters
+    const priceMin = document.getElementById('price-min')?.value;
+    const priceMax = document.getElementById('price-max')?.value;
+
+    // Update URL
+    if (selectedTags.length > 0) {
+      url.pathname = `/collections/${collectionHandle}/${selectedTags.join('+')}`;
+    } else {
+      url.pathname = `/collections/${collectionHandle}`;
+    }
+
+    if (priceMin) url.searchParams.set('filter.v.price.gte', priceMin);
+    if (priceMax) url.searchParams.set('filter.v.price.lte', priceMax);
+
+    window.location.href = url.toString();
+  }
+
+  function clearAllFilters() {
+    window.location.href = `/collections/${collectionHandle}`;
+  }
+
+  // Update clear button visibility
+  function updateClearButtonVisibility() {
+    const hasActiveFilters = Array.from(filterInputs).some(input => input.checked) ||
+                           document.getElementById('price-min')?.value ||
+                           document.getElementById('price-max')?.value;
+
+    if (clearAllBtn) {
+      clearAllBtn.style.display = hasActiveFilters ? 'block' : 'none';
+    }
+  }
+
+  updateClearButtonVisibility();
+
+  // Infinite scroll functionality
+  const loadMoreTrigger = document.getElementById('load-more-trigger');
+  const loadingIndicator = document.getElementById('loading-indicator');
+  const productsGrid = document.getElementById('products-grid');
+
+  if (loadMoreTrigger && productsGrid) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !isLoading && currentPage < totalPages) {
+          loadMoreProducts();
+        }
+      });
+    }, { rootMargin: '100px' });
+
+    observer.observe(loadMoreTrigger);
+  }
+
+  function loadMoreProducts() {
+    if (isLoading || currentPage >= totalPages) return;
+
+    isLoading = true;
+    currentPage++;
+
+    // Show loading indicator
+    if (loadingIndicator) {
+      loadingIndicator.style.display = 'flex';
+    }
+
+    // Hide load more button
+    const loadMoreLink = document.getElementById('load-more-link');
+    if (loadMoreLink) {
+      loadMoreLink.style.display = 'none';
+    }
+
+    // Build URL for next page
+    const url = new URL(window.location);
+    url.searchParams.set('page', currentPage);
+
+    fetch(url.toString())
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newProducts = doc.querySelectorAll('.baby-product-card');
+
+        // Add new products with animation
+        newProducts.forEach((product, index) => {
+          setTimeout(() => {
+            product.style.opacity = '0';
+            product.style.transform = 'translateY(30px)';
+            productsGrid.appendChild(product);
+
+            requestAnimationFrame(() => {
+              product.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+              product.style.opacity = '1';
+              product.style.transform = 'translateY(0)';
+            });
+          }, index * 100);
+        });
+
+        // Update product count
+        const currentCount = document.getElementById('current-count');
+        if (currentCount) {
+          const newCount = productsGrid.children.length;
+          currentCount.textContent = newCount;
+        }
+
+        // Hide loading indicator
+        if (loadingIndicator) {
+          loadingIndicator.style.display = 'none';
+        }
+
+        // Show load more button if there are more pages
+        if (currentPage < totalPages && loadMoreLink) {
+          loadMoreLink.style.display = 'inline-flex';
+          const nextUrl = new URL(window.location);
+          nextUrl.searchParams.set('page', currentPage + 1);
+          loadMoreLink.href = nextUrl.toString();
+        } else if (loadMoreTrigger) {
+          loadMoreTrigger.style.display = 'none';
+        }
+
+        isLoading = false;
+      })
+      .catch(error => {
+        console.error('Error loading more products:', error);
+        isLoading = false;
+
+        if (loadingIndicator) {
+          loadingIndicator.style.display = 'none';
+        }
+
+        if (loadMoreLink) {
+          loadMoreLink.style.display = 'inline-flex';
+        }
+      });
+  }
+
+  // Initialize product count
+  const currentCountEl = document.getElementById('current-count');
+  if (currentCountEl && productsGrid) {
+    currentCountEl.textContent = productsGrid.children.length;
+  }
+});
+
+// Global function for clearing filters (used in empty state)
+function clearAllFilters() {
+  const collectionHandle = document.querySelector('#products-grid')?.dataset.collectionHandle;
+  if (collectionHandle) {
+    window.location.href = `/collections/${collectionHandle}`;
+  }
+}
+</script>
