@@ -64,121 +64,171 @@
         <aside class="collection-sidebar" role="complementary">
           <div class="sidebar-header">
             <h3 class="sidebar-title">Филтри</h3>
-            <button class="clear-filters btn btn--primary" id="clear-all-filters" style="display: none; justify-content: center; align-items: center;">
-              <svg class="clear-filters-icon" style="margin-top: 8px;"  width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
+            {% if collection.filters != empty %}
+              <a href="{{ collection.url }}" class="clear-filters btn btn--primary" id="clear-all-filters">
+                <svg class="clear-filters-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Изчисти
+              </a>
+            {% endif %}
           </div>
 
           <div class="sidebar-content">
-            {% comment %} Dynamic Filters based on product options {% endcomment %}
-            {% for filter in collection.filters %}
-              {% assign filter_name = filter.label | downcase %}
-              {% if filter_name contains 'size' or filter_name contains 'brand' or filter_name contains 'color' or filter_name contains 'colour' or filter.type == 'price_range' %}
-                <div class="filter-group">
-                  <h4 class="filter-title">
-                    {% case filter_name %}
-                      {% when 'colour' %}
-                        Цвят
-                      {% when 'size' %}
-                        Размер
-                      {% when 'brand' %}
-                        Марка
-                      {% when 'price_range' %}
-                        Цена
-                      {% else %}
-                        {{ filter.label }}
-                    {% endcase %}
-                  </h4>
-                  <div class="filter-options {% if filter_name contains 'color' or filter_name contains 'colour' %}filter-options--colors{% endif %}">
-                    {% case filter.type %}
-                      {% when 'boolean' or 'list' %}
-                        {% for value in filter.values %}
-                          {% if value.count > 0 %}
-                            <label class="filter-option {% if filter_name contains 'color' or filter_name contains 'colour' %}filter-option--color{% endif %}">
-                              <input type="checkbox"
-                                     name="{{ filter.label | handleize }}"
-                                     value="{{ value.value | escape }}"
-                                     {% if value.active %}checked{% endif %}
-                                     data-filter-key="{{ filter.param_name }}"
-                                     data-filter-value="{{ value.value | escape }}">
-                              {% if filter_name contains 'color' or filter_name contains 'colour' %}
-                                <span class="color-swatch" style="background-color: {{ value.value | downcase }};"></span>
-                              {% endif %}
-                              <span class="filter-label">{{ value.label }} ({{ value.count }})</span>
+            {% comment %} Shopify Native Filtering {% endcomment %}
+            {% if collection.filters != empty %}
+              <form class="filter-form" method="get" action="{{ collection.url }}">
+                {% for filter in collection.filters %}
+                  {% assign filter_name = filter.label | downcase %}
+                  <div class="filter-group">
+                    <h4 class="filter-title">
+                      {% case filter_name %}
+                        {% when 'colour' or 'color' %}
+                          Цвят
+                        {% when 'size' %}
+                          Размер
+                        {% when 'brand' %}
+                          Марка
+                        {% when 'price_range' %}
+                          Цена
+                        {% when 'vendor' %}
+                          Производител
+                        {% when 'product_type' %}
+                          Тип продукт
+                        {% when 'availability' %}
+                          Наличност
+                        {% when 'weight' %}
+                          Тегло
+                        {% when 'material' %}
+                          Материал
+                        {% when 'age' %}
+                          Възраст
+                        {% when 'gender' %}
+                          Пол
+                        {% when 'category' %}
+                          Категория
+                        {% else %}
+                          {% assign translated_label = filter.label | downcase %}
+                          {% case translated_label %}
+                            {% when 'price' %}
+                              Цена
+                            {% when 'size' %}
+                              Размер
+                            {% when 'color' or 'colour' %}
+                              Цвят
+                            {% when 'brand' %}
+                              Марка
+                            {% when 'vendor' %}
+                              Производител
+                            {% when 'type' %}
+                              Тип
+                            {% when 'material' %}
+                              Материал
+                            {% when 'age' %}
+                              Възраст
+                            {% when 'gender' %}
+                              Пол
+                            {% when 'weight' %}
+                              Тегло
+                            {% when 'availability' %}
+                              Наличност
+                            {% else %}
+                              {{ filter.label }}
+                          {% endcase %}
+                      {% endcase %}
+                    </h4>
+
+                    <div class="filter-options {% if filter_name contains 'color' or filter_name contains 'colour' %}filter-options--colors{% endif %}">
+                      {% case filter.type %}
+                        {% when 'boolean' or 'list' %}
+                          {% for value in filter.values %}
+                            {% if value.count > 0 %}
+                              <label class="filter-option {% if filter_name contains 'color' or filter_name contains 'colour' %}filter-option--color{% endif %}">
+                                <input type="checkbox"
+                                       name="{{ filter.param_name }}"
+                                       value="{{ value.value | escape }}"
+                                       {% if value.active %}checked{% endif %}
+                                       onchange="this.form.submit()">
+                                {% if filter_name contains 'color' or filter_name contains 'colour' %}
+                                  <span class="color-swatch" style="background-color: {{ value.value | downcase }};"></span>
+                                {% endif %}
+                                <span class="filter-label">{{ value.label }} ({{ value.count }})</span>
+                              </label>
+                            {% endif %}
+                          {% endfor %}
+                        {% when 'price_range' %}
+                          <div class="price-range">
+                            <div class="price-inputs">
+                              <input type="number"
+                                     id="price-min"
+                                     name="filter.v.price.gte"
+                                     placeholder="От"
+                                     min="{{ filter.min_value.value | divided_by: 100 }}"
+                                     max="{{ filter.max_value.value | divided_by: 100 }}"
+                                     {% if filter.min_value.value %}value="{{ filter.min_value.value | divided_by: 100 }}"{% endif %}
+                                     step="0.01">
+                              <span class="price-separator">-</span>
+                              <input type="number"
+                                     id="price-max"
+                                     name="filter.v.price.lte"
+                                     placeholder="До"
+                                     min="{{ filter.min_value.value | divided_by: 100 }}"
+                                     max="{{ filter.max_value.value | divided_by: 100 }}"
+                                     {% if filter.max_value.value %}value="{{ filter.max_value.value | divided_by: 100 }}"{% endif %}
+                                     step="0.01">
+                            </div>
+                            <button type="submit" class="apply-price-filter">Приложи</button>
+                          </div>
+                      {% endcase %}
+                    </div>
+                  </div>
+                {% endfor %}
+
+                {% comment %} Keep sort parameter {% endcomment %}
+                {% if collection.sort_by != blank %}
+                  <input type="hidden" name="sort_by" value="{{ collection.sort_by }}">
+                {% endif %}
+              </form>
+            {% else %}
+              {% comment %} Fallback: Tag-based filtering for older themes {% endcomment %}
+              {% assign tags_to_show = 'Size,Color,Brand,Material,Style' | split: ',' %}
+              {% for tag_category in tags_to_show %}
+                {% assign category_tags = collection.all_tags | where: 'first', tag_category %}
+                {% if category_tags.size > 0 %}
+                  <div class="filter-group">
+                    <h4 class="filter-title">
+                      {% case tag_category %}
+                        {% when 'Size' %}
+                          Размер
+                        {% when 'Color' %}
+                          Цвят
+                        {% when 'Brand' %}
+                          Марка
+                        {% when 'Material' %}
+                          Материал
+                        {% when 'Style' %}
+                          Стил
+                        {% else %}
+                          {{ tag_category }}
+                      {% endcase %}
+                    </h4>
+                    <div class="filter-options">
+                      {% for tag in collection.all_tags %}
+                        {% if tag contains tag_category %}
+                          {% assign tag_parts = tag | split: '_' %}
+                          {% if tag_parts.size > 1 %}
+                            <label class="filter-option">
+                              <a href="{{ collection.url }}/{{ tag | handle }}"
+                                 class="filter-link {% if current_tags contains tag %}active{% endif %}">
+                                {{ tag_parts[1] }}
+                              </a>
                             </label>
                           {% endif %}
-                        {% endfor %}
-                      {% when 'price_range' %}
-                                        <div class="price-range">
-                  <div class="price-inputs">
-                    <input type="number"
-                           id="price-min"
-                           placeholder="От"
-                           min="{{ filter.min_value.value }}"
-                           max="{{ filter.max_value.value }}"
-                           {% if filter.min_value.active %}value="{{ filter.min_value.value }}"{% endif %}>
-                    <span class="price-separator">-</span>
-                    <input type="number"
-                           id="price-max"
-                           placeholder="До"
-                           min="{{ filter.min_value.value }}"
-                           max="{{ filter.max_value.value }}"
-                           {% if filter.max_value.active %}value="{{ filter.max_value.value }}"{% endif %}>
-                  </div>
-                  <button class="apply-price-filter">Приложи</button>
-                </div>
-                    {% endcase %}
-                  </div>
-                </div>
-              {% endif %}
-            {% endfor %}
-
-            {% comment %} Product Variants Filter {% endcomment %}
-            {% assign has_variants = false %}
-            {% assign variant_options = '' %}
-            {% for product in collection.products limit: 1 %}
-              {% if product.variants.size > 1 %}
-                {% assign has_variants = true %}
-                {% for option in product.options_with_values %}
-                  {% unless option.name contains 'size' or option.name contains 'color' or option.name contains 'colour' or option.name contains 'brand' %}
-                    {% assign variant_options = variant_options | append: option.name | append: ',' %}
-                  {% endunless %}
-                {% endfor %}
-              {% endif %}
-            {% endfor %}
-
-            {% if has_variants %}
-              {% assign variant_options = variant_options | split: ',' | uniq %}
-              {% for option in variant_options %}
-                {% unless option == blank %}
-                  <div class="filter-group">
-                    <h4 class="filter-title">{{ option }}</h4>
-                    <div class="filter-options">
-                      {% assign option_values = '' %}
-                      {% for product in collection.products %}
-                        {% for variant in product.variants %}
-                          {% for option_value in variant.options %}
-                            {% assign option_values = option_values | append: option_value | append: ',' %}
-                          {% endfor %}
-                        {% endfor %}
-                      {% endfor %}
-                      {% assign unique_values = option_values | split: ',' | uniq | sort %}
-                      {% for value in unique_values %}
-                        {% unless value == blank %}
-                          <label class="filter-option">
-                            <input type="checkbox"
-                                   name="{{ option | handleize }}"
-                                   value="{{ value | handle }}"
-                                   {% if current_tags contains value %}checked{% endif %}>
-                            <span class="filter-label">{{ value }}</span>
-                          </label>
-                        {% endunless %}
+                        {% endif %}
                       {% endfor %}
                     </div>
                   </div>
-                {% endunless %}
+                {% endif %}
               {% endfor %}
             {% endif %}
           </div>
@@ -434,18 +484,42 @@
 }
 
 .clear-filters {
-  background: none;
-  border: none;
+  background: rgba(255, 107, 157, 0.1);
+  border: 1px solid #ff6b9d;
   color: #ff6b9d;
   font-size: 0.875rem;
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  transition: background-color 0.2s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .clear-filters:hover {
+  background: #ff6b9d;
+  color: white;
+}
+
+.filter-form {
+  width: 100%;
+}
+
+.filter-link {
+  display: block;
+  padding: 0.5rem;
+  color: #2c3e50;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.filter-link:hover,
+.filter-link.active {
   background: rgba(255, 107, 157, 0.1);
+  color: #ff6b9d;
 }
 
 .filter-group {
@@ -595,12 +669,40 @@
   border-radius: 8px;
   font-size: 0.875rem;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-filter-toggle:hover {
+  background: #e55b8a;
+  transform: translateY(-1px);
 }
 
 .mobile-filter-toggle .icon {
   width: 16px;
   height: 16px;
   fill: currentColor;
+}
+
+.mobile-close-btn {
+  background: none;
+  border: none;
+  color: #ff6b9d;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-close-btn:hover {
+  background: rgba(255, 107, 157, 0.1);
+}
+
+.mobile-close-btn svg {
+  width: 20px;
+  height: 20px;
 }
 
 .toolbar-right {
@@ -770,9 +872,29 @@
 }
 
 /* Responsive Design */
+
+/* Large tablets and small desktops */
+@media screen and (max-width: 1200px) {
+  .container-full {
+    max-width: 100%;
+    padding: 0 15px;
+  }
+
+  .collection-layout {
+    grid-template-columns: 260px 1fr;
+    gap: 1.5rem;
+  }
+
+  .collection-sidebar {
+    padding: 1.25rem;
+  }
+}
+
+/* Tablets */
 @media screen and (max-width: 1024px) {
   .collection-layout {
     grid-template-columns: 1fr;
+    gap: 0;
   }
 
   .collection-sidebar {
@@ -787,10 +909,13 @@
     padding: 0;
     border-radius: 0;
     max-height: none;
+    overflow: hidden;
   }
 
   .collection-sidebar.sidebar--open {
-    display: block;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
   }
 
   .sidebar-content {
@@ -800,73 +925,310 @@
     height: 100vh;
     overflow-y: auto;
     padding: 1.5rem;
-    margin-left: auto;
     animation: slideInRight 0.3s ease;
+    position: relative;
+  }
+
+  .sidebar-header {
+    position: sticky;
+    top: 0;
+    background: #ffffff;
+    z-index: 10;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
   }
 
   .mobile-filter-toggle {
     display: flex;
   }
+
+  .collection-title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
 }
 
+/* Mobile landscape and small tablets */
 @media screen and (max-width: 768px) {
   .container {
-    padding: 0 15px;
+    padding: 0 12px;
   }
 
   .container-full {
-    padding: 0 15px;
+    padding: 0 12px;
   }
 
   .collection-header {
-    padding: 1rem 0;
+    padding: 0.75rem 0;
   }
 
   .collection-main {
-    padding: 0 0 3rem;
+    padding: 0 0 2rem;
+  }
+
+  .collection-info {
+    margin-bottom: 0.75rem;
+  }
+
+  .collection-title {
+    font-size: clamp(1.25rem, 5vw, 1.75rem);
+    margin-bottom: 0.5rem;
+  }
+
+  .collection-description {
+    font-size: 0.875rem;
+  }
+
+  .breadcrumb__list {
+    font-size: 0.75rem;
+    padding: 0.25rem 0;
   }
 
   .products-container {
-    padding: 1.5rem;
-    border-radius: 16px;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-top: 1rem;
   }
 
   .products-grid {
-    margin: 0 -10px;
+    margin: 0 -8px;
   }
 
   .products-grid .baby-product-card {
-    padding: 0 10px;
-    margin-bottom: 20px;
+    padding: 0 8px;
+    margin-bottom: 16px;
     flex: 0 0 50%;
     max-width: 50%;
   }
 
   .collection-toolbar {
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
     align-items: stretch;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .toolbar-left {
+    order: 2;
+  }
+
+  .toolbar-right {
+    order: 1;
   }
 
   .toolbar-left,
   .toolbar-right {
     justify-content: space-between;
+    width: 100%;
+  }
+
+  .results-count {
+    font-size: 0.75rem;
+  }
+
+  .sort-dropdown {
+    width: 100%;
+  }
+
+  .sort-select {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .sidebar-content {
+    width: 95%;
+    max-width: 350px;
+    padding: 1.25rem;
+  }
+
+  .filter-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .filter-options {
+    gap: 0.5rem;
+  }
+
+  .filter-option {
+    padding: 0.375rem;
+  }
+
+  .filter-label {
+    font-size: 0.8rem;
+  }
+
+  .price-inputs input {
+    padding: 0.375rem;
+    font-size: 0.875rem;
+  }
+
+  .apply-price-filter {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
   }
 }
 
+/* Mobile portrait */
 @media screen and (max-width: 480px) {
+  .container {
+    padding: 0 10px;
+  }
+
+  .container-full {
+    padding: 0 10px;
+  }
+
+  .collection-title {
+    font-size: clamp(1.125rem, 6vw, 1.5rem);
+  }
+
+  .products-container {
+    padding: 0.75rem;
+  }
+
+  .products-grid {
+    margin: 0 -6px;
+  }
+
   .products-grid .baby-product-card {
+    padding: 0 6px;
+    margin-bottom: 12px;
     flex: 0 0 100%;
     max-width: 100%;
   }
 
   .collection-toolbar {
-    padding: 1rem;
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .mobile-filter-toggle {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
+    gap: 0.375rem;
+  }
+
+  .mobile-filter-toggle .icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .sort-label {
+    font-size: 0.75rem;
   }
 
   .sort-select {
-    min-width: auto;
+    padding: 0.375rem;
+    font-size: 0.8rem;
+  }
+
+  .results-count {
+    font-size: 0.7rem;
+  }
+
+  .sidebar-content {
     width: 100%;
+    max-width: none;
+    padding: 1rem;
+  }
+
+  .sidebar-title {
+    font-size: 1.125rem;
+  }
+
+  .clear-filters {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .filter-options--colors {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+
+  .filter-option--color {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .color-swatch {
+    width: 24px;
+    height: 24px;
+  }
+
+  .price-inputs {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .price-separator {
+    display: none;
+  }
+
+  .empty-content {
+    padding: 2rem 1rem;
+  }
+
+  .empty-title {
+    font-size: 1.25rem;
+  }
+
+  .empty-text {
+    font-size: 0.875rem;
+  }
+
+  .load-more-link {
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .breadcrumb__item:not(:last-child)::after {
+    margin: 0 0.5rem;
+  }
+}
+
+/* Very small screens */
+@media screen and (max-width: 360px) {
+  .container {
+    padding: 0 8px;
+  }
+
+  .container-full {
+    padding: 0 8px;
+  }
+
+  .collection-title {
+    font-size: 1.125rem;
+    line-height: 1.2;
+  }
+
+  .products-container {
+    padding: 0.5rem;
+    border-radius: 8px;
+  }
+
+  .collection-toolbar {
+    padding: 0.5rem;
+  }
+
+  .sidebar-content {
+    padding: 0.75rem;
+  }
+
+  .filter-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .filter-title {
+    font-size: 0.85rem;
+  }
+
+  .filter-label {
+    font-size: 0.75rem;
   }
 }
 
@@ -891,20 +1253,58 @@ document.addEventListener('DOMContentLoaded', function() {
   // Mobile filter toggle
   const mobileFilterToggle = document.getElementById('mobile-filter-toggle');
   const sidebar = document.querySelector('.collection-sidebar');
+  const sidebarContent = document.querySelector('.sidebar-content');
 
   if (mobileFilterToggle && sidebar) {
     mobileFilterToggle.addEventListener('click', function() {
       sidebar.classList.add('sidebar--open');
       document.body.style.overflow = 'hidden';
+
+      // Add close button to sidebar header on mobile
+      addMobileCloseButton();
     });
 
     // Close sidebar when clicking backdrop
     sidebar.addEventListener('click', function(e) {
       if (e.target === sidebar) {
-        sidebar.classList.remove('sidebar--open');
-        document.body.style.overflow = '';
+        closeMobileSidebar();
       }
     });
+
+    // Handle escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('sidebar--open')) {
+        closeMobileSidebar();
+      }
+    });
+  }
+
+  function closeMobileSidebar() {
+    if (sidebar) {
+      sidebar.classList.remove('sidebar--open');
+      document.body.style.overflow = '';
+
+      // Remove mobile close button
+      const mobileCloseBtn = document.querySelector('.mobile-close-btn');
+      if (mobileCloseBtn) {
+        mobileCloseBtn.remove();
+      }
+    }
+  }
+
+  function addMobileCloseButton() {
+    const sidebarHeader = document.querySelector('.sidebar-header');
+    if (sidebarHeader && !document.querySelector('.mobile-close-btn')) {
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'mobile-close-btn';
+      closeBtn.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+      closeBtn.addEventListener('click', closeMobileSidebar);
+      sidebarHeader.appendChild(closeBtn);
+    }
   }
 
   // Sort functionality
@@ -941,109 +1341,106 @@ document.addEventListener('DOMContentLoaded', function() {
     return '';
   }
 
-  // Filter functionality
-  const filterInputs = document.querySelectorAll('.filter-option input[type="checkbox"]');
-  filterInputs.forEach(input => {
-    input.addEventListener('change', function() {
-      applyFilters();
-    });
-  });
-
-  // Price filter
-  const applyPriceBtn = document.querySelector('.apply-price-filter');
+    // Enhanced filter functionality with form-based submission
+  const filterForm = document.querySelector('.filter-form');
   const priceMinInput = document.getElementById('price-min');
   const priceMaxInput = document.getElementById('price-max');
-
-  // Set initial price values from URL params if they exist
-  if (priceMinInput && priceMaxInput) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const minPrice = urlParams.get('filter.v.price.gte');
-    const maxPrice = urlParams.get('filter.v.price.lte');
-
-    if (minPrice) priceMinInput.value = minPrice;
-    if (maxPrice) priceMaxInput.value = maxPrice;
-  }
-
-  if (applyPriceBtn) {
-    applyPriceBtn.addEventListener('click', function() {
-      applyFilters();
-    });
-  }
-
-  // Clear all filters
   const clearAllBtn = document.getElementById('clear-all-filters');
-  if (clearAllBtn) {
-    clearAllBtn.addEventListener('click', function() {
-      clearAllFilters();
-    });
-  }
 
-  function applyFilters() {
-    const url = new URL(window.location);
-    const currentCollectionHandle = getCollectionHandle();
+  // Initialize price filter values from URL
+  initializePriceFilters();
 
-    if (!currentCollectionHandle) {
-      console.error('Collection handle not found');
-      return;
-    }
-
-    // Clear existing filter params
-    Array.from(url.searchParams.keys()).forEach(key => {
-      if (key.startsWith('filter.')) {
-        url.searchParams.delete(key);
+  // Price filter event listeners
+  if (priceMinInput) {
+    priceMinInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        submitPriceFilter();
       }
     });
+  }
 
-    // Collect dynamic filter values
-    filterInputs.forEach(input => {
-      if (input.checked && input.dataset.filterKey) {
-        const key = input.dataset.filterKey;
-        const value = input.dataset.filterValue;
-        url.searchParams.append(key, value);
+  if (priceMaxInput) {
+    priceMaxInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        submitPriceFilter();
       }
     });
-
-    // Add tag filters
-    const selectedTags = Array.from(filterInputs)
-      .filter(input => input.checked && input.name === 'tag')
-      .map(input => input.value);
-
-    // Update URL path for tags
-    if (selectedTags.length > 0) {
-      url.pathname = `/collections/${currentCollectionHandle}/${selectedTags.join('+')}`;
-    } else {
-      url.pathname = `/collections/${currentCollectionHandle}`;
-    }
-
-    // Add price filter if it exists and has valid values
-    const priceMin = document.getElementById('price-min')?.value;
-    const priceMax = document.getElementById('price-max')?.value;
-
-    if (priceMin && !isNaN(priceMin)) {
-      url.searchParams.set('filter.v.price.gte', priceMin);
-    }
-    if (priceMax && !isNaN(priceMax)) {
-      url.searchParams.set('filter.v.price.lte', priceMax);
-    }
-
-    window.location.href = url.toString();
   }
 
-  function clearAllFilters() {
-    window.location.href = `/collections/${collectionHandle}`;
+  // Apply price filter button
+  const applyPriceBtn = document.querySelector('.apply-price-filter');
+  if (applyPriceBtn) {
+    applyPriceBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      submitPriceFilter();
+    });
   }
 
-  // Update clear button visibility
+  function initializePriceFilters() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Set price values from URL (convert from cents to dollars)
+    if (priceMinInput && priceMaxInput) {
+      const minPrice = urlParams.get('filter.v.price.gte');
+      const maxPrice = urlParams.get('filter.v.price.lte');
+
+      if (minPrice) {
+        priceMinInput.value = parseFloat(minPrice) / 100;
+      }
+      if (maxPrice) {
+        priceMaxInput.value = parseFloat(maxPrice) / 100;
+      }
+    }
+  }
+
+  function submitPriceFilter() {
+    if (!filterForm) return;
+
+    // Convert price values to cents before submitting
+    const priceMin = priceMinInput?.value;
+    const priceMax = priceMaxInput?.value;
+
+    if (priceMin && !isNaN(priceMin) && parseFloat(priceMin) > 0) {
+      priceMinInput.value = Math.round(parseFloat(priceMin) * 100);
+    }
+    if (priceMax && !isNaN(priceMax) && parseFloat(priceMax) > 0) {
+      priceMaxInput.value = Math.round(parseFloat(priceMax) * 100);
+    }
+
+    // Submit the form
+    filterForm.submit();
+  }
+
+  // Add loading state to form submission
+  if (filterForm) {
+    filterForm.addEventListener('submit', function() {
+      // Show loading indicator
+      const loadingIndicator = document.getElementById('loading-indicator');
+      if (loadingIndicator) {
+        loadingIndicator.style.display = 'flex';
+      }
+
+      // Disable all form inputs to prevent double submission
+      const inputs = filterForm.querySelectorAll('input, button');
+      inputs.forEach(input => {
+        input.disabled = true;
+      });
+    });
+  }
+
+  // Update clear button visibility based on active filters
   function updateClearButtonVisibility() {
-    const hasActiveFilters = Array.from(filterInputs).some(input => input.checked) ||
-                           document.getElementById('price-min')?.value ||
-                           document.getElementById('price-max')?.value;
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasActiveFilters = Array.from(urlParams.keys()).some(key => key.startsWith('filter.'));
 
     if (clearAllBtn) {
-      clearAllBtn.style.display = hasActiveFilters ? 'block' : 'none';
+      clearAllBtn.style.display = hasActiveFilters ? 'flex' : 'none';
     }
   }
 
+  // Initialize clear button visibility
   updateClearButtonVisibility();
 
   // Infinite scroll functionality
@@ -1153,9 +1550,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Global function for clearing filters (used in empty state)
 function clearAllFilters() {
-  const collectionHandle = document.querySelector('#products-grid')?.dataset.collectionHandle;
-  if (collectionHandle) {
-    window.location.href = `/collections/${collectionHandle}`;
+  const clearAllBtn = document.getElementById('clear-all-filters');
+  if (clearAllBtn && clearAllBtn.href) {
+    window.location.href = clearAllBtn.href;
   }
 }
 </script>

@@ -23,7 +23,7 @@
         </div>
         {% if settings.display_availability %}
         <div class="product-infor">
-          <p class="product-inventory"><label>{{ 'products.product.availability' | t }}</label><span></span></p>    
+          <p class="product-inventory"><label>{{ 'products.product.availability' | t }}</label><span></span></p>
         </div>
         {% endif %}
         <div class="details clearfix">
@@ -35,29 +35,29 @@
               <input type="number" name="quantity" id="Qty" value="1" class="quantity">
               <div class="inc button qtyplus">+</div>
             </div>
-            
+
             {% if settings.display_subtotal %}
             <div class="total-price">
               <label>{{ 'cart.general.subtotal' | t }}</label><span class="h5"></span>
             </div>
-            {% endif %}            
+            {% endif %}
             <div class="actions">
                 <button type="button" class="add-to-cart-btn btn">
                   {{ 'products.product.add_to_cart' | t }}
                 </button>
               </div>
           </form>
-        </div>     
+        </div>
       </div>
-    </div>  
- <a href="javascript:void(0)" class="close-window"></a> 
+    </div>
+ <a href="javascript:void(0)" class="close-window"></a>
   </div>
- 
+
 </div>
 <!-- End of quick-view-template -->
-<script type="text/javascript">  
-  Shopify.doNotTriggerClickOnThumb = false; 
-                                       
+<script type="text/javascript">
+  Shopify.doNotTriggerClickOnThumb = false;
+
   var selectCallbackQuickview = function(variant, selector) {
       var productItem = jQuery('.quick-view .product-item');
           addToCart = productItem.find('.add-to-cart-btn'),
@@ -66,18 +66,18 @@
           totalPrice = productItem.find('.total-price span'),
           inventory = productItem.find('.product-inventory');
       if (variant) {
-        if (variant.available) {          
+        if (variant.available) {
           // We have a valid product variant, so enable the submit button
-          addToCart.removeClass('disabled').removeAttr('disabled').text('Add to Cart');         
-    
+          addToCart.removeClass('disabled').removeAttr('disabled').text('Добави в количката');
+
         } else {
           // Variant is sold out, disable the submit button
-          addToCart.val('Sold Out').addClass('disabled').attr('disabled', 'disabled');         
+          addToCart.val('Sold Out').addClass('disabled').attr('disabled', 'disabled');
         }
-    
+
         // Regardless of stock, update the product price
         productPrice.html(Shopify.formatMoney(variant.price, "{{ shop.money_format }}"));
-    
+
         // Also update and show the product's compare price if necessary
         if ( variant.compare_at_price > variant.price ) {
           comparePrice
@@ -88,9 +88,9 @@
           comparePrice.hide();
           productPrice.removeClass('on-sale');
         }
-    
-       
-    
+
+
+
      //update variant inventory
      {% if settings.display_availability %}
      var inventoryInfo = productItem.find('.product-inventory span');
@@ -116,8 +116,8 @@
             inventoryInfo.removeClass('unavailable');
           }
      {% endif %}
-    
-    
+
+
     /*recaculate total price*/
         //try pattern one before pattern 2
         var regex = /([0-9]+[.|,][0-9]+[.|,][0-9]+)/g;
@@ -125,33 +125,33 @@
 
         if (!unitPriceTextMatch) {
           regex = /([0-9]+[.|,][0-9]+)/g;
-          unitPriceTextMatch = jQuery('.quick-view .price').text().match(regex);     
+          unitPriceTextMatch = jQuery('.quick-view .price').text().match(regex);
         }
 
         if (unitPriceTextMatch) {
-          var unitPriceText = unitPriceTextMatch[0];     
+          var unitPriceText = unitPriceTextMatch[0];
           var unitPrice = unitPriceText.replace(/[.|,]/g,'');
           var quantity = parseInt(jQuery('.quick-view input[name=quantity]').val());
           var totalPrice = unitPrice * quantity;
 
           var totalPriceText = Shopify.formatMoney(totalPrice, window.money_format);
-          regex = /([0-9]+[.|,][0-9]+[.|,][0-9]+)/g;     
+          regex = /([0-9]+[.|,][0-9]+[.|,][0-9]+)/g;
           if (!totalPriceText.match(regex)) {
             regex = /([0-9]+[.|,][0-9]+)/g;
-          } 
+          }
           totalPriceText = totalPriceText.match(regex)[0];
 
-          var regInput = new RegExp(unitPriceText, "g"); 
+          var regInput = new RegExp(unitPriceText, "g");
           var totalPriceHtml = jQuery('.quick-view .price').html().replace(regInput ,totalPriceText);
-          jQuery('.quick-view .total-price span').html(totalPriceHtml);             
+          jQuery('.quick-view .total-price span').html(totalPriceHtml);
         }
     /*end of price calculation*/
-    
-    
+
+
     {% if settings.display_currency %}
         Currency.convertAll('{{ shop.currency }}', jQuery('#currencies').val(), 'span.money', 'money_format');
         {% endif %}
-                            
+
         /*begin variant image*/
      /*begin variant image*/
         if (variant && variant.featured_image) {
@@ -163,21 +163,21 @@
               jQuery('.quick-view .more-view-wrapper img').each(function() {
                 var grandSize = jQuery(this).attr('src');
                 grandSize = grandSize.replace('medium','grande');
-               
+
                 if (grandSize == newImageSizedSrc) {
-                  jQuery(this).parent().trigger('click');              
+                  jQuery(this).parent().trigger('click');
                   return false;
                 }
               });
-            });        
+            });
         }
-        /*end of variant image*/   
-        /*end of variant image*/ 
+        /*end of variant image*/
+        /*end of variant image*/
       } else {
         // The variant doesn't exist. Just a safegaurd for errors, but disable the submit button anyway
         addToCart.text('Unavailable').addClass('disabled').attr('disabled', 'disabled');
-       
-         {% if settings.display_availability %}  
+
+         {% if settings.display_availability %}
           var inventoryInfo = productItem.find('.product-inventory span');
           inventoryInfo.addClass("unavailable");
           inventoryInfo.removeClass("many-in-stock");
@@ -185,7 +185,7 @@
           inventoryInfo.removeClass("out-of-stock");
           inventoryInfo.text(window.unavailable);
           {% endif %}
-      }   
-  };  
-  
+      }
+  };
+
   </script>
