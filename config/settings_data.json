@@ -2253,18 +2253,6 @@
       "category_listing_8DW9MC": {
         "type": "category-listing",
         "blocks": {
-          "image_TBYcjh": {
-            "type": "image",
-            "settings": {
-              "image": "shopify://shop_images/2.webp",
-              "bg_bolor": "#daf5f3",
-              "title": "Момчета",
-              "description": "",
-              "badge": "",
-              "product_count": "",
-              "url": "shopify://collections/бебешки-продукти"
-            }
-          },
           "image_F9EGMr": {
             "type": "image",
             "settings": {
@@ -2275,6 +2263,18 @@
               "badge": "",
               "product_count": "",
               "url": "shopify://collections/бебешки-дрехи"
+            }
+          },
+          "image_TBYcjh": {
+            "type": "image",
+            "settings": {
+              "image": "shopify://shop_images/blog5.webp",
+              "bg_bolor": "#daf5f3",
+              "title": "Момчета",
+              "description": "",
+              "badge": "",
+              "product_count": "",
+              "url": "shopify://collections/бебешки-продукти"
             }
           },
           "image_Dcg9xh": {
@@ -2305,8 +2305,8 @@
           }
         },
         "block_order": [
-          "image_TBYcjh",
           "image_F9EGMr",
+          "image_TBYcjh",
           "image_Dcg9xh",
           "image_zkFQ4K"
         ],
