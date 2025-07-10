@@ -6,15 +6,6 @@
 <div class="brands-showcase" id="brands-showcase-{{ section.id }}">
   <div class="brands-container">
 
-    {% if section.settings.section_title != blank %}
-      <div class="brands-header">
-        <h2 class="brands-title">{{ section.settings.section_title }}</h2>
-        {% if section.settings.section_description != blank %}
-          <p class="brands-description">{{ section.settings.section_description }}</p>
-        {% endif %}
-      </div>
-    {% endif %}
-
     {% if section.blocks.size > 0 %}
       <div class="brands-grid">
         {% for block in section.blocks %}

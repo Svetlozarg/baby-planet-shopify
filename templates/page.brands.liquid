@@ -5,22 +5,13 @@
 
 <div class="brands-page">
   <div class="page-width">
-    <!-- Breadcrumb Navigation -->
-    <nav class="breadcrumb" role="navigation" aria-label="Breadcrumb">
-      <div class="breadcrumb-container">
-        <a href="/" class="breadcrumb-link">
-          <i class="fa fa-home"></i>
-          {{ 'general.breadcrumbs.home' | t }}
-        </a>
-        <span class="breadcrumb-separator">/</span>
-        <span class="breadcrumb-current">{{ page.title }}</span>
-      </div>
-    </nav>
+
 
     <!-- Page Header -->
     <div class="page-header">
       <div class="page-header-content">
         <h1 class="page-title">{{ page.title }}</h1>
+        <p>С гордост представяме нашите доверени партньори - водещи марки, които споделят нашата мисия да осигурим най-качествените, безопасни и иновативни продукти за вашите деца. Всяка марка е внимателно подбрана, за да отговори на високите стандарти, които вие като родители очаквате.</p>
         {% if page.content != blank %}
           <div class="page-description">
             {{ page.content }}
@@ -40,8 +31,13 @@
   /* Brands Page Styles */
   .brands-page {
     padding: 20px 0 60px;
-    background: linear-gradient(135deg, #fef7f0 0%, #fff5f8 100%);
     min-height: 60vh;
+  }
+
+  .breadcrumb {
+    background-image: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   /* Breadcrumb Styles */
@@ -86,28 +82,10 @@
     text-align: center;
     margin-bottom: 50px;
     padding: 40px 20px;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 5px 5px rgba(255, 107, 157, 0.1);
     position: relative;
     overflow: hidden;
-  }
-
-  .page-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #ff6b9d, #ffc107, #ff6b9d);
-    background-size: 200% 100%;
-    animation: shimmer 3s ease-in-out infinite;
-  }
-
-  @keyframes shimmer {
-    0%, 100% { background-position: 200% 0; }
-    50% { background-position: -200% 0; }
   }
 
   .page-title {
