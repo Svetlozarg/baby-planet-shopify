@@ -2429,10 +2429,12 @@
         "name": "Newsletter",
         "settings": {
           "bg_color": "#ffeea9",
+          "bg_gradient_color": "#f8f4ff",
           "title": "Бюлетина",
           "title_color": "#000000",
           "text": "Абонирайте се за нашата бюлетина, за да получавате известия за нови продукти и намаления!",
           "text_color": "#000000",
+          "subscriber_count": "10,000+",
           "input_bg_color": "#ffffff",
           "input_focus_bg_color": "#000000",
           "input_text_color": "#000000",
@@ -2440,7 +2442,7 @@
           "button_txt_color": "#000000",
           "button_bg_color": "#ffffff",
           "button_hover_txt_color": "#000000",
-          "button_hover__bg_color": "#ffffff"
+          "button_hover_bg_color": "#ff7a93"
         }
       },
       "custom_content_PHKni7": {
@@ -2486,7 +2488,7 @@
           "desc_color": "#000000",
           "heading_image_need": true,
           "heading_image": "shopify://shop_images/icon-image.webp",
-          "collection": "момичета",
+          "collection": "момчета",
           "show_vendor": true,
           "grid": "4",
           "rows": "2"
