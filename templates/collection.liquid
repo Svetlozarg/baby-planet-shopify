@@ -78,110 +78,116 @@
             {% comment %} Shopify Native Filtering {% endcomment %}
             {% if collection.filters != empty %}
               <form class="filter-form" method="get" action="{{ collection.url }}">
+                {% comment %} Price filter first {% endcomment %}
                 {% for filter in collection.filters %}
                   {% assign filter_name = filter.label | downcase %}
-                  <div class="filter-group">
-                    <h4 class="filter-title">
-                      {% case filter_name %}
-                        {% when 'colour' or 'color' %}
-                          Цвят
-                        {% when 'size' %}
-                          Размер
-                        {% when 'brand' %}
-                          Марка
-                        {% when 'price_range' %}
-                          Цена
-                        {% when 'vendor' %}
-                          Производител
-                        {% when 'product_type' %}
-                          Тип продукт
-                        {% when 'availability' %}
-                          Наличност
-                        {% when 'weight' %}
-                          Тегло
-                        {% when 'material' %}
-                          Материал
-                        {% when 'age' %}
-                          Възраст
-                        {% when 'gender' %}
-                          Пол
-                        {% when 'category' %}
-                          Категория
-                        {% else %}
-                          {% assign translated_label = filter.label | downcase %}
-                          {% case translated_label %}
-                            {% when 'price' %}
-                              Цена
-                            {% when 'size' %}
-                              Размер
-                            {% when 'color' or 'colour' %}
-                              Цвят
-                            {% when 'brand' %}
-                              Марка
-                            {% when 'vendor' %}
-                              Производител
-                            {% when 'type' %}
-                              Тип
-                            {% when 'material' %}
-                              Материал
-                            {% when 'age' %}
-                              Възраст
-                            {% when 'gender' %}
-                              Пол
-                            {% when 'weight' %}
-                              Тегло
-                            {% when 'availability' %}
-                              Наличност
-                            {% else %}
-                              {{ filter.label }}
-                          {% endcase %}
-                      {% endcase %}
-                    </h4>
-
-                    <div class="filter-options {% if filter_name contains 'color' or filter_name contains 'colour' %}filter-options--colors{% endif %}">
-                      {% case filter.type %}
-                        {% when 'boolean' or 'list' %}
-                          {% for value in filter.values %}
-                            {% if value.count > 0 %}
-                              <label class="filter-option {% if filter_name contains 'color' or filter_name contains 'colour' %}filter-option--color{% endif %}">
-                                <input type="checkbox"
-                                       name="{{ filter.param_name }}"
-                                       value="{{ value.value | escape }}"
-                                       {% if value.active %}checked{% endif %}
-                                       onchange="this.form.submit()">
-                                {% if filter_name contains 'color' or filter_name contains 'colour' %}
-                                  <span class="color-swatch" style="background-color: {{ value.value | downcase }};"></span>
-                                {% endif %}
-                                <span class="filter-label">{{ value.label }} ({{ value.count }})</span>
-                              </label>
-                            {% endif %}
-                          {% endfor %}
-                        {% when 'price_range' %}
-                          <div class="price-range">
-                            <div class="price-inputs">
-                              <input type="number"
-                                     id="price-min"
-                                     name="filter.v.price.gte"
-                                     placeholder="От"
-                                     min="{{ filter.min_value.value | divided_by: 100 }}"
-                                     max="{{ filter.max_value.value | divided_by: 100 }}"
-                                     {% if filter.min_value.value %}value="{{ filter.min_value.value | divided_by: 100 }}"{% endif %}
-                                     step="0.01">
-                              <span class="price-separator">-</span>
-                              <input type="number"
-                                     id="price-max"
-                                     name="filter.v.price.lte"
-                                     placeholder="До"
-                                     min="{{ filter.min_value.value | divided_by: 100 }}"
-                                     max="{{ filter.max_value.value | divided_by: 100 }}"
-                                     {% if filter.max_value.value %}value="{{ filter.max_value.value | divided_by: 100 }}"{% endif %}
-                                     step="0.01">
-                            </div>
-                            <button type="submit" class="apply-price-filter">Приложи</button>
+                  {% if filter.type == 'price_range' %}
+                    <div class="filter-group">
+                      <h4 class="filter-title">Цена</h4>
+                      <div class="filter-options">
+                        <div class="price-range">
+                          <div class="price-inputs">
+                            <input type="number"
+                                   id="price-min"
+                                   name="filter.v.price.gte"
+                                   placeholder="От"
+                                   min="{{ filter.min_value.value | divided_by: 100 }}"
+                                   max="{{ filter.max_value.value | divided_by: 100 }}"
+                                   {% if filter.min_value.value %}value="{{ filter.min_value.value | divided_by: 100 }}"{% endif %}
+                                   step="0.01">
+                            <span class="price-separator">-</span>
+                            <input type="number"
+                                   id="price-max"
+                                   name="filter.v.price.lte"
+                                   placeholder="До"
+                                   min="{{ filter.min_value.value | divided_by: 100 }}"
+                                   max="{{ filter.max_value.value | divided_by: 100 }}"
+                                   {% if filter.max_value.value %}value="{{ filter.max_value.value | divided_by: 100 }}"{% endif %}
+                                   step="0.01">
                           </div>
-                      {% endcase %}
+                          <button type="submit" class="apply-price-filter">Приложи</button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  {% endif %}
+                {% endfor %}
+
+                {% comment %} Other filters (excluding availability) {% endcomment %}
+                {% for filter in collection.filters %}
+                  {% assign filter_name = filter.label | downcase %}
+                  {% unless filter.type == 'price_range' or filter_name == 'availability' %}
+                    <div class="filter-group">
+                      <h4 class="filter-title">
+                        {% case filter_name %}
+                          {% when 'colour' or 'color' or 'цвят' %}
+                            Цвят
+                          {% when 'size' or 'размер' %}
+                            Размер
+                          {% when 'brand' or 'марка' %}
+                            Марка
+                          {% when 'vendor' or 'производител' %}
+                            Производител
+                          {% when 'product_type' or 'тип продукт' or 'тип' %}
+                            Тип продукт
+                          {% when 'weight' or 'тегло' %}
+                            Тегло
+                          {% when 'material' or 'материал' %}
+                            Материал
+                          {% when 'age' or 'възраст' %}
+                            Възраст
+                          {% when 'gender' or 'пол' %}
+                            Пол
+                          {% when 'category' or 'категория' %}
+                            Категория
+                          {% else %}
+                            {% assign translated_label = filter.label | downcase %}
+                            {% case translated_label %}
+                              {% when 'size' or 'размер' %}
+                                Размер
+                              {% when 'color' or 'colour' or 'цвят' %}
+                                Цвят
+                              {% when 'brand' or 'марка' %}
+                                Марка
+                              {% when 'vendor' or 'производител' %}
+                                Производител
+                              {% when 'type' or 'тип' %}
+                                Тип
+                              {% when 'material' or 'материал' %}
+                                Материал
+                              {% when 'age' or 'възраст' %}
+                                Възраст
+                              {% when 'gender' or 'пол' %}
+                                Пол
+                              {% when 'weight' or 'тегло' %}
+                                Тегло
+                              {% else %}
+                                {{ filter.label }}
+                            {% endcase %}
+                        {% endcase %}
+                      </h4>
+
+                      <div class="filter-options {% if filter_name contains 'color' or filter_name contains 'colour' or filter_name contains 'цвят' %}filter-options--colors{% endif %}">
+                        {% case filter.type %}
+                          {% when 'boolean' or 'list' %}
+                            {% for value in filter.values %}
+                              {% if value.count > 0 %}
+                                <label class="filter-option {% if filter_name contains 'color' or filter_name contains 'colour' or filter_name contains 'цвят' %}filter-option--color{% endif %}">
+                                  <input type="checkbox"
+                                         name="{{ filter.param_name }}"
+                                         value="{{ value.value | escape }}"
+                                         {% if value.active %}checked{% endif %}
+                                         onchange="this.form.submit()">
+                                  {% if filter_name contains 'color' or filter_name contains 'colour' or filter_name contains 'цвят' %}
+                                    <span class="color-swatch" style="background-color: {{ value.value | downcase }};"></span>
+                                  {% endif %}
+                                  <span class="filter-label">{{ value.label }} ({{ value.count }})</span>
+                                </label>
+                              {% endif %}
+                            {% endfor %}
+                        {% endcase %}
+                      </div>
+                    </div>
+                  {% endunless %}
                 {% endfor %}
 
                 {% comment %} Keep sort parameter {% endcomment %}
