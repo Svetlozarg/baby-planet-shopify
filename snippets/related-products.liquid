@@ -1,69 +1,490 @@
-{% if collection == null or collection.handle == 'frontpage' or collection.handle == 'all' %}
-  {% assign found_a_collection = false %}
+{% comment %}
+  Modern Related Products Implementation
+  Shows products from the same collection or similar products
+{% endcomment %}
+
+{% assign related_products = blank %}
+{% assign products_to_show = 4 %}
+
+{% comment %} First, try to get products from the same collection {% endcomment %}
+{% if collection and collection.products_count > 1 %}
+  {% assign related_products = collection.products %}
+{% else %}
+  {% comment %} If no collection, find products from the first available collection {% endcomment %}
   {% for c in product.collections %}
-    {% if found_a_collection == false and c.handle != 'frontpage' and c.handle != 'all' and c.all_products_count > 1 %}
-      {% assign found_a_collection = true %}
-      {% assign collection = c %}
+    {% if c.handle != 'frontpage' and c.handle != 'all' and c.products_count > 1 %}
+      {% assign related_products = c.products %}
+      {% break %}
     {% endif %}
   {% endfor %}
 {% endif %}
 
-{% if collection and collection.products_count > 1 %}
-<div class="related-products-container">
-  {% if settings.related_prds_title != blank or settings.related_prds_heading  %}
-  <div class="dt-sc-hr-invisible-large"></div>
-      <div class="section-header section-header--small">
-        <div class="border-title">
-          {% endif %}  
-          {% if settings.related_prds_heading != blank %} <h4>{{ settings.related_prds_heading }}</h4>{% endif %}  
-          {% if settings.related_prds_title != blank %}
-          <h2 class="section-header__title">    
-            {{ settings.related_prds_title }}
-          </h2>
-          {% endif %}  
-        </div>
-      </div>
-     <div class="dt-sc-hr-invisible-small"></div>    
-  <ul class="grid-uniform grid-link__container related-products owl-carousel owl-theme">
-    {% assign current_product = product %}
-    {% assign current_product_found = false %}
-    {% for product in collection.products %}
-      {% if product.handle == current_product.handle %}
-        {% assign current_product_found = true %}
-      {% else %}
-        {% unless current_product_found == false and forloop.last %}
-          {% assign grid_item_width = 'wide--one-quarter post-large--one-quarter large--one-quarter medium--one-quarter small--one-half' %}
-          {% include 'home-product-grid-item' %}
-        {% endunless %}
-      {% endif %}
+{% comment %} If still no products, get products from the same product type {% endcomment %}
+{% if related_products == blank and product.type != blank %}
+  {% assign related_products = collections.all.products | where: 'type', product.type %}
+{% endif %}
+
+{% comment %} Finally, fallback to all products {% endcomment %}
+{% if related_products == blank %}
+  {% assign related_products = collections.all.products %}
+{% endif %}
+
+{% if related_products.size > 1 %}
+<div class="related-products-section">
+  <div class="related-products-grid">
+    {% assign count = 0 %}
+    {% for related_product in related_products limit: 8 %}
+      {% unless related_product.id == product.id %}
+        {% if count < products_to_show %}
+          {% assign count = count | plus: 1 %}
+
+          <div class="related-product-item">
+            <a href="{{ related_product.url }}" class="related-product-link">
+              <div class="related-product-image">
+                {% if related_product.featured_image %}
+                  <img src="{{ related_product.featured_image | img_url: '300x300' }}"
+                       alt="{{ related_product.featured_image.alt | escape }}"
+                       loading="lazy">
+                {% else %}
+                  <div class="no-image">No Image</div>
+                {% endif %}
+
+                {% if related_product.compare_at_price > related_product.price %}
+                  <span class="sale-badge">Sale</span>
+                {% endif %}
+
+                {% unless related_product.available %}
+                  <span class="sold-out-badge">Sold Out</span>
+                {% endunless %}
+              </div>
+
+              <div class="related-product-info">
+                <h3 class="related-product-title">{{ related_product.title }}</h3>
+                <div class="related-product-price">
+                  <span class="current-price">{{ related_product.price | money }}</span>
+                  {% if related_product.compare_at_price > related_product.price %}
+                    <span class="original-price">{{ related_product.compare_at_price | money }}</span>
+                  {% endif %}
+                </div>
+
+                {% if related_product.available %}
+                  <div class="related-product-actions">
+                    <button class="quick-add-btn" data-product-id="{{ related_product.variants.first.id }}">
+                      Добави в количката
+                    </button>
+                  </div>
+                {% endif %}
+              </div>
+            </a>
+          </div>
+
+        {% endif %}
+      {% endunless %}
     {% endfor %}
-  </ul>
-<div class="nav_featured"> </div>
+  </div>
 </div>
 {% endif %}
 
+<style>
+  .related-products-section {
+    margin-top: 40px;
+    padding: 0 16px;
+  }
 
-<script type="text/javascript">
-  $(document).ready(function(){
-      var related = $(".related-products");
-      related.owlCarousel({
-        loop:true,       
-        nav:true,
-        navContainer: ".nav_featured",
-          navText: ['<a class="prev"></a>','<a class="next"></a>'],
-            dots: false,
-              responsive:{
-                0:{
-                  items:1
-                },
-                  600:{
-                    items:3
-                  },
-                    1000:{
-                      items: 4
-                    }
-              }
-  });
+  .related-products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Large tablets and small desktops */
+  @media (max-width: 1024px) {
+    .related-products-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+  }
+
+  /* Tablets */
+  @media (max-width: 768px) {
+    .related-products-section {
+      margin-top: 32px;
+      padding: 0 12px;
+    }
+
+    .related-products-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+  }
+
+  /* Mobile devices */
+  @media (max-width: 480px) {
+    .related-products-section {
+      margin-top: 24px;
+      padding: 0 8px;
+    }
+
+    .related-products-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+  }
+
+  /* Small mobile devices */
+  @media (max-width: 360px) {
+    .related-products-grid {
+      gap: 8px;
+    }
+  }
+
+  .related-product-item {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+  }
+
+  .related-product-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: #e0e0e0;
+  }
+
+  @media (max-width: 768px) {
+    .related-product-item:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .related-product-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .related-product-image {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #f8f9fa;
+  }
+
+  .related-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .related-product-item:hover .related-product-image img {
+    transform: scale(1.05);
+  }
+
+  .no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #999;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 480px) {
+    .no-image {
+      font-size: 0.8rem;
+    }
+  }
+
+  .sale-badge,
+  .sold-out-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 480px) {
+    .sale-badge,
+    .sold-out-badge {
+      top: 6px;
+      right: 6px;
+      padding: 3px 6px;
+      font-size: 0.65rem;
+    }
+  }
+
+  .sale-badge {
+    background: #28a745;
+    color: white;
+  }
+
+  .sold-out-badge {
+    background: #dc3545;
+    color: white;
+  }
+
+  .related-product-info {
+    padding: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .related-product-info {
+      padding: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .related-product-info {
+      padding: 10px;
+    }
+  }
+
+  .related-product-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+    color: #333;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .related-product-title {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .related-product-title {
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+  }
+
+  .related-product-price {
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .related-product-price {
+      margin-bottom: 10px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .related-product-price {
+      margin-bottom: 8px;
+    }
+  }
+
+  .current-price {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.5rem !important;
+  }
+
+  @media (max-width: 768px) {
+    .current-price {
+      font-size: 1.2rem !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .current-price {
+      font-size: 1rem !important;
+    }
+  }
+
+  .original-price {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 0.75rem;
+    margin-left: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .original-price {
+      font-size: 0.7rem;
+      margin-left: 6px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .original-price {
+      font-size: 0.65rem;
+      margin-left: 4px;
+    }
+  }
+
+  .related-product-actions {
+    margin-top: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .related-product-actions {
+      margin-top: 10px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .related-product-actions {
+      margin-top: 8px;
+    }
+  }
+
+  .quick-add-btn {
+    width: 100%;
+    padding: 8px 16px;
+    background: {{ settings.color_primary | default: '#007bff' }};
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  @media (max-width: 768px) {
+    .quick-add-btn {
+      padding: 7px 12px;
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .quick-add-btn {
+      padding: 6px 10px;
+      font-size: 0.75rem;
+    }
+  }
+
+  .quick-add-btn:hover {
+    background: {{ settings.primary_hover_btn | default: '#0056b3' }};
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    .quick-add-btn:hover {
+      transform: none;
+    }
+  }
+
+  .quick-add-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .quick-add-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  /* Loading state */
+  .quick-add-btn.loading::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-left: 8px;
+  }
+
+  @media (max-width: 480px) {
+    .quick-add-btn.loading::after {
+      width: 10px;
+      height: 10px;
+      margin-left: 6px;
+    }
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Quick add functionality
+    const quickAddBtns = document.querySelectorAll('.quick-add-btn');
+
+    quickAddBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const variantId = this.dataset.productId;
+        const originalText = this.textContent;
+
+        // Show loading state
+        this.classList.add('loading');
+        this.textContent = 'Adding...';
+        this.disabled = true;
+
+        // Add to cart
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: variantId,
+            quantity: 1
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Success
+          this.classList.remove('loading');
+          this.textContent = 'Added!';
+          this.style.background = '#28a745';
+
+          // Reset after 2 seconds
+          setTimeout(() => {
+            this.textContent = originalText;
+            this.style.background = '';
+            this.disabled = false;
+          }, 2000);
+
+          // Trigger cart update event
+          document.dispatchEvent(new CustomEvent('cart:updated'));
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          this.classList.remove('loading');
+          this.textContent = 'Try Again';
+          this.style.background = '#dc3545';
+
+          setTimeout(() => {
+            this.textContent = originalText;
+            this.style.background = '';
+            this.disabled = false;
+          }, 2000);
+        });
       });
-      
+    });
+  });
 </script>
