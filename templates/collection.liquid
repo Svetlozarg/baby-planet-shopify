@@ -26,7 +26,7 @@
 
 <div class="collection-page">
   {% comment %} Collection Header {% endcomment %}
-  <section class="collection-header">
+  <section >
     <div class="container" style="max-width: 1600px;">
       {% comment %} Breadcrumb {% endcomment %}
       <nav class="breadcrumb" role="navigation" aria-label="Breadcrumb">
@@ -74,72 +74,112 @@
           <div class="sidebar-content">
             {% comment %} Dynamic Filters based on product options {% endcomment %}
             {% for filter in collection.filters %}
-              <div class="filter-group">
-                <h4 class="filter-title">{{ filter.label }}</h4>
-                <div class="filter-options {% if filter.type == 'color' %}filter-options--colors{% endif %}">
-                  {% case filter.type %}
-                    {% when 'boolean' or 'list' %}
-                      {% for value in filter.values %}
-                        <label class="filter-option">
-                          <input type="checkbox"
-                                 name="{{ filter.label | handleize }}"
-                                 value="{{ value.value | escape }}"
-                                 {% if value.active %}checked{% endif %}
-                                 data-filter-key="{{ filter.param_name }}"
-                                 data-filter-value="{{ value.value | escape }}">
-                          <span class="filter-label">{{ value.label }} ({{ value.count }})</span>
-                        </label>
-                      {% endfor %}
-                    {% when 'price_range' %}
-                      <div class="price-range">
-                        <div class="price-inputs">
-                          <input type="number"
-                                 id="price-min"
-                                 placeholder="От"
-                                 min="{{ filter.min_value.value }}"
-                                 max="{{ filter.max_value.value }}"
-                                 value="{{ filter.min_value.value }}">
-                          <span class="price-separator">-</span>
-                          <input type="number"
-                                 id="price-max"
-                                 placeholder="До"
-                                 min="{{ filter.min_value.value }}"
-                                 max="{{ filter.max_value.value }}"
-                                 value="{{ filter.max_value.value }}">
-                        </div>
-                        <button class="apply-price-filter">Приложи</button>
-                      </div>
-                  {% endcase %}
+              {% assign filter_name = filter.label | downcase %}
+              {% if filter_name contains 'size' or filter_name contains 'brand' or filter_name contains 'color' or filter_name contains 'colour' or filter.type == 'price_range' %}
+                <div class="filter-group">
+                  <h4 class="filter-title">
+                    {% case filter_name %}
+                      {% when 'colour' %}
+                        Цвят
+                      {% when 'size' %}
+                        Размер
+                      {% when 'brand' %}
+                        Марка
+                      {% when 'price_range' %}
+                        Цена
+                      {% else %}
+                        {{ filter.label }}
+                    {% endcase %}
+                  </h4>
+                  <div class="filter-options {% if filter_name contains 'color' or filter_name contains 'colour' %}filter-options--colors{% endif %}">
+                    {% case filter.type %}
+                      {% when 'boolean' or 'list' %}
+                        {% for value in filter.values %}
+                          {% if value.count > 0 %}
+                            <label class="filter-option {% if filter_name contains 'color' or filter_name contains 'colour' %}filter-option--color{% endif %}">
+                              <input type="checkbox"
+                                     name="{{ filter.label | handleize }}"
+                                     value="{{ value.value | escape }}"
+                                     {% if value.active %}checked{% endif %}
+                                     data-filter-key="{{ filter.param_name }}"
+                                     data-filter-value="{{ value.value | escape }}">
+                              {% if filter_name contains 'color' or filter_name contains 'colour' %}
+                                <span class="color-swatch" style="background-color: {{ value.value | downcase }};"></span>
+                              {% endif %}
+                              <span class="filter-label">{{ value.label }} ({{ value.count }})</span>
+                            </label>
+                          {% endif %}
+                        {% endfor %}
+                      {% when 'price_range' %}
+                                        <div class="price-range">
+                  <div class="price-inputs">
+                    <input type="number"
+                           id="price-min"
+                           placeholder="От"
+                           min="{{ filter.min_value.value }}"
+                           max="{{ filter.max_value.value }}"
+                           {% if filter.min_value.active %}value="{{ filter.min_value.value }}"{% endif %}>
+                    <span class="price-separator">-</span>
+                    <input type="number"
+                           id="price-max"
+                           placeholder="До"
+                           min="{{ filter.min_value.value }}"
+                           max="{{ filter.max_value.value }}"
+                           {% if filter.max_value.active %}value="{{ filter.max_value.value }}"{% endif %}>
+                  </div>
+                  <button class="apply-price-filter">Приложи</button>
                 </div>
-              </div>
+                    {% endcase %}
+                  </div>
+                </div>
+              {% endif %}
             {% endfor %}
 
-            {% comment %} Available Tags Filter {% endcomment %}
-            {% assign all_tags = collection.all_tags | sort %}
-            {% if all_tags.size > 0 %}
-              <div class="filter-group">
-                <h4 class="filter-title">Характеристики</h4>
-                <div class="filter-options">
-                  {% for tag in all_tags %}
-                    {% if current_tags contains tag %}
-                      <label class="filter-option">
-                        <input type="checkbox"
-                               name="tag"
-                               value="{{ tag | handle }}"
-                               checked>
-                        <span class="filter-label">{{ tag }}</span>
-                      </label>
-                    {% else %}
-                      <label class="filter-option">
-                        <input type="checkbox"
-                               name="tag"
-                               value="{{ tag | handle }}">
-                        <span class="filter-label">{{ tag }}</span>
-                      </label>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-              </div>
+            {% comment %} Product Variants Filter {% endcomment %}
+            {% assign has_variants = false %}
+            {% assign variant_options = '' %}
+            {% for product in collection.products limit: 1 %}
+              {% if product.variants.size > 1 %}
+                {% assign has_variants = true %}
+                {% for option in product.options_with_values %}
+                  {% unless option.name contains 'size' or option.name contains 'color' or option.name contains 'colour' or option.name contains 'brand' %}
+                    {% assign variant_options = variant_options | append: option.name | append: ',' %}
+                  {% endunless %}
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+
+            {% if has_variants %}
+              {% assign variant_options = variant_options | split: ',' | uniq %}
+              {% for option in variant_options %}
+                {% unless option == blank %}
+                  <div class="filter-group">
+                    <h4 class="filter-title">{{ option }}</h4>
+                    <div class="filter-options">
+                      {% assign option_values = '' %}
+                      {% for product in collection.products %}
+                        {% for variant in product.variants %}
+                          {% for option_value in variant.options %}
+                            {% assign option_values = option_values | append: option_value | append: ',' %}
+                          {% endfor %}
+                        {% endfor %}
+                      {% endfor %}
+                      {% assign unique_values = option_values | split: ',' | uniq | sort %}
+                      {% for value in unique_values %}
+                        {% unless value == blank %}
+                          <label class="filter-option">
+                            <input type="checkbox"
+                                   name="{{ option | handleize }}"
+                                   value="{{ value | handle }}"
+                                   {% if current_tags contains value %}checked{% endif %}>
+                            <span class="filter-label">{{ value }}</span>
+                          </label>
+                        {% endunless %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endunless %}
+              {% endfor %}
             {% endif %}
           </div>
         </aside>
@@ -150,22 +190,30 @@
           {% comment %} Top Toolbar {% endcomment %}
           <div class="collection-toolbar">
             <div class="toolbar-left">
-                             <div class="results-count">
-                 <span class="count-text">
-                   Показани
-                   <span id="current-count">{{ collection.products.size | at_most: settings.collection_results_per_page }}</span>
-                   от
-                   <span id="total-count">{{ collection.products_count }}</span>
-                   продукта
-                 </span>
-               </div>
+              <div class="results-count">
+                <span class="count-text">
+                  Показани
+                  {% if paginate.current_page == paginate.pages %}
+                    {{ collection.products_count }}
+                  {% else %}
+                    {{ paginate.current_page | times: settings.collection_results_per_page }}
+                  {% endif %}
+                  от
+                  {{ collection.products_count }}
+                  {% if collection.products_count == 1 %}
+                    продукт
+                  {% else %}
+                    продукта
+                  {% endif %}
+                </span>
+              </div>
 
-                             <button class="mobile-filter-toggle" id="mobile-filter-toggle">
-                 <svg class="icon" viewBox="0 0 24 24">
-                   <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h8v-2h-8V9h8V7h-8V5h8V3h-8v2H3v2h10v2H3v2h10v2H3v2h10v4h-2v2h2v2H3v2h10z"/>
-                 </svg>
-                 Филтри
-               </button>
+              <button class="mobile-filter-toggle" id="mobile-filter-toggle">
+                <svg class="icon" viewBox="0 0 24 24">
+                  <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h8v-2h-8V9h8V7h-8V5h8V3h-8v2H3v2h10v2H3v2h10v2H3v2h10v4h-2v2h2v2H3v2h10z"/>
+                </svg>
+                Филтри
+              </button>
             </div>
 
             <div class="toolbar-right">
@@ -876,6 +924,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+    // Get collection handle from URL or data attribute
+  function getCollectionHandle() {
+    const gridElement = document.querySelector('#products-grid');
+    if (gridElement && gridElement.dataset.collectionHandle) {
+      return gridElement.dataset.collectionHandle;
+    }
+
+    // Fallback to URL parsing if data attribute is not available
+    const pathParts = window.location.pathname.split('/');
+    const collectionsIndex = pathParts.indexOf('collections');
+    if (collectionsIndex !== -1 && pathParts.length > collectionsIndex + 1) {
+      // Get the handle but remove any tags that might be appended
+      return pathParts[collectionsIndex + 1].split('/')[0];
+    }
+    return '';
+  }
+
   // Filter functionality
   const filterInputs = document.querySelectorAll('.filter-option input[type="checkbox"]');
   filterInputs.forEach(input => {
@@ -886,6 +951,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Price filter
   const applyPriceBtn = document.querySelector('.apply-price-filter');
+  const priceMinInput = document.getElementById('price-min');
+  const priceMaxInput = document.getElementById('price-max');
+
+  // Set initial price values from URL params if they exist
+  if (priceMinInput && priceMaxInput) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const minPrice = urlParams.get('filter.v.price.gte');
+    const maxPrice = urlParams.get('filter.v.price.lte');
+
+    if (minPrice) priceMinInput.value = minPrice;
+    if (maxPrice) priceMaxInput.value = maxPrice;
+  }
+
   if (applyPriceBtn) {
     applyPriceBtn.addEventListener('click', function() {
       applyFilters();
@@ -902,6 +980,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function applyFilters() {
     const url = new URL(window.location);
+    const currentCollectionHandle = getCollectionHandle();
+
+    if (!currentCollectionHandle) {
+      console.error('Collection handle not found');
+      return;
+    }
 
     // Clear existing filter params
     Array.from(url.searchParams.keys()).forEach(key => {
@@ -926,16 +1010,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update URL path for tags
     if (selectedTags.length > 0) {
-      url.pathname = `/collections/${collectionHandle}/${selectedTags.join('+')}`;
+      url.pathname = `/collections/${currentCollectionHandle}/${selectedTags.join('+')}`;
     } else {
-      url.pathname = `/collections/${collectionHandle}`;
+      url.pathname = `/collections/${currentCollectionHandle}`;
     }
 
-    // Add price filter if it exists
+    // Add price filter if it exists and has valid values
     const priceMin = document.getElementById('price-min')?.value;
     const priceMax = document.getElementById('price-max')?.value;
-    if (priceMin) url.searchParams.set('filter.v.price.gte', priceMin);
-    if (priceMax) url.searchParams.set('filter.v.price.lte', priceMax);
+
+    if (priceMin && !isNaN(priceMin)) {
+      url.searchParams.set('filter.v.price.gte', priceMin);
+    }
+    if (priceMax && !isNaN(priceMax)) {
+      url.searchParams.set('filter.v.price.lte', priceMax);
+    }
 
     window.location.href = url.toString();
   }
