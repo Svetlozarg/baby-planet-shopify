@@ -24,6 +24,7 @@
     gap: 40px;
     margin: 20px 0;
     align-items: start;
+    position: relative;
   }
 
   .product-container img {
@@ -73,9 +74,52 @@
     transform: scale(1.05);
   }
 
+  /* Disable hover transform when zoom is active */
+  .image-zoom-container:hover img {
+    transform: none !important;
+  }
+
   .main-image {
     cursor: zoom-in;
     position: relative;
+  }
+
+    /* Custom Image Zoom Styles */
+  .image-zoom-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .custom-zoom-box {
+    position: absolute;
+    left: calc(100% + 20px);
+    top: 0;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    background: white;
+    z-index: 1000;
+    pointer-events: none;
+    overflow: hidden;
+    display: none;
+  }
+
+  .custom-zoom-lens {
+    position: absolute;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.4);
+    cursor: crosshair;
+    display: none;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    .custom-zoom-box,
+    .custom-zoom-lens {
+      display: none !important;
+    }
   }
 
   .image-zoom-icon {
@@ -94,6 +138,32 @@
 
   .main-image:hover .image-zoom-icon {
     opacity: 1;
+  }
+
+  /* Zoom instructions */
+  .zoom-instructions {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .main-image:hover .zoom-instructions {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .zoom-instructions {
+      display: none;
+    }
   }
 
   /* Thumbnails */
@@ -865,12 +935,17 @@
           {% if product.images.size == 0 %}
             <img src="{{ '' | product_img_url: 'grande' }}" alt="{{ product.title | escape }}" loading="lazy">
           {% else %}
-            <img id="mainImage" src="{{ featured_image | img_url: 'grande' }}" alt="{{ featured_image.alt | escape }}" loading="lazy" data-zoom="{{ featured_image | img_url: 'master' }}">
-            <div class="image-zoom-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
-              </svg>
+            <div class="image-zoom-container">
+              <img id="mainImage" src="{{ featured_image | img_url: 'grande' }}" alt="{{ featured_image.alt | escape }}" loading="lazy" data-zoom="{{ featured_image | img_url: 'master' }}">
+              <div class="image-zoom-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                  <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+                </svg>
+              </div>
+              <div class="zoom-instructions">
+                Скролнете за увеличаване • Натиснете за пълен размер
+              </div>
             </div>
           {% endif %}
         </div>
@@ -1161,6 +1236,8 @@
   </div>
 </div>
 
+<!-- Custom Image Zoom Implementation -->
+
 <script>
 (function() {
   'use strict';
@@ -1209,6 +1286,9 @@
   ];
   let currentImageIndex = 0;
 
+  // Image Zoom Variables
+  let imageZoom = null;
+
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
@@ -1218,12 +1298,254 @@
 
   function init() {
     setupImageGallery();
+    setupImageZoom();
     setupVariantSelector();
     setupFormSubmission();
     setupLightbox();
+    setupWindowResize();
   }
 
-    // Image Gallery
+  // Window Resize Handler
+  function setupWindowResize() {
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        setupImageZoom();
+      }, 250);
+    });
+  }
+
+  // Custom Image Zoom Implementation
+  function setupImageZoom() {
+    if (!mainImage) return;
+
+    // Disable on mobile/tablet
+    if (window.innerWidth <= 768) {
+      return;
+    }
+
+
+
+    // Destroy existing zoom if it exists
+    if (imageZoom && imageZoom.destroy) {
+      imageZoom.destroy();
+    }
+
+    // Get the container element
+    const container = mainImage.parentElement;
+    if (!container) {
+      console.warn('No container found for image zoom');
+      return;
+    }
+
+    // Ensure container has relative positioning
+    if (getComputedStyle(container).position === 'static') {
+      container.style.position = 'relative';
+    }
+
+    let zoomLevel = 2;
+    const minZoom = 1.5;
+    const maxZoom = 4;
+    let zoomBox = null;
+    let lens = null;
+    let isZooming = false;
+
+        // Create zoom elements
+    function createZoomElements() {
+      // Remove existing elements
+      const existingZoomBox = document.querySelector('.custom-zoom-box');
+      const existingLens = document.querySelector('.custom-zoom-lens');
+      if (existingZoomBox) existingZoomBox.remove();
+      if (existingLens) existingLens.remove();
+
+      // Calculate zoom box size
+      const zoomBoxSize = window.innerWidth <= 1200 ? 300 : (window.innerWidth <= 1400 ? 350 : 400);
+
+      // Create zoom box
+      zoomBox = document.createElement('div');
+      zoomBox.className = 'custom-zoom-box';
+
+            // Calculate position to ensure it's visible
+      const containerRect = container.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const spaceOnRight = viewportWidth - containerRect.right;
+
+            // If not enough space on right, position on left
+      const leftPosition = spaceOnRight >= zoomBoxSize + 40 ? 'calc(100% + 20px)' : `${-zoomBoxSize - 20}px`;
+
+              zoomBox.style.cssText = `
+        position: fixed;
+        left: ${containerRect.right + 20}px;
+        top: ${containerRect.top}px;
+        width: ${zoomBoxSize}px;
+        height: ${zoomBoxSize}px;
+        border: 3px solid #ff6b9d;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        background: white;
+        z-index: 9999;
+        pointer-events: none;
+        overflow: hidden;
+        display: block;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+      `;
+
+      // Add zoom box to body instead of container to avoid overflow issues
+      document.body.appendChild(zoomBox);
+
+            // Create zoomed image
+      const zoomedImg = document.createElement('img');
+      zoomedImg.src = mainImage.getAttribute('data-zoom') || mainImage.src;
+      zoomedImg.style.cssText = `
+        width: ${zoomBoxSize * zoomLevel}px;
+        height: ${zoomBoxSize * zoomLevel}px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        object-fit: cover;
+      `;
+      zoomBox.appendChild(zoomedImg);
+
+      // Create lens
+      lens = document.createElement('div');
+      lens.className = 'custom-zoom-lens';
+      lens.style.cssText = `
+        position: absolute;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.4);
+        cursor: crosshair;
+        display: block;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+      `;
+
+      // Add lens to container (this can stay in container)
+      container.appendChild(lens);
+
+      // Store zoom box size for calculations
+      zoomBox.zoomBoxSize = zoomBoxSize;
+    }
+
+    // Update zoom position
+    function updateZoom(e) {
+      if (!zoomBox || !lens) return;
+
+      const rect = mainImage.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Use stored zoom box size
+      const zoomBoxSize = zoomBox.zoomBoxSize || 400;
+
+      // Calculate lens size based on zoom level
+      const lensWidth = zoomBoxSize / zoomLevel;
+      const lensHeight = zoomBoxSize / zoomLevel;
+
+      // Position lens (relative to image)
+      let lensX = x - lensWidth / 2;
+      let lensY = y - lensHeight / 2;
+
+      // Keep lens within image bounds
+      lensX = Math.max(0, Math.min(lensX, rect.width - lensWidth));
+      lensY = Math.max(0, Math.min(lensY, rect.height - lensHeight));
+
+      lens.style.left = lensX + 'px';
+      lens.style.top = lensY + 'px';
+      lens.style.width = lensWidth + 'px';
+      lens.style.height = lensHeight + 'px';
+
+      // Update zoom box position (fixed to viewport)
+      zoomBox.style.left = (rect.right + 20) + 'px';
+      zoomBox.style.top = rect.top + 'px';
+
+                  // Update zoomed image position
+      const zoomedImg = zoomBox.querySelector('img');
+      if (zoomedImg) {
+        // Simple calculation: move the zoomed image based on lens position
+        const bgX = -lensX * zoomLevel;
+        const bgY = -lensY * zoomLevel;
+
+        zoomedImg.style.left = bgX + 'px';
+        zoomedImg.style.top = bgY + 'px';
+      }
+    }
+
+    // Event handlers
+    function handleMouseEnter() {
+      if (!isZooming) {
+        isZooming = true;
+        createZoomElements();
+      }
+    }
+
+    function handleMouseLeave() {
+      isZooming = false;
+      // Remove zoom elements
+      const existingZoomBox = document.querySelector('.custom-zoom-box');
+      const existingLens = document.querySelector('.custom-zoom-lens');
+      if (existingZoomBox) existingZoomBox.remove();
+      if (existingLens) existingLens.remove();
+    }
+
+    function handleMouseMove(e) {
+      if (isZooming) {
+        updateZoom(e);
+      }
+    }
+
+                function handleWheel(e) {
+      if (isZooming) {
+        e.preventDefault();
+
+        const delta = e.deltaY;
+        const zoomChange = delta > 0 ? -0.3 : 0.3;
+        zoomLevel = Math.max(minZoom, Math.min(maxZoom, zoomLevel + zoomChange));
+
+        // Update zoomed image size
+        const zoomedImg = zoomBox?.querySelector('img');
+        if (zoomedImg && zoomBox) {
+          const zoomBoxSize = zoomBox.zoomBoxSize || 400;
+          zoomedImg.style.width = (zoomBoxSize * zoomLevel) + 'px';
+          zoomedImg.style.height = (zoomBoxSize * zoomLevel) + 'px';
+        }
+
+        // Update zoom position
+        updateZoom(e);
+      }
+    }
+
+    // Add event listeners
+    mainImage.addEventListener('mouseenter', handleMouseEnter);
+    mainImage.addEventListener('mouseleave', handleMouseLeave);
+    mainImage.addEventListener('mousemove', handleMouseMove);
+    mainImage.addEventListener('wheel', handleWheel, { passive: false });
+
+    // Store cleanup function
+    imageZoom = {
+      destroy: function() {
+        mainImage.removeEventListener('mouseenter', handleMouseEnter);
+        mainImage.removeEventListener('mouseleave', handleMouseLeave);
+        mainImage.removeEventListener('mousemove', handleMouseMove);
+        mainImage.removeEventListener('wheel', handleWheel);
+
+        const existingZoomBox = document.querySelector('.custom-zoom-box');
+        const existingLens = document.querySelector('.custom-zoom-lens');
+        if (existingZoomBox) existingZoomBox.remove();
+        if (existingLens) existingLens.remove();
+
+        zoomBox = null;
+        lens = null;
+        isZooming = false;
+      }
+    };
+  }
+
+  // Image Gallery
   function setupImageGallery() {
     thumbnails.forEach(thumbnail => {
       let clickCount = 0;
@@ -1236,6 +1558,11 @@
         if (mainImage) {
           mainImage.src = imageUrl;
           mainImage.setAttribute('data-zoom', zoomUrl);
+
+          // Reinitialize zoom with new image
+          setTimeout(() => {
+            setupImageZoom();
+          }, 100);
         }
 
         currentImageIndex = index;
@@ -1341,6 +1668,11 @@
         mainImage.src = newImageUrl;
         mainImage.setAttribute('data-zoom', newZoomUrl);
 
+        // Reinitialize zoom with new image
+        setTimeout(() => {
+          setupImageZoom();
+        }, 100);
+
         // Update current image index for lightbox
         const imageIndex = productImages.findIndex(img => img.src === newZoomUrl);
         if (imageIndex !== -1) {
@@ -1386,9 +1718,32 @@
     // Main image click to open lightbox
     if (mainImageEl) {
       mainImageEl.style.cursor = 'zoom-in';
+      let mouseDownTime = 0;
+      let isMouseDown = false;
+
+      mainImageEl.addEventListener('mousedown', function(e) {
+        mouseDownTime = Date.now();
+        isMouseDown = true;
+      });
+
+      mainImageEl.addEventListener('mouseup', function(e) {
+        isMouseDown = false;
+      });
+
+      mainImageEl.addEventListener('mouseleave', function(e) {
+        isMouseDown = false;
+      });
+
       mainImageEl.addEventListener('click', function(e) {
-        e.preventDefault();
-        openLightboxSimple(currentImageIndex);
+        const clickDuration = Date.now() - mouseDownTime;
+
+        // Only open lightbox on quick clicks (not drag-like interactions)
+        // and only on desktop when not actively zooming
+        if (clickDuration < 200 && !isMouseDown) {
+          e.preventDefault();
+          e.stopPropagation();
+          openLightboxSimple(currentImageIndex);
+        }
       });
     }
 
