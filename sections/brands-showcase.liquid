@@ -1,0 +1,431 @@
+{% comment %}
+  Brands Showcase Section
+  Modern, responsive grid layout for displaying brand partners
+{% endcomment %}
+
+<div class="brands-showcase" id="brands-showcase-{{ section.id }}">
+  <div class="brands-container">
+
+    {% if section.settings.section_title != blank %}
+      <div class="brands-header">
+        <h2 class="brands-title">{{ section.settings.section_title }}</h2>
+        {% if section.settings.section_description != blank %}
+          <p class="brands-description">{{ section.settings.section_description }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="brands-grid">
+        {% for block in section.blocks %}
+          <div class="brand-item" {{ block.shopify_attributes }}>
+            <div class="brand-card">
+              {% if block.settings.brand_image != blank %}
+                <div class="brand-image-container">
+                  {% if block.settings.brand_link != blank %}
+                    <a href="{{ block.settings.brand_link }}" class="brand-link"
+                       {% if block.settings.open_new_tab %}target="_blank" rel="noopener"{% endif %}>
+                  {% endif %}
+
+                  <img src="{{ block.settings.brand_image | img_url: '400x400' }}"
+                       alt="{{ block.settings.brand_name | escape }}"
+                       class="brand-image"
+                       loading="lazy">
+
+                  {% if block.settings.brand_link != blank %}
+                    </a>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if block.settings.brand_name != blank %}
+                <div class="brand-info">
+                  <h3 class="brand-name">{{ block.settings.brand_name }}</h3>
+                  {% if block.settings.brand_description != blank %}
+                    <p class="brand-description">{{ block.settings.brand_description }}</p>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if block.settings.brand_link != blank %}
+                <div class="brand-action">
+                  <a href="{{ block.settings.brand_link }}" class="brand-cta"
+                     {% if block.settings.open_new_tab %}target="_blank" rel="noopener"{% endif %}>
+                    {{ block.settings.cta_text | default: 'View Products' }}
+                    <i class="fa fa-arrow-right"></i>
+                  </a>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="brands-empty">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="fa fa-tags"></i>
+          </div>
+          <h3>No brands added yet</h3>
+          <p>Add your brand partners to showcase them here.</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  /* Brands Showcase Styles */
+  .brands-showcase {
+    padding: 0;
+    background: transparent;
+  }
+
+  .brands-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Header Styles */
+  .brands-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .brands-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #ff6b9d, #7b6b8a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+  }
+
+  .brands-description {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Grid Layout */
+  .brands-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  /* Brand Card Styles */
+  .brand-item {
+    position: relative;
+  }
+
+  .brand-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.1);
+    transition: all 0.3s ease;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brand-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b9d, #ffc107, #ff6b9d);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .brand-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(255, 107, 157, 0.2);
+  }
+
+  .brand-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  /* Brand Image Styles */
+  .brand-image-container {
+    margin-bottom: 25px;
+    flex-shrink: 0;
+  }
+
+  .brand-link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .brand-image {
+    width: 100%;
+    max-width: 200px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+    background: #f8f9fa;
+    padding: 15px;
+    box-sizing: border-box;
+  }
+
+  .brand-card:hover .brand-image {
+    transform: scale(1.05);
+  }
+
+  /* Brand Info Styles */
+  .brand-info {
+    flex-grow: 1;
+    margin-bottom: 20px;
+  }
+
+  .brand-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+
+  .brand-info .brand-description {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Brand Action Styles */
+  .brand-action {
+    flex-shrink: 0;
+  }
+
+  .brand-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #ff6b9d, #ff8fab);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+  }
+
+  .brand-cta:hover {
+    background: linear-gradient(135deg, #ff5a8a, #ff6b9d);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+    color: white;
+  }
+
+  .brand-cta i {
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+  }
+
+  .brand-cta:hover i {
+    transform: translateX(3px);
+  }
+
+  /* Empty State */
+  .brands-empty {
+    text-align: center;
+    padding: 80px 20px;
+  }
+
+  .empty-state {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .empty-icon {
+    font-size: 4rem;
+    color: #ddd;
+    margin-bottom: 20px;
+  }
+
+  .empty-state h3 {
+    font-size: 1.5rem;
+    color: #666;
+    margin-bottom: 10px;
+  }
+
+  .empty-state p {
+    color: #999;
+    font-size: 1rem;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .brands-container {
+      padding: 0 15px;
+    }
+
+    .brands-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .brands-header {
+      margin-bottom: 30px;
+    }
+
+    .brands-title {
+      font-size: 1.8rem;
+    }
+
+    .brands-description {
+      font-size: 1rem;
+    }
+
+    .brand-card {
+      padding: 25px 20px;
+    }
+
+    .brand-image {
+      max-width: 150px;
+      height: 100px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .brands-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .brand-card {
+      padding: 20px 15px;
+    }
+
+    .brand-image {
+      max-width: 120px;
+      height: 80px;
+    }
+
+    .brand-name {
+      font-size: 1.2rem;
+    }
+
+    .brand-cta {
+      padding: 10px 20px;
+      font-size: 0.9rem;
+    }
+  }
+
+  /* Grid variations for different screen sizes */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .brands-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .brands-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .brands-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Brands Showcase",
+  "tag": "section",
+  "class": "brands-showcase-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Our Brand Partners"
+    },
+    {
+      "type": "textarea",
+      "id": "section_description",
+      "label": "Section Description",
+      "default": "We proudly partner with these trusted brands to bring you the best products for your little ones."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "brand_image",
+          "label": "Brand Logo/Image"
+        },
+        {
+          "type": "text",
+          "id": "brand_name",
+          "label": "Brand Name"
+        },
+        {
+          "type": "textarea",
+          "id": "brand_description",
+          "label": "Brand Description",
+          "info": "Optional short description of the brand"
+        },
+        {
+          "type": "url",
+          "id": "brand_link",
+          "label": "Brand Link",
+          "info": "Link to brand's collection or external website"
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "Button Text",
+          "default": "View Products"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_new_tab",
+          "label": "Open link in new tab",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brands Showcase",
+      "blocks": [
+        {
+          "type": "brand"
+        },
+        {
+          "type": "brand"
+        },
+        {
+          "type": "brand"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
