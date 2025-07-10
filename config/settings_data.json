@@ -2493,6 +2493,29 @@
           "grid": "4",
           "rows": "2"
         }
+      },
+      "brands-showcase": {
+        "type": "brands-showcase",
+        "blocks": {
+          "brand_Vr6zRy": {
+            "type": "brand",
+            "settings": {
+              "brand_image": "shopify://shop_images/img-5_250x_e91ab109-d565-4565-b7e0-1deef32109d3.avif",
+              "brand_name": "Lorelli",
+              "brand_description": "Описание на Lorelli",
+              "brand_link": "shopify://pages/brands",
+              "cta_text": "Виж Продукти",
+              "open_new_tab": false
+            }
+          }
+        },
+        "block_order": [
+          "brand_Vr6zRy"
+        ],
+        "settings": {
+          "section_title": "Our Brand Partners",
+          "section_description": "We proudly partner with these trusted brands to bring you the best products for your little ones."
+        }
       }
     },
     "content_for_index": [
