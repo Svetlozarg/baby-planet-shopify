@@ -1,0 +1,21 @@
+{% comment %}
+  Alternative Sale Page Template - Sale Items
+  This template can be used as an alternative to page.sale.liquid
+{% endcomment %}
+
+{% comment %} Get all products on sale using collections {% endcomment %}
+{% assign sale_products = collections.all.products | where: 'compare_at_price' %}
+
+{% comment %} Alternative: Get products from a specific sale collection if you have one {% endcomment %}
+{% comment %} {% assign sale_products = collections.sale.products %} {% endcomment %}
+
+{% comment %} Filter out products without compare_at_price {% endcomment %}
+{% assign filtered_sale_products = '' | split: '' %}
+{% for product in sale_products %}
+  {% if product.compare_at_price > product.price %}
+    {% assign filtered_sale_products = filtered_sale_products | concat: product %}
+  {% endif %}
+{% endfor %}
+
+{% comment %} Use the main sale template content {% endcomment %}
+{% include 'page.sale' %}

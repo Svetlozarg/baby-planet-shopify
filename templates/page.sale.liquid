@@ -1,0 +1,1238 @@
+{% comment %}
+  Enhanced Baby Planet Sale Page Template
+  Features: Modern responsive design, comprehensive filters, sale-specific features
+{% endcomment %}
+
+{% comment %} Get all products on sale {% endcomment %}
+{% assign sale_products = collections.all.products | where: 'compare_at_price' %}
+{% assign products_per_page = 24 %}
+
+{% comment %} Grid configuration {% endcomment %}
+{% liquid
+  case settings.collection_grid
+    when '2'
+      assign grid_item_width = 'wide--one-half large--one-half medium--one-half small--one-whole'
+      assign products_per_row = 2
+    when '3'
+      assign grid_item_width = 'wide--one-third large--one-third medium--one-half small--one-whole'
+      assign products_per_row = 3
+    when '4'
+      assign grid_item_width = 'wide--one-quarter large--one-third medium--one-half small--one-whole'
+      assign products_per_row = 4
+    when '5'
+      assign grid_item_width = 'wide--one-fifth large--one-quarter medium--one-half small--one-whole'
+      assign products_per_row = 5
+    else
+      assign grid_item_width = 'wide--one-quarter large--one-third medium--one-half small--one-whole'
+      assign products_per_row = 4
+  endcase
+%}
+
+<div class="sale-page">
+  {% comment %} Sale Header {% endcomment %}
+  <section class="sale-header">
+    <div class="container">
+      {% comment %} Breadcrumb {% endcomment %}
+      <nav class="breadcrumb" role="navigation" aria-label="Breadcrumb">
+        <ol class="breadcrumb__list">
+          <li class="breadcrumb__item">
+            <a href="/" class="breadcrumb__link">{{ 'general.breadcrumbs.home' | t }}</a>
+          </li>
+          <li class="breadcrumb__item breadcrumb__item--current" aria-current="page">
+            <span class="breadcrumb__text">Разпродажба</span>
+          </li>
+        </ol>
+      </nav>
+
+      {% comment %} Sale Banner {% endcomment %}
+      <div class="sale-banner">
+        <div class="sale-banner-content">
+          <h1 class="sale-title">
+            🔥 Голяма Разпродажба
+          </h1>
+          <p class="sale-subtitle">Открийте невероятни оферти за вашето бебе</p>
+          <div class="sale-stats">
+            <span class="sale-count">{{ sale_products.size }} продукта на промоция</span>
+            <span class="sale-savings">До 70% отстъпка</span>
+          </div>
+        </div>
+        <div class="sale-banner-visual">
+          <div class="sale-badge">
+            <span class="sale-percentage">-50%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% comment %} Main Content {% endcomment %}
+  <main class="sale-main">
+    <div class="container-full">
+      <div class="sale-layout">
+
+        {% comment %} Enhanced Sidebar Filters {% endcomment %}
+        <aside class="sale-sidebar" role="complementary">
+          <div class="sidebar-header">
+            <h3 class="sidebar-title">Филтри</h3>
+            <button class="clear-filters btn btn--primary" id="clear-all-filters">
+              <svg class="clear-filters-icon" width="16" height="16" viewBox="0 0 24 24">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Изчисти
+            </button>
+          </div>
+
+          <div class="sidebar-content">
+            {% comment %} Price Range Filter {% endcomment %}
+            <div class="filter-group">
+              <h4 class="filter-title">Ценови диапазон</h4>
+              <div class="filter-options">
+                <div class="price-ranges">
+                  <label class="price-range-option">
+                    <input type="radio" name="price-range" value="0-25">
+                    <span class="price-range-label">До 25 лв</span>
+                  </label>
+                  <label class="price-range-option">
+                    <input type="radio" name="price-range" value="25-50">
+                    <span class="price-range-label">25 - 50 лв</span>
+                  </label>
+                  <label class="price-range-option">
+                    <input type="radio" name="price-range" value="50-100">
+                    <span class="price-range-label">50 - 100 лв</span>
+                  </label>
+                  <label class="price-range-option">
+                    <input type="radio" name="price-range" value="100+">
+                    <span class="price-range-label">Над 100 лв</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {% comment %} Discount Range Filter {% endcomment %}
+            <div class="filter-group">
+              <h4 class="filter-title">Размер на отстъпката</h4>
+              <div class="filter-options">
+                <div class="discount-ranges">
+                  <label class="discount-range-option">
+                    <input type="radio" name="discount-range" value="10-25">
+                    <span class="discount-label">10% - 25%</span>
+                  </label>
+                  <label class="discount-range-option">
+                    <input type="radio" name="discount-range" value="25-50">
+                    <span class="discount-label">25% - 50%</span>
+                  </label>
+                  <label class="discount-range-option">
+                    <input type="radio" name="discount-range" value="50+">
+                    <span class="discount-label">Над 50%</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {% comment %} Category Filter {% endcomment %}
+            <div class="filter-group">
+              <h4 class="filter-title">Категории</h4>
+              <div class="filter-options">
+                {% assign categories = sale_products | map: 'type' | uniq | sort %}
+                {% for category in categories %}
+                  {% if category != blank %}
+                    <label class="filter-option">
+                      <input type="checkbox" name="category" value="{{ category | handle }}">
+                      <span class="filter-label">{{ category }}</span>
+                    </label>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+
+            {% comment %} Brand Filter {% endcomment %}
+            <div class="filter-group">
+              <h4 class="filter-title">Марки</h4>
+              <div class="filter-options">
+                {% assign brands = sale_products | map: 'vendor' | uniq | sort %}
+                {% for brand in brands %}
+                  {% if brand != blank %}
+                    <label class="filter-option">
+                      <input type="checkbox" name="brand" value="{{ brand | handle }}">
+                      <span class="filter-label">{{ brand }}</span>
+                    </label>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+
+            {% comment %} Age Group Filter {% endcomment %}
+            <div class="filter-group">
+              <h4 class="filter-title">Възрастова група</h4>
+              <div class="filter-options">
+                <label class="filter-option">
+                  <input type="checkbox" name="age" value="newborn">
+                  <span class="filter-label">Новородено (0-3м)</span>
+                </label>
+                <label class="filter-option">
+                  <input type="checkbox" name="age" value="baby">
+                  <span class="filter-label">Бебе (3-12м)</span>
+                </label>
+                <label class="filter-option">
+                  <input type="checkbox" name="age" value="toddler">
+                  <span class="filter-label">Малко дете (1-3г)</span>
+                </label>
+                <label class="filter-option">
+                  <input type="checkbox" name="age" value="preschool">
+                  <span class="filter-label">Предучилищно (3-6г)</span>
+                </label>
+              </div>
+            </div>
+
+            {% comment %} Size Filter {% endcomment %}
+            <div class="filter-group">
+              <h4 class="filter-title">Размери</h4>
+              <div class="filter-options">
+                {% assign sizes = sale_products | map: 'variants' | map: 'option1' | uniq | sort %}
+                {% for size in sizes %}
+                  {% if size != blank and size != 'Default Title' %}
+                    <label class="filter-option">
+                      <input type="checkbox" name="size" value="{{ size | handle }}">
+                      <span class="filter-label">{{ size }}</span>
+                    </label>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+
+            {% comment %} Color Filter {% endcomment %}
+            <div class="filter-group">
+              <h4 class="filter-title">Цветове</h4>
+              <div class="filter-options filter-options--colors">
+                {% assign colors = sale_products | map: 'variants' | map: 'option2' | uniq | sort %}
+                {% for color in colors %}
+                  {% if color != blank and color != 'Default Title' %}
+                    <label class="filter-option filter-option--color">
+                      <input type="checkbox" name="color" value="{{ color | handle }}">
+                      <span class="color-swatch" style="background-color: {{ color | downcase }};"></span>
+                      <span class="filter-label">{{ color }}</span>
+                    </label>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {% comment %} Main Content Area {% endcomment %}
+        <div class="sale-content">
+          {% comment %} Top Toolbar {% endcomment %}
+          <div class="sale-toolbar">
+            <div class="toolbar-left">
+              <div class="results-count">
+                <span class="count-text" id="results-count">
+                  Показани <span id="current-count">{{ sale_products.size }}</span> от {{ sale_products.size }} продукта
+                </span>
+              </div>
+              <button class="mobile-filter-toggle" id="mobile-filter-toggle">
+                <svg class="icon" viewBox="0 0 24 24">
+                  <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h8v-2h-8V9h8V7h-8V5h8V3h-8v2H3v2h10v2H3v2h10v2H3v2h10v4h-2v2h2v2H3v2h10z"/>
+                </svg>
+                Филтри
+              </button>
+            </div>
+
+            <div class="toolbar-right">
+              <div class="sort-dropdown">
+                <label for="sort-by" class="sort-label">Сортиране по:</label>
+                <select id="sort-by" class="sort-select">
+                  <option value="discount-high">🔥 Най-голяма отстъпка</option>
+                  <option value="discount-low">📈 Най-малка отстъпка</option>
+                  <option value="price-low">💰 Цена: Ниска към Висока</option>
+                  <option value="price-high">💰 Цена: Висока към Ниска</option>
+                  <option value="name-asc">🔤 А-Я</option>
+                  <option value="name-desc">🔤 Я-А</option>
+                  <option value="newest">🆕 Най-нови</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {% comment %} Products Grid {% endcomment %}
+          <div class="products-section">
+            {% if sale_products.size > 0 %}
+              <div class="products-container">
+                <ul class="products-grid" id="products-grid">
+                                    {% for product in sale_products %}
+                    <li class="baby-product-card {{ grid_item_width }}"
+                        data-product-type="{{ product.type | handle }}"
+                        data-product-vendor="{{ product.vendor | handle }}"
+                        data-product-price="{{ product.price }}"
+                        data-product-compare-price="{{ product.compare_at_price }}"
+                        data-product-discount="{{ product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price }}">
+                      {% include 'sale-product-item', grid_item_width: grid_item_width %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% else %}
+              <div class="sale-empty">
+                <div class="empty-content">
+                  <div class="empty-icon">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                  </div>
+                  <h3 class="empty-title">Няма продукти на разпродажба</h3>
+                  <p class="empty-text">В момента няма продукти, които отговарят на вашите критерии</p>
+                  <button class="btn btn--secondary" onclick="clearAllFilters()">
+                    Изчисти всички филтри
+                  </button>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+/* Enhanced Sale Page Styles */
+.sale-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffeef8 0%, #fff0f5 100%);
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.container-full {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Sale Header */
+.sale-header {
+  padding: 1rem 0 2rem;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ffa8c5 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.sale-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M10,6 C10,3 7,1 4,3 C1,1 -2,3 -2,6 C-2,10 10,18 10,18 C10,18 22,10 22,6 C22,3 19,1 16,3 C13,1 10,3 10,6 Z" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>') repeat;
+  opacity: 0.1;
+}
+
+.sale-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.sale-banner-content {
+  flex: 1;
+}
+
+.sale-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.sale-subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  margin: 0 0 1.5rem 0;
+  opacity: 0.9;
+}
+
+.sale-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.sale-count,
+.sale-savings {
+  background: rgba(255,255,255,0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  backdrop-filter: blur(10px);
+}
+
+.sale-banner-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sale-badge {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #ff4757 0%, #ff6b9d 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.sale-percentage {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Breadcrumb in header */
+.sale-header .breadcrumb__list {
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 1rem;
+}
+
+.sale-header .breadcrumb__link {
+  color: rgba(255,255,255,0.8);
+}
+
+.sale-header .breadcrumb__link:hover {
+  color: white;
+}
+
+.sale-header .breadcrumb__item:not(:last-child)::after {
+  color: rgba(255,255,255,0.6);
+}
+
+/* Main Layout */
+.sale-main {
+  padding: 2rem 0 4rem;
+}
+
+.sale-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Enhanced Sidebar */
+.sale-sidebar {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 2rem;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  border: 2px solid rgba(255, 107, 157, 0.1);
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(255, 107, 157, 0.1);
+}
+
+.sidebar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.clear-filters {
+  background: linear-gradient(135deg, #ff6b9d 0%, #ffa8c5 100%);
+  border: none;
+  color: white;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.clear-filters:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4);
+}
+
+.filter-group {
+  margin-bottom: 2.5rem;
+}
+
+.filter-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 107, 157, 0.2);
+}
+
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.filter-option:hover {
+  background: rgba(255, 107, 157, 0.05);
+  border-color: rgba(255, 107, 157, 0.2);
+}
+
+.filter-option input[type="checkbox"],
+.filter-option input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.filter-option input[type="radio"] {
+  border-radius: 50%;
+}
+
+.filter-option input[type="checkbox"]:checked,
+.filter-option input[type="radio"]:checked {
+  background: #ff6b9d;
+  border-color: #ff6b9d;
+}
+
+.filter-label {
+  font-size: 0.875rem;
+  color: #2c3e50;
+  flex: 1;
+  font-weight: 500;
+}
+
+/* Price and Discount Ranges */
+.price-ranges,
+.discount-ranges {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.price-range-option,
+.discount-range-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  background: rgba(255, 107, 157, 0.02);
+}
+
+.price-range-option:hover,
+.discount-range-option:hover {
+  background: rgba(255, 107, 157, 0.1);
+  border-color: #ff6b9d;
+}
+
+.price-range-label,
+.discount-label {
+  font-size: 0.875rem;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+/* Color Filter */
+.filter-options--colors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.5rem;
+}
+
+.filter-option--color {
+  flex-direction: column;
+  text-align: center;
+  padding: 1rem 0.5rem;
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  background: rgba(255, 107, 157, 0.02);
+}
+
+.color-swatch {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 3px solid #ddd;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Toolbar */
+.sale-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+  border: 2px solid rgba(255, 107, 157, 0.1);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.results-count {
+  font-size: 1rem;
+  color: #5d6d7e;
+  font-weight: 500;
+}
+
+.mobile-filter-toggle {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ffa8c5 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.mobile-filter-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4);
+}
+
+.mobile-filter-toggle .icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sort-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sort-label {
+  font-size: 0.875rem;
+  color: #5d6d7e;
+  font-weight: 600;
+}
+
+.sort-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(255, 107, 157, 0.2);
+  border-radius: 12px;
+  font-size: 0.875rem;
+  background: white;
+  min-width: 200px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: #ff6b9d;
+}
+
+/* Products Grid */
+.products-container {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(255, 107, 157, 0.05);
+}
+
+.products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0 -15px;
+  padding: 0;
+}
+
+.products-grid .baby-product-card {
+  padding: 0 15px;
+  margin-bottom: 30px;
+}
+
+/* Empty State */
+.sale-empty {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.08);
+  border: 2px dashed rgba(255, 107, 157, 0.3);
+}
+
+.empty-content {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.empty-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 2rem;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ffa8c5 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
+}
+
+.empty-icon svg {
+  width: 50px;
+  height: 50px;
+  fill: white;
+}
+
+.empty-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+}
+
+.empty-text {
+  font-size: 1rem;
+  color: #7f8c8d;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn--secondary {
+  background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+  color: #2c3e50;
+}
+
+.btn--secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+  .sale-layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .sale-sidebar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0;
+    border-radius: 0;
+    max-height: none;
+    overflow: hidden;
+  }
+
+  .sale-sidebar.sidebar--open {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
+
+  .sidebar-content {
+    background: #ffffff;
+    width: 90%;
+    max-width: 400px;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 2rem;
+    animation: slideInRight 0.3s ease;
+  }
+
+  .mobile-filter-toggle {
+    display: flex;
+  }
+
+  .sale-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .sale-stats {
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0 15px;
+  }
+
+  .container-full {
+    padding: 0 15px;
+  }
+
+  .sale-header {
+    padding: 1rem 0 1.5rem;
+  }
+
+  .sale-main {
+    padding: 1rem 0 2rem;
+  }
+
+  .sale-toolbar {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+    padding: 1rem;
+  }
+
+  .toolbar-left,
+  .toolbar-right {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .products-container {
+    padding: 1.5rem;
+  }
+
+  .products-grid {
+    margin: 0 -10px;
+  }
+
+  .products-grid .baby-product-card {
+    padding: 0 10px;
+    margin-bottom: 20px;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .sidebar-content {
+    width: 95%;
+    max-width: 350px;
+    padding: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .products-grid .baby-product-card {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .sale-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .sale-badge {
+    width: 80px;
+    height: 80px;
+  }
+
+  .sale-percentage {
+    font-size: 1.25rem;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+</style>
+
+<script>
+// Enhanced Sale Page Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  let filteredProducts = [];
+  let allProducts = [];
+
+  // Initialize
+  initializeSalePage();
+
+  function initializeSalePage() {
+    // Get all products
+    allProducts = Array.from(document.querySelectorAll('.baby-product-card'));
+    filteredProducts = [...allProducts];
+
+    // Setup event listeners
+    setupMobileFilters();
+    setupFilterListeners();
+    setupSortListeners();
+
+    // Update initial count
+    updateResultsCount();
+  }
+
+  function setupMobileFilters() {
+    const mobileFilterToggle = document.getElementById('mobile-filter-toggle');
+    const sidebar = document.querySelector('.sale-sidebar');
+
+    if (mobileFilterToggle && sidebar) {
+      mobileFilterToggle.addEventListener('click', function() {
+        sidebar.classList.add('sidebar--open');
+        document.body.style.overflow = 'hidden';
+        addMobileCloseButton();
+      });
+
+      sidebar.addEventListener('click', function(e) {
+        if (e.target === sidebar) {
+          closeMobileSidebar();
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('sidebar--open')) {
+          closeMobileSidebar();
+        }
+      });
+    }
+  }
+
+  function closeMobileSidebar() {
+    const sidebar = document.querySelector('.sale-sidebar');
+    if (sidebar) {
+      sidebar.classList.remove('sidebar--open');
+      document.body.style.overflow = '';
+      const mobileCloseBtn = document.querySelector('.mobile-close-btn');
+      if (mobileCloseBtn) {
+        mobileCloseBtn.remove();
+      }
+    }
+  }
+
+  function addMobileCloseButton() {
+    const sidebarHeader = document.querySelector('.sidebar-header');
+    if (sidebarHeader && !document.querySelector('.mobile-close-btn')) {
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'mobile-close-btn';
+      closeBtn.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      `;
+      closeBtn.addEventListener('click', closeMobileSidebar);
+      sidebarHeader.appendChild(closeBtn);
+    }
+  }
+
+  function setupFilterListeners() {
+    // Price range filters
+    const priceFilters = document.querySelectorAll('input[name="price-range"]');
+    priceFilters.forEach(filter => {
+      filter.addEventListener('change', applyFilters);
+    });
+
+    // Discount range filters
+    const discountFilters = document.querySelectorAll('input[name="discount-range"]');
+    discountFilters.forEach(filter => {
+      filter.addEventListener('change', applyFilters);
+    });
+
+    // Category filters
+    const categoryFilters = document.querySelectorAll('input[name="category"]');
+    categoryFilters.forEach(filter => {
+      filter.addEventListener('change', applyFilters);
+    });
+
+    // Brand filters
+    const brandFilters = document.querySelectorAll('input[name="brand"]');
+    brandFilters.forEach(filter => {
+      filter.addEventListener('change', applyFilters);
+    });
+
+    // Age filters
+    const ageFilters = document.querySelectorAll('input[name="age"]');
+    ageFilters.forEach(filter => {
+      filter.addEventListener('change', applyFilters);
+    });
+
+    // Size filters
+    const sizeFilters = document.querySelectorAll('input[name="size"]');
+    sizeFilters.forEach(filter => {
+      filter.addEventListener('change', applyFilters);
+    });
+
+    // Color filters
+    const colorFilters = document.querySelectorAll('input[name="color"]');
+    colorFilters.forEach(filter => {
+      filter.addEventListener('change', applyFilters);
+    });
+
+    // Clear all filters
+    const clearAllBtn = document.getElementById('clear-all-filters');
+    if (clearAllBtn) {
+      clearAllBtn.addEventListener('click', clearAllFilters);
+    }
+  }
+
+  function setupSortListeners() {
+    const sortSelect = document.getElementById('sort-by');
+    if (sortSelect) {
+      sortSelect.addEventListener('change', applySorting);
+    }
+  }
+
+  function applyFilters() {
+    filteredProducts = allProducts.filter(product => {
+      return (
+        matchesPriceRange(product) &&
+        matchesDiscountRange(product) &&
+        matchesCategory(product) &&
+        matchesBrand(product) &&
+        matchesAge(product) &&
+        matchesSize(product) &&
+        matchesColor(product)
+      );
+    });
+
+    displayFilteredProducts();
+    updateResultsCount();
+  }
+
+  function matchesPriceRange(product) {
+    const selectedRange = document.querySelector('input[name="price-range"]:checked');
+    if (!selectedRange) return true;
+
+    const price = parseFloat(product.dataset.productPrice) / 100;
+    const range = selectedRange.value;
+
+    switch (range) {
+      case '0-25':
+        return price <= 25;
+      case '25-50':
+        return price > 25 && price <= 50;
+      case '50-100':
+        return price > 50 && price <= 100;
+      case '100+':
+        return price > 100;
+      default:
+        return true;
+    }
+  }
+
+  function matchesDiscountRange(product) {
+    const selectedRange = document.querySelector('input[name="discount-range"]:checked');
+    if (!selectedRange) return true;
+
+    const discount = parseFloat(product.dataset.productDiscount);
+    const range = selectedRange.value;
+
+    switch (range) {
+      case '10-25':
+        return discount >= 10 && discount <= 25;
+      case '25-50':
+        return discount > 25 && discount <= 50;
+      case '50+':
+        return discount > 50;
+      default:
+        return true;
+    }
+  }
+
+  function matchesCategory(product) {
+    const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked'));
+    if (selectedCategories.length === 0) return true;
+
+    const productType = product.dataset.productType;
+    return selectedCategories.some(checkbox => checkbox.value === productType);
+  }
+
+  function matchesBrand(product) {
+    const selectedBrands = Array.from(document.querySelectorAll('input[name="brand"]:checked'));
+    if (selectedBrands.length === 0) return true;
+
+    const productVendor = product.dataset.productVendor;
+    return selectedBrands.some(checkbox => checkbox.value === productVendor);
+  }
+
+  function matchesAge(product) {
+    const selectedAges = Array.from(document.querySelectorAll('input[name="age"]:checked'));
+    if (selectedAges.length === 0) return true;
+
+    // This would need to be implemented based on your product tags or metafields
+    // For now, return true as a placeholder
+    return true;
+  }
+
+  function matchesSize(product) {
+    const selectedSizes = Array.from(document.querySelectorAll('input[name="size"]:checked'));
+    if (selectedSizes.length === 0) return true;
+
+    // This would need to check product variants
+    // For now, return true as a placeholder
+    return true;
+  }
+
+  function matchesColor(product) {
+    const selectedColors = Array.from(document.querySelectorAll('input[name="color"]:checked'));
+    if (selectedColors.length === 0) return true;
+
+    // This would need to check product variants
+    // For now, return true as a placeholder
+    return true;
+  }
+
+  function displayFilteredProducts() {
+    const productsGrid = document.getElementById('products-grid');
+    if (!productsGrid) return;
+
+    // Hide all products
+    allProducts.forEach(product => {
+      product.style.display = 'none';
+    });
+
+    // Show filtered products
+    filteredProducts.forEach(product => {
+      product.style.display = 'block';
+    });
+
+    // Show/hide empty state
+    const emptyState = document.querySelector('.sale-empty');
+    const productsContainer = document.querySelector('.products-container');
+
+    if (filteredProducts.length === 0) {
+      if (productsContainer) productsContainer.style.display = 'none';
+      if (emptyState) emptyState.style.display = 'block';
+    } else {
+      if (productsContainer) productsContainer.style.display = 'block';
+      if (emptyState) emptyState.style.display = 'none';
+    }
+  }
+
+  function applySorting() {
+    const sortSelect = document.getElementById('sort-by');
+    if (!sortSelect) return;
+
+    const sortValue = sortSelect.value;
+    const productsGrid = document.getElementById('products-grid');
+    if (!productsGrid) return;
+
+    // Sort filtered products
+    filteredProducts.sort((a, b) => {
+      switch (sortValue) {
+        case 'discount-high':
+          return parseFloat(b.dataset.productDiscount) - parseFloat(a.dataset.productDiscount);
+        case 'discount-low':
+          return parseFloat(a.dataset.productDiscount) - parseFloat(b.dataset.productDiscount);
+        case 'price-low':
+          return parseFloat(a.dataset.productPrice) - parseFloat(b.dataset.productPrice);
+        case 'price-high':
+          return parseFloat(b.dataset.productPrice) - parseFloat(a.dataset.productPrice);
+        case 'name-asc':
+          return a.querySelector('.product-title').textContent.localeCompare(b.querySelector('.product-title').textContent);
+        case 'name-desc':
+          return b.querySelector('.product-title').textContent.localeCompare(a.querySelector('.product-title').textContent);
+        default:
+          return 0;
+      }
+    });
+
+    // Reorder DOM elements
+    filteredProducts.forEach(product => {
+      productsGrid.appendChild(product);
+    });
+  }
+
+  function updateResultsCount() {
+    const currentCountEl = document.getElementById('current-count');
+    if (currentCountEl) {
+      currentCountEl.textContent = filteredProducts.length;
+    }
+  }
+
+  function clearAllFilters() {
+    // Clear all filter inputs
+    const allFilters = document.querySelectorAll('.sale-sidebar input[type="checkbox"], .sale-sidebar input[type="radio"]');
+    allFilters.forEach(filter => {
+      filter.checked = false;
+    });
+
+    // Reset filtered products
+    filteredProducts = [...allProducts];
+
+    // Display all products
+    displayFilteredProducts();
+    updateResultsCount();
+  }
+
+  // Global function for empty state button
+  window.clearAllFilters = clearAllFilters;
+});
+</script>
