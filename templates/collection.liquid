@@ -27,7 +27,7 @@
 <div class="collection-page">
   {% comment %} Collection Header {% endcomment %}
   <section class="collection-header">
-    <div class="container">
+    <div class="container" style="max-width: 1600px;">
       {% comment %} Breadcrumb {% endcomment %}
       <nav class="breadcrumb" role="navigation" aria-label="Breadcrumb">
         <ol class="breadcrumb__list">
@@ -64,118 +64,82 @@
         <aside class="collection-sidebar" role="complementary">
           <div class="sidebar-header">
             <h3 class="sidebar-title">Филтри</h3>
-            <button class="clear-filters" id="clear-all-filters" style="display: none;">
-              Изчисти всички
+            <button class="clear-filters btn btn--primary" id="clear-all-filters" style="display: none; justify-content: center; align-items: center;">
+              <svg class="clear-filters-icon" style="margin-top: 8px;"  width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </button>
           </div>
 
           <div class="sidebar-content">
-            {% comment %} Category Filter {% endcomment %}
-            {% if collections.size > 1 %}
+            {% comment %} Dynamic Filters based on product options {% endcomment %}
+            {% for filter in collection.filters %}
               <div class="filter-group">
-                <h4 class="filter-title">Категория</h4>
+                <h4 class="filter-title">{{ filter.label }}</h4>
+                <div class="filter-options {% if filter.type == 'color' %}filter-options--colors{% endif %}">
+                  {% case filter.type %}
+                    {% when 'boolean' or 'list' %}
+                      {% for value in filter.values %}
+                        <label class="filter-option">
+                          <input type="checkbox"
+                                 name="{{ filter.label | handleize }}"
+                                 value="{{ value.value | escape }}"
+                                 {% if value.active %}checked{% endif %}
+                                 data-filter-key="{{ filter.param_name }}"
+                                 data-filter-value="{{ value.value | escape }}">
+                          <span class="filter-label">{{ value.label }} ({{ value.count }})</span>
+                        </label>
+                      {% endfor %}
+                    {% when 'price_range' %}
+                      <div class="price-range">
+                        <div class="price-inputs">
+                          <input type="number"
+                                 id="price-min"
+                                 placeholder="От"
+                                 min="{{ filter.min_value.value }}"
+                                 max="{{ filter.max_value.value }}"
+                                 value="{{ filter.min_value.value }}">
+                          <span class="price-separator">-</span>
+                          <input type="number"
+                                 id="price-max"
+                                 placeholder="До"
+                                 min="{{ filter.min_value.value }}"
+                                 max="{{ filter.max_value.value }}"
+                                 value="{{ filter.max_value.value }}">
+                        </div>
+                        <button class="apply-price-filter">Приложи</button>
+                      </div>
+                  {% endcase %}
+                </div>
+              </div>
+            {% endfor %}
+
+            {% comment %} Available Tags Filter {% endcomment %}
+            {% assign all_tags = collection.all_tags | sort %}
+            {% if all_tags.size > 0 %}
+              <div class="filter-group">
+                <h4 class="filter-title">Характеристики</h4>
                 <div class="filter-options">
-                  {% for category in collections %}
-                    {% if category.products_count > 0 %}
+                  {% for tag in all_tags %}
+                    {% if current_tags contains tag %}
                       <label class="filter-option">
-                        <input type="checkbox" name="category" value="{{ category.handle }}"
-                               {% if collection.handle == category.handle %}checked{% endif %}>
-                        <span class="filter-label">{{ category.title }} ({{ category.products_count }})</span>
+                        <input type="checkbox"
+                               name="tag"
+                               value="{{ tag | handle }}"
+                               checked>
+                        <span class="filter-label">{{ tag }}</span>
+                      </label>
+                    {% else %}
+                      <label class="filter-option">
+                        <input type="checkbox"
+                               name="tag"
+                               value="{{ tag | handle }}">
+                        <span class="filter-label">{{ tag }}</span>
                       </label>
                     {% endif %}
                   {% endfor %}
                 </div>
               </div>
-            {% endif %}
-
-            {% comment %} Price Filter {% endcomment %}
-                         <div class="filter-group">
-               <h4 class="filter-title">Цена</h4>
-               <div class="price-range">
-                 <div class="price-inputs">
-                   <input type="number" id="price-min" placeholder="От" min="0">
-                   <span class="price-separator">-</span>
-                   <input type="number" id="price-max" placeholder="До" min="0">
-                 </div>
-                 <button class="apply-price-filter">Приложи</button>
-               </div>
-             </div>
-
-            {% comment %} Tag Filters (Size, Color, etc.) {% endcomment %}
-            {% assign available_tags = collection.all_tags %}
-            {% if available_tags.size > 0 %}
-              {% assign size_tags = '' %}
-              {% assign color_tags = '' %}
-              {% assign other_tags = '' %}
-
-              {% for tag in available_tags %}
-                {% assign tag_lower = tag | downcase %}
-                {% if tag_lower contains 'size' or tag_lower contains 'cm' or tag_lower contains 'months' or tag_lower contains 'years' %}
-                  {% assign size_tags = size_tags | append: tag | append: ',' %}
-                {% elsif tag_lower contains 'color' or tag_lower contains 'colour' or tag == 'Red' or tag == 'Blue' or tag == 'Pink' or tag == 'White' or tag == 'Black' or tag == 'Green' or tag == 'Yellow' %}
-                  {% assign color_tags = color_tags | append: tag | append: ',' %}
-                {% else %}
-                  {% assign other_tags = other_tags | append: tag | append: ',' %}
-                {% endif %}
-              {% endfor %}
-
-              {% comment %} Size Filter {% endcomment %}
-              {% assign size_array = size_tags | split: ',' %}
-              {% if size_array.size > 1 %}
-                                 <div class="filter-group">
-                   <h4 class="filter-title">Размер</h4>
-                  <div class="filter-options">
-                    {% for size_tag in size_array %}
-                      {% unless size_tag == blank %}
-                        <label class="filter-option">
-                          <input type="checkbox" name="size" value="{{ size_tag | handle }}"
-                                 {% if current_tags contains size_tag %}checked{% endif %}>
-                          <span class="filter-label">{{ size_tag }}</span>
-                        </label>
-                      {% endunless %}
-                    {% endfor %}
-                  </div>
-                </div>
-              {% endif %}
-
-              {% comment %} Color Filter {% endcomment %}
-              {% assign color_array = color_tags | split: ',' %}
-              {% if color_array.size > 1 %}
-                                 <div class="filter-group">
-                   <h4 class="filter-title">Цвят</h4>
-                  <div class="filter-options filter-options--colors">
-                    {% for color_tag in color_array %}
-                      {% unless color_tag == blank %}
-                        <label class="filter-option filter-option--color">
-                          <input type="checkbox" name="color" value="{{ color_tag | handle }}"
-                                 {% if current_tags contains color_tag %}checked{% endif %}>
-                          <span class="color-swatch" style="background-color: {{ color_tag | downcase }};"></span>
-                          <span class="filter-label">{{ color_tag }}</span>
-                        </label>
-                      {% endunless %}
-                    {% endfor %}
-                  </div>
-                </div>
-              {% endif %}
-
-              {% comment %} Other Tags {% endcomment %}
-              {% assign other_array = other_tags | split: ',' %}
-              {% if other_array.size > 1 %}
-                                 <div class="filter-group">
-                   <h4 class="filter-title">Характеристики</h4>
-                  <div class="filter-options">
-                    {% for other_tag in other_array %}
-                      {% unless other_tag == blank %}
-                        <label class="filter-option">
-                          <input type="checkbox" name="features" value="{{ other_tag | handle }}"
-                                 {% if current_tags contains other_tag %}checked{% endif %}>
-                          <span class="filter-label">{{ other_tag }}</span>
-                        </label>
-                      {% endunless %}
-                    {% endfor %}
-                  </div>
-                </div>
-              {% endif %}
             {% endif %}
           </div>
         </aside>
@@ -210,28 +174,28 @@
                  <label for="sort-by" class="sort-label">Сортиране по:</label>
                  <select id="sort-by" class="sort-select">
                    <option value="manual" {% if collection.sort_by == blank %}selected{% endif %}>
-                     Препоръчани
+                     ⭐ Препоръчани
                    </option>
                    <option value="best-selling" {% if collection.sort_by == 'best-selling' %}selected{% endif %}>
-                     Най-продавани
+                     🔥 Най-продавани
                    </option>
                    <option value="title-ascending" {% if collection.sort_by == 'title-ascending' %}selected{% endif %}>
-                     А-Я
+                     🔤 А-Я
                    </option>
                    <option value="title-descending" {% if collection.sort_by == 'title-descending' %}selected{% endif %}>
-                     Я-А
+                     🔤 Я-А
                    </option>
                    <option value="price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>
-                     Цена: Ниска към Висока
+                     💰 Цена: Ниска към Висока
                    </option>
                    <option value="price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>
-                     Цена: Висока към Ниска
+                     💰 Цена: Висока към Ниска
                    </option>
                    <option value="created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>
-                     Най-нови
+                     🆕 Най-нови
                    </option>
                    <option value="created-ascending" {% if collection.sort_by == 'created-ascending' %}selected{% endif %}>
-                     Най-стари
+                     📅 Най-стари
                    </option>
                  </select>
                </div>
@@ -302,8 +266,17 @@
 
 <style>
 /* Enhanced Collection Page Styles */
+
+.breadcrumb {
+  background-image: none;
+  padding: 1rem 0;
+}
+
+.main-content {
+  padding: 0;
+}
+
 .collection-page {
-  background: linear-gradient(180deg, #fef9f7 0%, #ffffff 40%);
   min-height: 100vh;
 }
 
@@ -321,7 +294,7 @@
 
 /* Header */
 .collection-header {
-  padding: 1.5rem 0;
+  padding: 0.5rem 0;
   background: #ffffff;
 }
 
@@ -329,10 +302,11 @@
   display: flex;
   align-items: center;
   list-style: none;
-  margin: 0 0 1.5rem 0;
-  padding: 0;
+  margin: 0;
+  padding: 0.5rem 0;
   font-size: 0.875rem;
   color: #7f8c8d;
+  width: 100%;
 }
 
 .breadcrumb__item:not(:last-child)::after {
@@ -524,7 +498,7 @@
 }
 
 .apply-price-filter {
-  background: #ff6b9d;
+  background: #FF6B6B;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -535,7 +509,7 @@
 }
 
 .apply-price-filter:hover {
-  background: #e55b8a;
+  background: #00D4C5;
 }
 
 /* Toolbar */
@@ -928,26 +902,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function applyFilters() {
     const url = new URL(window.location);
-    const selectedTags = [];
 
-    // Collect selected filter tags
-    filterInputs.forEach(input => {
-      if (input.checked) {
-        selectedTags.push(input.value);
+    // Clear existing filter params
+    Array.from(url.searchParams.keys()).forEach(key => {
+      if (key.startsWith('filter.')) {
+        url.searchParams.delete(key);
       }
     });
 
-    // Add price filters
-    const priceMin = document.getElementById('price-min')?.value;
-    const priceMax = document.getElementById('price-max')?.value;
+    // Collect dynamic filter values
+    filterInputs.forEach(input => {
+      if (input.checked && input.dataset.filterKey) {
+        const key = input.dataset.filterKey;
+        const value = input.dataset.filterValue;
+        url.searchParams.append(key, value);
+      }
+    });
 
-    // Update URL
+    // Add tag filters
+    const selectedTags = Array.from(filterInputs)
+      .filter(input => input.checked && input.name === 'tag')
+      .map(input => input.value);
+
+    // Update URL path for tags
     if (selectedTags.length > 0) {
       url.pathname = `/collections/${collectionHandle}/${selectedTags.join('+')}`;
     } else {
       url.pathname = `/collections/${collectionHandle}`;
     }
 
+    // Add price filter if it exists
+    const priceMin = document.getElementById('price-min')?.value;
+    const priceMax = document.getElementById('price-max')?.value;
     if (priceMin) url.searchParams.set('filter.v.price.gte', priceMin);
     if (priceMax) url.searchParams.set('filter.v.price.lte', priceMax);
 
