@@ -983,6 +983,9 @@ document.addEventListener('DOMContentLoaded', function() {
         addButton.style.background = '#00b894';
         btnText.textContent = 'Добавено!';
 
+        // Show success toast notification
+        showCartToast('Продуктът е добавен в количката!', 'success');
+
         // Dispatch cart updated event for theme compatibility
         document.dispatchEvent(new CustomEvent('cart:updated', {
           detail: { item: data }
@@ -1005,14 +1008,20 @@ document.addEventListener('DOMContentLoaded', function() {
         addButton.classList.remove('loading');
         addButton.style.background = '#dc3545';
 
-        // Show more specific error messages
+        // Show more specific error messages and toast notifications
+        let errorText = 'Грешка!';
+        let toastMessage = 'Възникна грешка при добавянето в количката';
+
         if (error.message.includes('422')) {
-          btnText.textContent = 'Няма в наличност';
+          errorText = 'Няма в наличност';
+          toastMessage = 'Продуктът не е в наличност';
         } else if (error.message.includes('404')) {
-          btnText.textContent = 'Продуктът не е намерен';
-        } else {
-          btnText.textContent = 'Грешка!';
+          errorText = 'Продуктът не е намерен';
+          toastMessage = 'Продуктът не е намерен';
         }
+
+        btnText.textContent = errorText;
+        showCartToast(toastMessage, 'error');
 
         // Reset button after 3 seconds for error states
         setTimeout(() => {
@@ -1125,36 +1134,79 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showWishlistMessage(message, type) {
-    // Create toast notification
+    // Create toast notification container
     const toast = document.createElement('div');
     toast.className = `wishlist-toast wishlist-toast--${type}`;
-    toast.textContent = message;
     toast.style.cssText = `
       position: fixed;
       top: 20px;
       right: 20px;
-      padding: 15px 20px;
-      background: ${type === 'success' ? '#27ae60' : '#e74c3c'};
+      padding: 15px 20px 15px 15px;
+      background: ${type === 'success' ? '#27ae60' : type === 'info' ? '#3498db' : '#e74c3c'};
       color: white;
-      border-radius: 8px;
+      border-radius: 12px;
       font-weight: 600;
       z-index: 10000;
       opacity: 0;
       transform: translateY(-20px);
       transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      font-size: 0.9rem;
+      max-width: 300px;
+      word-wrap: break-word;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     `;
 
+    // Create message text
+    const messageText = document.createElement('span');
+    messageText.textContent = message;
+    messageText.style.cssText = `
+      flex: 1;
+      line-height: 1.4;
+    `;
+
+    // Create close button
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '×';
+    closeButton.style.cssText = `
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.2s ease;
+      flex-shrink: 0;
+    `;
+
+    // Add hover effect to close button
+    closeButton.addEventListener('mouseenter', () => {
+      closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+    });
+
+    closeButton.addEventListener('mouseleave', () => {
+      closeButton.style.backgroundColor = 'transparent';
+    });
+
+    // Append elements
+    toast.appendChild(messageText);
+    toast.appendChild(closeButton);
     document.body.appendChild(toast);
 
-    // Show toast
-    setTimeout(() => {
-      toast.style.opacity = '1';
-      toast.style.transform = 'translateY(0)';
-    }, 100);
-
-    // Hide toast after 3 seconds
-    setTimeout(() => {
+    // Function to close toast
+    function closeToast() {
       toast.style.opacity = '0';
       toast.style.transform = 'translateY(-20px)';
       setTimeout(() => {
@@ -1162,7 +1214,138 @@ document.addEventListener('DOMContentLoaded', function() {
           toast.parentNode.removeChild(toast);
         }
       }, 300);
-    }, 3000);
+    }
+
+    // Add click event listeners
+    toast.addEventListener('click', closeToast);
+    closeButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeToast();
+    });
+
+    // Show toast
+    setTimeout(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+    }, 100);
+
+    // Auto-hide toast after 5 seconds (increased from 3)
+    const autoHideTimeout = setTimeout(() => {
+      closeToast();
+    }, 5000);
+
+    // Clear timeout if user closes manually
+    toast.addEventListener('click', () => {
+      clearTimeout(autoHideTimeout);
+    });
+  }
+
+  // Toast notification function for cart actions
+  function showCartToast(message, type) {
+    // Create toast notification container
+    const toast = document.createElement('div');
+    toast.className = `cart-toast cart-toast--${type}`;
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px 15px 15px;
+      background: ${type === 'success' ? '#00b894' : type === 'info' ? '#3498db' : '#e74c3c'};
+      color: white;
+      border-radius: 12px;
+      font-weight: 600;
+      z-index: 10000;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      font-size: 0.9rem;
+      max-width: 300px;
+      word-wrap: break-word;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    `;
+
+    // Create message text
+    const messageText = document.createElement('span');
+    messageText.textContent = message;
+    messageText.style.cssText = `
+      flex: 1;
+      line-height: 1.4;
+    `;
+
+    // Create close button
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '×';
+    closeButton.style.cssText = `
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.2s ease;
+      flex-shrink: 0;
+    `;
+
+    // Add hover effect to close button
+    closeButton.addEventListener('mouseenter', () => {
+      closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+    });
+
+    closeButton.addEventListener('mouseleave', () => {
+      closeButton.style.backgroundColor = 'transparent';
+    });
+
+    // Append elements
+    toast.appendChild(messageText);
+    toast.appendChild(closeButton);
+    document.body.appendChild(toast);
+
+    // Function to close toast
+    function closeToast() {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(-20px)';
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 300);
+    }
+
+    // Add click event listeners
+    toast.addEventListener('click', closeToast);
+    closeButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeToast();
+    });
+
+    // Show toast
+    setTimeout(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+    }, 100);
+
+    // Auto-hide toast after 5 seconds (increased from 3)
+    const autoHideTimeout = setTimeout(() => {
+      closeToast();
+    }, 5000);
+
+    // Clear timeout if user closes manually
+    toast.addEventListener('click', () => {
+      clearTimeout(autoHideTimeout);
+    });
   }
 });
 

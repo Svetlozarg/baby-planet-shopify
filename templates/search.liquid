@@ -1,61 +1,980 @@
+{% comment %}
+  Enhanced Baby Planet Search Page
+  Features: Modern design, improved UX, baby-friendly colors, enhanced search interface
+{% endcomment %}
 
 {% assign grid_results = false %}
 {% assign respond_js_secret_key = shop.domain | md5 %}
 {% unless search.terms == respond_js_secret_key %}
 
-{% paginate search.results by 10 %}
-<div class="search-products col-main">
-  {% if search.performed %}
-  {% if search.results_count == 0 %}
-  <h1 class="text--left h2" style="width:100%;">{{ 'general.search.no_results_html' | t: terms: search.terms }}</h1>
-  {% include 'search-bar' %}
-  {% else %}
-  <h1 class="h2 text--left" style="width:100%;">{{ 'general.search.results_for_html' | t: terms: search.terms }}</h1>
-   {% include 'search-bar' %}
-  {% endif %}
-  {% else %}
-  <h1 class="h2 left" style="width:100%;">{{ 'general.search.title' | t }}</h1>
-  {% include 'search-bar' %}
-  {% endif %}
- {% assign grid_item_width = 'wide--one-quarter post-large--one-quarter large--one-third medium--one-third small--grid__item' %}
-    <ul class="grid-uniform">
-    {% for item in search.results %}
-   
-    {% if item.object_type == 'product' %} 
-    {% include 'search-result' %}   
-    {% else %}
-    <li class="grid item-row grid__item wide--one-quarter post-large--one-quarter large--one-third small--grid__item">
-      <div class="products">
-        {% assign has_image = true %}
-        {% assign image_alt = item.title | escape %}
-        <div class="product-container">
-          {% assign featured_image = item.image | default: item.featured_image %}
-          {% if featured_image != blank %}
-          <a href="{{ item.url }}" title="{{ item.title | escape }}">
-            {{ featured_image | img_url: 'large' | img_tag: featured_image.alt }}
-          </a>
+{% paginate search.results by 20 %}
+
+<div class="search-page-wrapper">
+  <!-- Enhanced Search Header -->
+  <div class="search-header">
+    <div class="container">
+      <div class="search-header__content">
+        {% if search.performed %}
+          {% if search.results_count == 0 %}
+            <div class="search-header__info">
+              <h1 class="search-header__title">Няма резултати за "{{ search.terms }}"</h1>
+              <p class="search-header__subtitle">Опитайте да търсите нещо друго или разгледайте нашите категории</p>
+            </div>
+          {% else %}
+            <div class="search-header__info">
+              <h1 class="search-header__title">Резултати за "{{ search.terms }}"</h1>
+              <p class="search-header__subtitle">{{ search.results_count }} {% if search.results_count == 1 %}резултат{% else %}резултата{% endif %} намерени</p>
+            </div>
           {% endif %}
-        </div>
-        <div class="product-detail">      
-          <a href="{{ item.url}}" class="grid-link__title">{{ item.title }}</a>
+        {% else %}
+          <div class="search-header__info">
+            <h1 class="search-header__title">Търсене</h1>
+            <p class="search-header__subtitle">Намерете перфектните продукти за вашето бебе</p>
+          </div>
+        {% endif %}
+
+        <!-- Enhanced Search Bar -->
+        <div class="enhanced-search-bar">
+          <form action="/search" method="get" class="search-form" role="search">
+            {% if settings.show_search_prt %}
+              <input type="hidden" name="type" value="product">
+            {% endif %}
+
+            <div class="search-input-wrapper">
+              <div class="search-input-container">
+                <svg class="search-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                  <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <input type="search"
+                       id="SearchInput"
+                       name="q"
+                       value="{{ search.terms | escape }}"
+                       placeholder="{{ 'general.search.placeholder' | t }}"
+                       aria-label="{{ 'general.search.placeholder' | t }}"
+                       class="search-input"
+                       autocomplete="off">
+                {% if search.terms != blank %}
+                  <button type="button" class="search-clear" aria-label="Clear search">
+                    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                  </button>
+                {% endif %}
+              </div>
+              <button type="submit" class="search-submit" aria-label="Search">
+                <span>Търси</span>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-      </li>
-    {% endif %}  
-    {% endfor %}  
-  </ul>
-  {% if paginate.pages > 1 %}
-  <div class="text-center">
-    {% include 'pagination-default' %}
+    </div>
   </div>
-  {% endif %}  
 
+  <!-- Search Results -->
+  <div class="search-results">
+    <div class="container">
+      {% if search.performed and search.results_count > 0 %}
 
+        <!-- Results Summary & Filters -->
+        <div class="search-results__header">
+          <div class="results-summary">
+            <span class="results-count">{{ search.results_count }} {% if search.results_count == 1 %}продукт{% else %}продукти{% endif %}</span>
+          </div>
+
+          <!-- Sort Options -->
+          <div class="search-sort">
+            <label for="search-sort-select" class="search-sort__label">Сортиране по:</label>
+            <select id="search-sort-select" class="search-sort__select">
+              <option value="relevance">🎯 Релевантност</option>
+              <option value="price-ascending">💰 Цена: Ниска към Висока</option>
+              <option value="price-descending">💰 Цена: Висока към Ниска</option>
+              <option value="title-ascending">🔤 Име: А към Я</option>
+              <option value="title-descending">🔤 Име: Я към А</option>
+              <option value="created-descending">📅 Най-нови първо</option>
+              <option value="created-ascending">📅 Най-стари първо</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="search-products-grid">
+          <ul class="baby-products-grid">
+            {% for item in search.results %}
+              {% if item.object_type == 'product' %}
+                {% assign product = item %}
+                {% include 'vertical-grid-item-style-2' %}
+              {% else %}
+                <!-- Non-product results (pages, articles, etc.) -->
+                <li class="search-result-item search-result-item--content">
+                  <article class="content-card">
+                    {% if item.image or item.featured_image %}
+                      <div class="content-card__image">
+                        <a href="{{ item.url }}" class="content-card__link">
+                          {% assign featured_image = item.image | default: item.featured_image %}
+                          <img src="{{ featured_image | img_url: 'medium' }}"
+                               alt="{{ featured_image.alt | default: item.title | escape }}"
+                               loading="lazy"
+                               width="300"
+                               height="200">
+                        </a>
+                      </div>
+                    {% endif %}
+
+                    <div class="content-card__content">
+                      <h3 class="content-card__title">
+                        <a href="{{ item.url }}" class="content-card__title-link">{{ item.title }}</a>
+                      </h3>
+
+                      {% if item.summary != blank %}
+                        <p class="content-card__summary">{{ item.summary | strip_html | truncate: 120 }}</p>
+                      {% elsif item.content != blank %}
+                        <p class="content-card__summary">{{ item.content | strip_html | truncate: 120 }}</p>
+                      {% endif %}
+
+                      <div class="content-card__meta">
+                                                 <span class="content-type">
+                           {% if item.object_type == 'article' %}
+                             Статия
+                           {% elsif item.object_type == 'page' %}
+                             Страница
+                           {% else %}
+                             {{ item.object_type | capitalize }}
+                           {% endif %}
+                         </span>
+                      </div>
+                    </div>
+                  </article>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Pagination -->
+        {% if paginate.pages > 1 %}
+          <div class="search-pagination">
+            {% include 'pagination-default' %}
+          </div>
+        {% endif %}
+
+      {% elsif search.performed and search.results_count == 0 %}
+
+        <!-- No Results State -->
+        <div class="no-results">
+          <div class="no-results__content">
+            <div class="no-results__icon">
+              <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+            </div>
+                        <h2 class="no-results__title">Няма резултати за "{{ search.terms }}"</h2>
+            <p class="no-results__text">Опитайте да промените търсенето си или разгледайте популярните категории</p>
+
+            <!-- Search Suggestions -->
+            <div class="search-suggestions">
+              <h3>Предложения за търсене:</h3>
+              <ul class="suggestions-list">
+                <li><a href="/search?q=бебешки+дрехи">Бебешки дрехи</a></li>
+                <li><a href="/search?q=играчки">Играчки</a></li>
+                <li><a href="/search?q=хранене">Хранене</a></li>
+                <li><a href="/search?q=количка">Колички</a></li>
+                <li><a href="/search?q=памперси">Памперси</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      {% else %}
+
+        <!-- Initial Search State -->
+        <div class="search-welcome">
+          <div class="search-welcome__content">
+            <div class="search-welcome__icon">
+              <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+            </div>
+                        <h2 class="search-welcome__title">Какво търсите?</h2>
+            <p class="search-welcome__text">Търсете в нашата колекция от бебешки продукти, дрехи, играчки и още</p>
+
+            <!-- Popular Searches -->
+            <div class="popular-searches">
+              <h3>Популярни търсения:</h3>
+              <div class="popular-tags">
+                <a href="/search?q=новородено" class="popular-tag">Новородено</a>
+                <a href="/search?q=бебешки+дрехи" class="popular-tag">Бебешки дрехи</a>
+                <a href="/search?q=играчки" class="popular-tag">Играчки</a>
+                <a href="/search?q=количка" class="popular-tag">Количка</a>
+                <a href="/search?q=хранене" class="popular-tag">Хранене</a>
+                <a href="/search?q=столче+за+кола" class="popular-tag">Столче за кола</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {% endif %}
+    </div>
+  </div>
 </div>
+
 {% endpaginate %}
+
+<style>
+/* Enhanced Search Page Styles */
+.search-page-wrapper {
+  min-height: 100vh;
+}
+
+/* Search Header */
+.search-header {
+  color: white;
+  padding: 3rem 0 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.search-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M10,6 C10,6 4,0 0,6 C0,12 10,18 10,18 C10,18 20,12 20,6 C16,0 10,6 10,6 Z" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>') repeat;
+  opacity: 0.1;
+}
+
+.search-header__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.search-header__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.search-header__subtitle {
+  font-size: 1.125rem;
+  margin: 0 0 2rem 0;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+/* Enhanced Search Bar */
+.enhanced-search-bar {
+  margin-top: 2rem;
+}
+
+.search-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input-wrapper {
+  display: flex;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  border: 2px solid #e0e0e0;
+  height: 56px;
+  position: relative;
+}
+
+.search-input-wrapper:focus-within {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  border-color: #F17170;
+}
+
+.search-input-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  border-radius: 12px 0 0 12px;
+  overflow: hidden;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.25rem;
+  width: 20px;
+  height: 20px;
+  fill: #95a5a6;
+  z-index: 2;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.search-input {
+  width: 100%;
+  height: 100%;
+  padding: 0 4rem 0 3.5rem;
+  border: none;
+  font-size: 1rem;
+  color: #2c3e50;
+  background: transparent;
+  outline: none;
+  box-sizing: border-box;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  margin: 0 !important;
+}
+
+.search-input::placeholder {
+  color: #95a5a6;
+}
+
+.search-clear {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: rgba(149, 165, 166, 0.1);
+  cursor: pointer;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 3;
+}
+
+.search-clear.show {
+  display: flex;
+}
+
+.search-clear:hover {
+  background: rgba(149, 165, 166, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.search-clear svg {
+  width: 12px;
+  height: 12px;
+  fill: #95a5a6;
+}
+
+.search-submit {
+  padding: 0 2.5rem;
+  background: #F17170;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  height: 100%;
+  min-width: 100px;
+  border-radius: 0 12px 12px 0;
+  border-left: 2px solid #e0e0e0;
+}
+
+.search-submit:hover {
+  background: #07D1C2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(7, 209, 194, 0.3);
+}
+
+/* Search Results */
+.search-results {
+  padding: 3rem 0;
+}
+
+.search-results__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.results-summary {
+  font-size: 1.125rem;
+  color: #2c3e50;
+}
+
+.results-count {
+  font-weight: 600;
+}
+
+.search-sort {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.search-sort__label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.search-sort__select {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ecf0f1;
+  border-radius: 8px;
+  background: white;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.search-sort__select:focus {
+  outline: none;
+  border-color: #ff6b9d;
+}
+
+/* Product Grid */
+.baby-products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px;
+  padding: 0;
+  list-style: none;
+}
+
+.baby-products-grid .baby-product-card {
+  padding: 0 15px;
+  margin-bottom: 30px;
+}
+
+/* Content Cards for Non-Product Results */
+.search-result-item--content {
+  flex: 0 0 100%;
+  max-width: 100%;
+  padding: 0 15px;
+  margin-bottom: 1.5rem;
+}
+
+.content-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.content-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.content-card__image {
+  flex-shrink: 0;
+  width: 200px;
+  height: 140px;
+  overflow: hidden;
+}
+
+.content-card__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.content-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content-card__content {
+  flex: 1;
+  padding: 1.5rem 1.5rem 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.content-card__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.content-card__title-link {
+  text-decoration: none;
+  color: #2c3e50;
+  transition: color 0.2s ease;
+}
+
+.content-card__title-link:hover {
+  color: #ff6b9d;
+}
+
+.content-card__summary {
+  margin: 0;
+  color: #7f8c8d;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.content-card__meta {
+  margin-top: auto;
+}
+
+.content-type {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #ecf0f1;
+  color: #2c3e50;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* No Results State */
+.no-results {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.no-results__content {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.no-results__icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 2rem;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ffa8c5 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-results__icon svg {
+  width: 40px;
+  height: 40px;
+  fill: white;
+}
+
+.no-results__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+}
+
+.no-results__text {
+  font-size: 1.125rem;
+  color: #7f8c8d;
+  margin: 0 0 2rem 0;
+}
+
+/* Search Suggestions */
+.search-suggestions h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+}
+
+.suggestions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.suggestions-list a {
+  padding: 0.5rem 1rem;
+  background: white;
+  color: #2c3e50;
+  text-decoration: none;
+  border-radius: 25px;
+  border: 2px solid #ecf0f1;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.suggestions-list a:hover {
+  border-color: #ff6b9d;
+  color: #ff6b9d;
+  transform: translateY(-2px);
+}
+
+/* Search Welcome State */
+.search-welcome {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.search-welcome__content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-welcome__icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 2rem;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ffa8c5 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-welcome__icon svg {
+  width: 50px;
+  height: 50px;
+  fill: white;
+}
+
+.search-welcome__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+}
+
+.search-welcome__text {
+  font-size: 1.125rem;
+  color: #7f8c8d;
+  margin: 0 0 3rem 0;
+}
+
+/* Popular Searches */
+.popular-searches h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 1.5rem 0;
+}
+
+.popular-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.popular-tag {
+  padding: 0.75rem 1.5rem;
+  background: white;
+  color: #2c3e50;
+  text-decoration: none;
+  border-radius: 30px;
+  border: 2px solid #ecf0f1;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.popular-tag:hover {
+  border-color: #ff6b9d;
+  color: #ff6b9d;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 107, 157, 0.2);
+}
+
+/* Search Pagination */
+.search-pagination {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .search-header {
+    padding: 2rem 0 1.5rem;
+  }
+
+  .search-header__title {
+    font-size: 1.75rem;
+  }
+
+  .search-header__subtitle {
+    font-size: 1rem;
+  }
+
+  .search-input-wrapper {
+    flex-direction: column;
+    border-radius: 12px;
+    height: auto;
+  }
+
+  .search-input-container {
+    height: 56px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .search-submit {
+    border-radius: 0 0 12px 12px;
+    padding: 1rem 2.5rem;
+    height: 56px;
+    min-width: auto;
+    border-left: none;
+    border-top: 2px solid #e0e0e0;
+  }
+
+  .search-results__header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .search-sort {
+    justify-content: space-between;
+  }
+
+  .content-card {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .content-card__image {
+    width: 100%;
+    height: 200px;
+  }
+
+  .content-card__content {
+    padding: 1.5rem;
+  }
+
+  .popular-tags,
+  .suggestions-list {
+    justify-content: center;
+  }
+
+  .popular-tag {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .search-welcome__title {
+    font-size: 1.5rem;
+  }
+
+  .no-results__title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-header {
+    padding: 1.5rem 0 1rem;
+  }
+
+  .search-header__title {
+    font-size: 1.5rem;
+  }
+
+  .popular-tags,
+  .suggestions-list {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .popular-tag {
+    width: 100%;
+    max-width: 200px;
+    text-align: center;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Enhanced search functionality
+  const searchInput = document.getElementById('SearchInput');
+  const searchClear = document.querySelector('.search-clear');
+  const searchForm = document.querySelector('.search-form');
+  const sortSelect = document.getElementById('search-sort-select');
+
+  // Search input enhancements
+  if (searchInput) {
+    // Auto-focus on search input when page loads (if no search performed)
+    if (!searchInput.value.trim()) {
+      searchInput.focus();
+    }
+
+    // Initialize clear button visibility
+    function updateClearButton() {
+      if (searchClear) {
+        if (searchInput.value.trim()) {
+          searchClear.classList.add('show');
+        } else {
+          searchClear.classList.remove('show');
+        }
+      }
+    }
+
+    // Initial check
+    updateClearButton();
+
+    // Clear search functionality
+    if (searchClear) {
+      searchClear.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        searchInput.value = '';
+        searchInput.focus();
+        updateClearButton();
+
+        // If we're on a search results page, redirect to clean search page
+        if (window.location.pathname === '/search' && window.location.search) {
+          window.location.href = '/search';
+        }
+      });
+    }
+
+    // Show/hide clear button based on input
+    searchInput.addEventListener('input', function() {
+      updateClearButton();
+    });
+
+    // Enhanced form submission
+    if (searchForm) {
+      searchForm.addEventListener('submit', function(e) {
+        const query = searchInput.value.trim();
+        if (!query) {
+          e.preventDefault();
+          searchInput.focus();
+          return false;
+        }
+      });
+    }
+  }
+
+    // Sort functionality
+  if (sortSelect) {
+    sortSelect.addEventListener('change', function() {
+      const currentUrl = new URL(window.location);
+      const sortValue = this.value;
+
+      // Remove existing sort parameters
+      currentUrl.searchParams.delete('sort_by');
+
+      // Map our sort values to Shopify's expected values
+      const shopifySortMap = {
+        'relevance': '', // Default, no sort parameter
+        'price-ascending': 'price-ascending',
+        'price-descending': 'price-descending',
+        'title-ascending': 'title-ascending',
+        'title-descending': 'title-descending',
+        'created-descending': 'created-descending',
+        'created-ascending': 'created-ascending'
+      };
+
+      // Add new sort parameter if not default
+      if (sortValue !== 'relevance' && shopifySortMap[sortValue]) {
+        currentUrl.searchParams.set('sort_by', shopifySortMap[sortValue]);
+      }
+
+      // Redirect to sorted results
+      window.location.href = currentUrl.toString();
+    });
+
+    // Set current sort value from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentSort = urlParams.get('sort_by');
+
+    // Map Shopify sort values back to our select options
+    const reverseMap = {
+      '': 'relevance',
+      'price-ascending': 'price-ascending',
+      'price-descending': 'price-descending',
+      'title-ascending': 'title-ascending',
+      'title-descending': 'title-descending',
+      'created-descending': 'created-descending',
+      'created-ascending': 'created-ascending'
+    };
+
+    sortSelect.value = reverseMap[currentSort] || 'relevance';
+  }
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    // Focus search input with Ctrl/Cmd + K
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.select();
+      }
+    }
+
+    // Clear search with Escape key (when input is focused)
+    if (e.key === 'Escape' && document.activeElement === searchInput) {
+      if (searchInput.value.trim()) {
+        searchInput.value = '';
+        if (searchClear) {
+          searchClear.style.display = 'none';
+        }
+      } else {
+        searchInput.blur();
+      }
+    }
+  });
+
+  // Search suggestions click tracking
+  const suggestionLinks = document.querySelectorAll('.suggestions-list a, .popular-tag');
+  suggestionLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      // Track popular search clicks for analytics
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'search_suggestion_click', {
+          'search_term': this.textContent.trim()
+        });
+      }
+    });
+  });
+
+  // Animate elements on load
+  const animateElements = document.querySelectorAll('.baby-product-card, .content-card, .popular-tag');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    animateElements.forEach((el, index) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+      observer.observe(el);
+    });
+  }
+});
+</script>
 
 {% else %}
 {% include 'respond' %}
 {% layout none %}
 {% endunless %}
-
