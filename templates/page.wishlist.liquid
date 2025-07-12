@@ -1,134 +1,457 @@
-<div class="jas-container">
-  <table class="shop_table cart wishlist_table">
-    <thead>
-      <tr>
-        <th class="product-remove"></th>
-        <th class="product-thumbnail"></th>
-        <th class="product-name"><span class="nobr">Product Name</span></th>
-        <th class="product-price"> <span class="nobr">Unit Price</span></th>
-        <th class="product-stock-stauts"> <span class="nobr">Stock status</span> </th>
-        <th class="product-add-to-cart"></th>
-      </tr>
-    </thead>
-    <tbody class="wishlist-box">
+{% comment %}
+  Modern Wishlist Page - Redesigned with Beautiful UI/UX
+  Full Bulgarian Language Support
+{% endcomment %}
 
-    </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="6">
-        </td>
-      </tr>
-    </tfoot>
-  </table>
-  <script>
-    $(function() {
-      var cookieName = "wishlistList";
+{{ 'wishlist-modern.css' | asset_url | stylesheet_tag }}
 
-      try
-      {
-        if($.cookie(cookieName) != null && $.cookie(cookieName) != '__' && $.cookie(cookieName) != '') {
-          var str = String($.cookie(cookieName)).split("__");
-          for(var i=0; i<str.length; i++) {
-            if(str[i] != ''){
-              Shopify.getProduct(str[i],function(product){
-              	wishlist_product(product);
-              });
-            	
-            }
-          }
-        } else {
-          emptyWishlist();
-        }
-        jQuery('.currency .active').trigger('click');
-      }
-      catch (err) {} // ignore errors reading cookies
+<div class="wishlist-page">
+  <div class="wishlist-container">
+    <!-- Header Section -->
+    <div class="wishlist-header">
+      <h1>{{ 'products.wishlist.wishlist_name' | t }}</h1>
+      <p class="subtitle">Вашите любими продукти на едно място</p>
+      <div class="wishlist-stats">
+        <div class="stat-item">
+          <span class="stat-number" id="wishlist-count">0</span>
+          <span class="stat-label">Продукти</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="wishlist-value">0 лв</span>
+          <span class="stat-label">Обща стойност</span>
+        </div>
+      </div>
+    </div>
 
-      function emptyWishlist(){
-//         $(".wishlist-table").remove();
-        $(".wishlist-box").append('<td colspan="6" class="wishlist-empty tc">{{ 'products.wishlist.wishlist_empty' | t }}</td>');
-      }
-         function wishlist_product(product) {
-          var $cloneitem = $(".wishlist-item").clone();
-          //           $cloneitem.find(".product_title").text(product.title);
-          $cloneitem.find(".wishlist-item-link").attr("href", product.url);
-          $cloneitem.find(".img-responsive").attr("src", product.featured_image);
-          //           $cloneitem.find(".table-wishlist-1__product-price").html(Shopify.formatMoney(product.price, formatMoney));
-          var $cloneitemname = $(".wishlist-item-name").clone();
-          $cloneitemname.find(".wishlist-item-link").attr("href", product.url);
-          $cloneitemname.find(".wishlist-item-link").text(product.title);
+    <!-- Wishlist Items Grid -->
+    <div class="wishlist-grid" id="wishlist-grid">
+      <!-- Items will be populated by JavaScript -->
+    </div>
 
-          var $cloneitemprice = $(".table-wishlist-1__product-price").clone();
-         $cloneitemprice.html('<span class="money">'+Shopify.formatMoney(product.price)+'</span>');
-//           $cloneitemprice.find(".table-wishlist-1__product-price").html(Shopify.formatMoney(product.price, formatMoney));
-          
-          var $cloneitemclear = $(".wishlist-item-clear").clone();
-          var $cloneitemcontinue = $(".wishlist-item-continue").clone();
-          $cloneitemcontinue.find(".wishlist-item-link").attr("href", product.url);
+    <!-- Empty State -->
+    <div class="empty-wishlist" id="empty-wishlist" style="display: none;">
+      <div class="empty-wishlist-icon">💝</div>
+      <h2>{{ 'products.wishlist.wishlist_empty' | t }}</h2>
+      <p>Добавете продукти в списъка си с желания, за да ги запазите за по-късно</p>
+      <a href="/collections/all" class="continue-shopping">Започнете пазаруването</a>
+    </div>
 
-          var $cloneitemstock = $(".wishlist-stock").clone();
-          if (product.available) {
-            $cloneitemstock.find(".wishlist-in-stock").text(window.in_stock);
-            $cloneitemcontinue.find(".wishlist-item-link").text('{{ 'products.wishlist.view_product' | t }}');
-          } else {
-            $cloneitemstock.find(".wishlist-in-stock").addClass("wishlist-out-of-stock").text(window.out_of_stock);
-            $cloneitemcontinue.find(".wishlist-item-link").text('{{ 'products.wishlist.view_product' | t }}');
-          }
-          $('.wishlist-box').append("<tr class='"+product.handle+"'>"+"<td class='product-remove'>"+$cloneitemclear.html()+"</td>"+"<td class='product-thumbnail' style='width:100px;float:left;'>"+$cloneitem.html()+"</td>"+"<td class='product-name'>"+$cloneitemname.html()+"</td>"+"<td class='wishlist-product-price product-price'>"+$cloneitemprice.html()+"</td>"+"<td class='product-stock-status'>"+$cloneitemstock.html()+"</td>"+"<td class='product-add-to-cart'>"+$cloneitemcontinue.html()+"</td>"+"</tr>")
-          $('.wishlist-box').find("."+product.handle).find('.product-remove-js').click(function(event) {
-            event.preventDefault();
-            $(this).unbind();
-            var item = $(this).parent().parent();
-            var str = $.cookie(cookieName);
-            str = str.replace(item.attr("class"), '');
-            str = str.replace('____', '__');
-            $.cookie(cookieName, str, {expires:14, path:'/'});
-
-            item.fadeOut(500);
-            setTimeout(removeItem, 500, item);
-          });
-        }
-        function removeItem(item) {
-          item.remove();
-
-          if($.cookie(cookieName) == '__' || $.cookie(cookieName) == ''){
-            emptyWishlist();
-          }
-        }
-      });
-  </script>
-  <div class="wishlist-item-clear" style="display:none">
-    <a href="#" class="remove remove_from_wishlist product-remove-js" title="Remove this product">×</a>
-  </div>
-  <div class="wishlist-item" style="display:none">
-    <a class="wishlist-item-link" href="#">
-      <!-- img -->
-      <img class="img-responsive" src="#" alt="">									
-    </a>
-  </div>
-  <span class="table-wishlist-1__product-price" style="display:none">#</span>
-  <!-- /img -->
-  <div class="wishlist-item-name" style="display:none">
-    <a class="wishlist-item-link" href="#">#</a>
-  </div>
-  <div class="wishlist-stock" style="display:none">
-    <span class="wishlist-in-stock">#</span>
-  </div>
-  <div class="wishlist-item-continue" style="display:none">
-    <a class="button wishlist-item-link btn" href="#" rel="nofollow">#</a>
+    <!-- Wishlist Actions -->
+    <div class="wishlist-actions" id="wishlist-actions" style="display: none;">
+      <button class="clear-wishlist" onclick="clearWishlist()">
+        Изчистете целия списък
+      </button>
+    </div>
   </div>
 </div>
 
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- Hidden Templates -->
+<div style="display: none;">
+  <div class="wishlist-item-template" id="wishlist-item-template">
+    <div class="wishlist-item">
+      <div class="wishlist-item-image">
+        <img src="" alt="" class="product-image">
+        <button class="remove-btn" onclick="removeFromWishlist(this)" title="Премахнете от списъка">
+          ×
+        </button>
+      </div>
+      <div class="wishlist-item-content">
+        <h3 class="wishlist-item-title">
+          <a href="" class="product-link"></a>
+        </h3>
+        <div class="wishlist-item-price">
+          <span class="price"></span>
+        </div>
+        <div class="wishlist-item-stock">
+          <span class="stock-status"></span>
+        </div>
+        <div class="wishlist-item-actions">
+          <a href="" class="btn btn-primary product-link">Вижте продукта</a>
+          <button class="btn btn-secondary" onclick="addToCart(this)" data-product-id="">
+            Добавете в количката
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-  jQuery.cookie=function(b,j,m){if(typeof j!="undefined"){m=m||{};if(j===null){j="";m.expires=-1}var e="";if(m.expires&&(typeof m.expires=="number"||m.expires.toUTCString)){var f;if(typeof m.expires=="number"){f=new Date();f.setTime(f.getTime()+(m.expires*24*60*60*1000))}else{f=m.expires}e="; expires="+f.toUTCString()}var l=m.path?"; path="+(m.path):"";var g=m.domain?"; domain="+(m.domain):"";var a=m.secure?"; secure":"";document.cookie=[b,"=",encodeURIComponent(j),e,l,g,a].join("")}else{var d=null;if(document.cookie&&document.cookie!=""){var k=document.cookie.split(";");for(var h=0;h<k.length;h++){var c=jQuery.trim(k[h]);if(c.substring(0,b.length+1)==(b+"=")){d=decodeURIComponent(c.substring(b.length+1));break}}}return d}};
-if(typeof Currency==="undefined"){
-var Currency={}}Currency.cookie={configuration:{expires:365,path:"/",domain:window.location.hostname},name:"currency",
-write:function(a){jQuery.cookie(this.name,a,this.configuration)},
-teawrite:function(name,value){
-jQuery.cookie(name,value,this.configuration)},
-tearead:function(name){return jQuery.cookie(name)},
-read:function(){return jQuery.cookie(this.name)},
-destroy:function(){jQuery.cookie(this.name,null,this.configuration)}
-};Currency.moneyFormats={USD:{money_format:"${{amount}}",money_with_currency_format:"${{amount}} USD"},EUR:{money_format:"&euro;{{amount}}",money_with_currency_format:"&euro;{{amount}} EUR"},GBP:{money_format:"&pound;{{amount}}",money_with_currency_format:"&pound;{{amount}} GBP"},CAD:{money_format:"${{amount}}",money_with_currency_format:"${{amount}} CAD"},ALL:{money_format:"Lek {{amount}}",money_with_currency_format:"Lek {{amount}} ALL"},DZD:{money_format:"DA {{amount}}",money_with_currency_format:"DA {{amount}} DZD"},AOA:{money_format:"Kz{{amount}}",money_with_currency_format:"Kz{{amount}} AOA"},ARS:{money_format:"${{amount_with_comma_separator}}",money_with_currency_format:"${{amount_with_comma_separator}} ARS"},AMD:{money_format:"{{amount}} AMD",money_with_currency_format:"{{amount}} AMD"},AWG:{money_format:"Afl{{amount}}",money_with_currency_format:"Afl{{amount}} AWG"},AUD:{money_format:"${{amount}}",money_with_currency_format:"${{amount}} AUD"},BBD:{money_format:"${{amount}}",money_with_currency_format:"${{amount}} Bds"},AZN:{money_format:"m.{{amount}}",money_with_currency_format:"m.{{amount}} AZN"},BDT:{money_format:"Tk {{amount}}",money_with_currency_format:"Tk {{amount}} BDT"},BSD:{money_format:"BS${{amount}}",money_with_currency_format:"BS${{amount}} BSD"},BHD:{money_format:"{{amount}}0 BD",money_with_currency_format:"{{amount}}0 BHD"},BYR:{money_format:"Br {{amount}}",money_with_currency_format:"Br {{amount}} BYR"},BZD:{money_format:"BZ${{amount}}",money_with_currency_format:"BZ${{amount}} BZD"},BTN:{money_format:"Nu {{amount}}",money_with_currency_format:"Nu {{amount}} BTN"},BAM:{money_format:"KM {{amount_with_comma_separator}}",money_with_currency_format:"KM {{amount_with_comma_separator}} BAM"},BRL:{money_format:"R$ {{amount_with_comma_separator}}",money_with_currency_format:"R$ {{amount_with_comma_separator}} BRL"},BOB:{money_format:"Bs{{amount_with_comma_separator}}",money_with_currency_format:"Bs{{amount_with_comma_separator}} BOB"},BWP:{money_format:"P{{amount}}",money_with_currency_format:"P{{amount}} BWP"},BND:{money_format:"${{amount}}",money_with_currency_format:"${{amount}} BND"},BGN:{money_format:"{{amount}} лв",money_with_currency_format:"{{amount}} лв BGN"},MMK:{money_format:"K{{amount}}",money_with_currency_format:"K{{amount}} MMK"},KHR:{money_format:"KHR{{amount}}",money_with_currency_format:"KHR{{amount}}"},KYD:{money_format:"${{amount}}",money_with_currency_format:"${{amount}} KYD"},XAF:{money_format:"FCFA{{amount}}",money_with_currency_format:"FCFA{{amount}} XAF"},CLP:{money_format:"${{amount_no_decimals}}",money_with_currency_format:"${{amount_no_decimals}} CLP"},CNY:{money_format:"&#165;{{amount}}",money_with_currency_format:"&#165;{{amount}} CNY"},COP:{money_format:"${{amount_with_comma_separator}}",money_with_currency_format:"${{amount_with_comma_separator}} COP"},CRC:{money_format:"&#8353; {{amount_with_comma_separator}}",money_with_currency_format:"&#8353; {{amount_with_comma_separator}} CRC"},HRK:{money_format:"{{amount_with_comma_separator}} kn",money_with_currency_format:"{{amount_with_comma_separator}} kn HRK"},CZK:{money_format:"{{amount_with_comma_separator}} K&#269;",money_with_currency_format:"{{amount_with_comma_separator}} K&#269;"},DKK:{money_format:"{{amount_with_comma_separator}}",money_with_currency_format:"kr.{{amount_with_comma_separator}}"},DOP:{money_format:"RD$ {{amount}}",money_with_currency_format:"RD$ {{amount}}"},XCD:{money_format:"${{amount}}",money_with_currency_format:"EC${{amount}}"},EGP:{money_format:"LE {{amount}}",money_with_currency_format:"LE {{amount}} EGP"},ETB:{money_format:"Br{{amount}}",money_with_currency_format:"Br{{amount}} ETB"},XPF:{money_format:"{{amount_no_decimals_with_comma_separator}} XPF",money_with_currency_format:"{{amount_no_decimals_with_comma_separator}} XPF"},FJD:{money_format:"${{amount}}",money_with_currency_format:"FJ${{amount}}"},GMD:{money_format:"D {{amount}}",money_with_currency_format:"D {{amount}} GMD"},GHS:{money_format:"GH&#8373;{{amount}}",money_with_currency_format:"GH&#8373;{{amount}}"},GTQ:{money_format:"Q{{amount}}",money_with_currency_format:"{{amount}} GTQ"},GYD:{money_format:"G${{amount}}",money_with_currency_format:"${{amount}} GYD"},GEL:{money_format:"{{amount}} GEL",money_with_currency_format:"{{amount}} GEL"},HNL:{money_format:"L {{amount}}",money_with_currency_format:"L {{amount}} HNL"},HKD:{money_format:"${{amount}}",money_with_currency_format:"HK${{amount}}"},HUF:{money_format:"{{amount_no_decimals_with_comma_separator}}",money_with_currency_format:"{{amount_no_decimals_with_comma_separator}} Ft"},ISK:{money_format:"{{amount_no_decimals}} kr",money_with_currency_format:"{{amount_no_decimals}} kr ISK"},INR:{money_format:"Rs. {{amount}}",money_with_currency_format:"Rs. {{amount}}"},IDR:{money_format:"{{amount_with_comma_separator}}",money_with_currency_format:"Rp {{amount_with_comma_separator}}"},ILS:{money_format:"{{amount}} NIS",money_with_currency_format:"{{amount}} NIS"},JMD:{money_format:"${{amount}}",money_with_currency_format:"${{amount}} JMD"},JPY:{money_format:"&#165;{{amount_no_decimals}}",money_with_currency_format:"&#165;{{amount_no_decimals}} JPY"},JEP:{money_format:"&pound;{{amount}}",money_with_currency_format:"&pound;{{amount}} JEP"},JOD:{money_format:"{{amount}}0 JD",money_with_currency_format:"{{amount}}0 JOD"},KZT:{money_format:"{{amount}} KZT",money_with_currency_format:"{{amount}} KZT"},KES:{money_format:"KSh{{amount}}",money_with_currency_format:"KSh{{amount}}"},KWD:{money_format:"{{amount}}0 KD",money_with_currency_format:"{{amount}}0 KWD"},KGS:{money_format:"лв{{amount}}",money_with_currency_format:"лв{{amount}}"},LVL:{money_format:"Ls {{amount}}",money_with_currency_format:"Ls {{amount}} LVL"},LBP:{money_format:"L&pound;{{amount}}",money_with_currency_format:"L&pound;{{amount}} LBP"},LTL:{money_format:"{{amount}} Lt",money_with_currency_format:"{{amount}} Lt"},MGA:{money_format:"Ar {{amount}}",money_with_currency_format:"Ar {{amount}} MGA"},MKD:{money_format:"ден {{amount}}",money_with_currency_format:"ден {{amount}} MKD"},MOP:{money_format:"MOP${{amount}}",money_with_currency_format:"MOP${{amount}}"},MVR:{money_format:"Rf{{amount}}",money_with_currency_format:"Rf{{amount}} MRf"},MXN:{money_format:"$ {{amount}}",money_with_currency_format:"$ {{amount}} MXN"},MYR:{money_format:"RM{{amount}} MYR",money_with_currency_format:"RM{{amount}} MYR"},MUR:{money_format:"Rs {{amount}}",money_with_currency_format:"Rs {{amount}} MUR"},MDL:{money_format:"{{amount}} MDL",money_with_currency_format:"{{amount}} MDL"},MAD:{money_format:"{{amount}} dh",money_with_currency_format:"Dh {{amount}} MAD"},MNT:{money_format:"{{amount_no_decimals}} &#8366",money_with_currency_format:"{{amount_no_decimals}} MNT"},MZN:{money_format:"{{amount}} Mt",money_with_currency_format:"Mt {{amount}} MZN"},NAD:{money_format:"N${{amount}}",money_with_currency_format:"N${{amount}} NAD"},NPR:{money_format:"Rs{{amount}}",money_with_currency_format:"Rs{{amount}} NPR"},ANG:{money_format:"&fnof;{{amount}}",money_with_currency_format:"{{amount}} NA&fnof;"},NZD:{money_format:"${{amount}}",money_with_currency_format:"${{amount}} NZD"},NIO:{money_format:"C${{amount}}",money_with_currency_format:"C${{amount}} NIO"},NGN:{money_format:"&#8358;{{amount}}",money_with_currency_format:"&#8358;{{amount}} NGN"},NOK:{money_format:"kr {{amount_with_comma_separator}}",money_with_currency_format:"kr {{amount_with_comma_separator}} NOK"},OMR:{money_format:"{{amount_with_comma_separator}} OMR",money_with_currency_format:"{{amount_with_comma_separator}} OMR"},PKR:{money_format:"Rs.{{amount}}",money_with_currency_format:"Rs.{{amount}} PKR"},PGK:{money_format:"K {{amount}}",money_with_currency_format:"K {{amount}} PGK"},PYG:{money_format:"Gs. {{amount_no_decimals_with_comma_separator}}",money_with_currency_format:"Gs. {{amount_no_decimals_with_comma_separator}} PYG"},PEN:{money_format:"S/. {{amount}}",money_with_currency_format:"S/. {{amount}} PEN"},PHP:{money_format:"&#8369;{{amount}}",money_with_currency_format:"&#8369;{{amount}} PHP"},PLN:{money_format:"{{amount_with_comma_separator}} zl",money_with_currency_format:"{{amount_with_comma_separator}} zl PLN"},QAR:{money_format:"QAR {{amount_with_comma_separator}}",money_with_currency_format:"QAR {{amount_with_comma_separator}}"},RON:{money_format:"{{amount_with_comma_separator}} lei",money_with_currency_format:"{{amount_with_comma_separator}} lei RON"},RUB:{money_format:"&#1088;&#1091;&#1073;{{amount_with_comma_separator}}",money_with_currency_format:"&#1088;&#1091;&#1073;{{amount_with_comma_separator}} RUB"},RWF:{money_format:"{{amount_no_decimals}} RF",money_with_currency_format:"{{amount_no_decimals}} RWF"},WST:{money_format:"WS$ {{amount}}",money_with_currency_format:"WS$ {{amount}} WST"},SAR:{money_format:"{{amount}} SR",money_with_currency_format:"{{amount}} SAR"},STD:{money_format:"Db {{amount}}",money_with_currency_format:"Db {{amount}} STD"},RSD:{money_format:"{{amount}} RSD",money_with_currency_format:"{{amount}} RSD"},SCR:{money_format:"Rs {{amount}}",money_with_currency_format:"Rs {{amount}} SCR"},SGD:{money_format:"${{amount}}",money_with_currency_format:"${{amount}} SGD"},SYP:{money_format:"S&pound;{{amount}}",money_with_currency_format:"S&pound;{{amount}} SYP"},ZAR:{money_format:"R {{amount}}",money_with_currency_format:"R {{amount}} ZAR"},KRW:{money_format:"&#8361;{{amount_no_decimals}}",money_with_currency_format:"&#8361;{{amount_no_decimals}} KRW"},LKR:{money_format:"Rs {{amount}}",money_with_currency_format:"Rs {{amount}} LKR"},SEK:{money_format:"{{amount_no_decimals}} kr",money_with_currency_format:"{{amount_no_decimals}} kr SEK"},CHF:{money_format:"SFr. {{amount}}",money_with_currency_format:"SFr. {{amount}} CHF"},TWD:{money_format:"${{amount}}",money_with_currency_format:"${{amount}} TWD"},THB:{money_format:"{{amount}} &#xe3f;",money_with_currency_format:"{{amount}} &#xe3f; THB"},TZS:{money_format:"{{amount}} TZS",money_with_currency_format:"{{amount}} TZS"},TTD:{money_format:"${{amount}}",money_with_currency_format:"${{amount}} TTD"},TND:{money_format:"{{amount}}",money_with_currency_format:"{{amount}} DT"},TRY:{money_format:"{{amount}}TL",money_with_currency_format:"{{amount}}TL"},UGX:{money_format:"Ush {{amount_no_decimals}}",money_with_currency_format:"Ush {{amount_no_decimals}} UGX"},UAH:{money_format:"₴{{amount}}",money_with_currency_format:"₴{{amount}} UAH"},AED:{money_format:"Dhs. {{amount}}",money_with_currency_format:"Dhs. {{amount}} AED"},UYU:{money_format:"${{amount_with_comma_separator}}",money_with_currency_format:"${{amount_with_comma_separator}} UYU"},VUV:{money_format:"${{amount}}",money_with_currency_format:"${{amount}}VT"},VEF:{money_format:"Bs. {{amount_with_comma_separator}}",money_with_currency_format:"Bs. {{amount_with_comma_separator}} VEF"},VND:{money_format:"{{amount_no_decimals_with_comma_separator}}&#8363;",money_with_currency_format:"{{amount_no_decimals_with_comma_separator}} VND"},XBT:{money_format:"{{amount_no_decimals}} BTC",money_with_currency_format:"{{amount_no_decimals}} BTC"},XOF:{money_format:"CFA{{amount}}",money_with_currency_format:"CFA{{amount}} XOF"},ZMW:{money_format:"K{{amount_no_decimals_with_comma_separator}}",money_with_currency_format:"ZMW{{amount_no_decimals_with_comma_separator}}"}};Currency.formatMoney=function(b,g){if(typeof Shopify.formatMoney==="function"){return Shopify.formatMoney(b,g)}if(typeof b=="string"){b=b.replace(".","")}var f="";var e=/\{\{\s*(\w+)\s*\}\}/;var a=g||"${{amount}}";function c(h,i){return(typeof h=="undefined"?i:h)}function d(m,k,l,j){k=c(k,2);l=c(l,",");j=c(j,".");if(isNaN(m)||m==null){return 0}m=(m/100).toFixed(k);var n=m.split("."),i=n[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g,"$1"+l),h=n[1]?(j+n[1]):"";return i+h}switch(a.match(e)[1]){case"amount":f=d(b,2);break;case"amount_no_decimals":f=d(b,0);break;case"amount_with_comma_separator":f=d(b,2,".",",");break;case"amount_no_decimals_with_comma_separator":f=d(b,0,".",",");break}return a.replace(e,f)};Currency.currentCurrency="";Currency.format="money_with_currency_format";Currency.convertAll=function(c,b,a,d){jQuery(a||"span.money").each(function(){if(jQuery(this).attr("data-currency")===b){return}if(jQuery(this).attr("data-currency-"+b)){jQuery(this).html(jQuery(this).attr("data-currency-"+b))}else{var e=0;var f=Currency.moneyFormats[c][d||Currency.format]||"{{amount}}";var g=Currency.moneyFormats[b][d||Currency.format]||"{{amount}}";if(f.indexOf("amount_no_decimals")!==-1){e=Currency.convert(parseInt(jQuery(this).html().replace(/[^0-9]/g,""),10)*100,c,b)}else{if(c==="JOD"||c=="KWD"||c=="BHD"){e=Currency.convert(parseInt(jQuery(this).html().replace(/[^0-9]/g,""),10)/10,c,b)}else{e=Currency.convert(parseInt(jQuery(this).html().replace(/[^0-9]/g,""),10),c,b)}}var h=Currency.formatMoney(e,g);jQuery(this).html(h);jQuery(this).attr("data-currency-"+b,h)}jQuery(this).attr("data-currency",b)});this.currentCurrency=b;this.cookie.write(b)};
+$(document).ready(function() {
+  // Bulgarian translations
+  window.wishlistTranslations = {
+    inStock: 'В наличност',
+    outOfStock: 'Няма в наличност',
+    manyInStock: 'Много в наличност',
+    addToCart: 'Добавете в количката',
+    viewProduct: 'Вижте продукта',
+    removeFromWishlist: 'Премахнете от списъка',
+    addedToCart: 'Добавено в количката!',
+    removedFromWishlist: 'Премахнато от списъка!',
+    confirmClear: 'Сигурни ли сте, че искате да изчистите целия списък с желания?',
+    wishlistCleared: 'Списъкът с желания е изчистен!',
+    currency: 'лв',
+    loading: 'Зареждане...',
+    error: 'Възникна грешка',
+    addingToCart: 'Добавяне...',
+    added: 'Добавено!',
+    cartError: 'Грешка при добавянето в количката'
+  };
 
+  var cookieName = "wishlistList";
+  var wishlistItems = [];
+  var totalValue = 0;
+
+  // Show loading
+  function showLoading() {
+    $('#loading-overlay').addClass('active');
+  }
+
+  // Hide loading
+  function hideLoading() {
+    $('#loading-overlay').removeClass('active');
+  }
+
+  // Initialize wishlist
+  function initWishlist() {
+    showLoading();
+
+    try {
+      if($.cookie(cookieName) != null && $.cookie(cookieName) != '__' && $.cookie(cookieName) != '') {
+        var productHandles = String($.cookie(cookieName)).split("__");
+        var loadedProducts = 0;
+        var totalProducts = productHandles.filter(handle => handle != '').length;
+
+        if (totalProducts === 0) {
+          showEmptyState();
+          hideLoading();
+          return;
+        }
+
+        for(var i = 0; i < productHandles.length; i++) {
+          if(productHandles[i] != '') {
+            Shopify.getProduct(productHandles[i], function(product) {
+              if (product) {
+                wishlistItems.push(product);
+                addProductToGrid(product);
+                totalValue += product.price;
+              }
+
+              loadedProducts++;
+              if (loadedProducts === totalProducts) {
+                updateStats();
+                hideLoading();
+                showWishlistActions();
+              }
+            });
+          }
+        }
+      } else {
+        showEmptyState();
+        hideLoading();
+      }
+    } catch (err) {
+      console.error('Error loading wishlist:', err);
+      showEmptyState();
+      hideLoading();
+    }
+  }
+
+  // Add product to grid
+  function addProductToGrid(product) {
+    var template = $('#wishlist-item-template').html();
+    var $item = $(template);
+
+    // Set product data
+    $item.find('.product-image').attr('src', product.featured_image || '/assets/no-image.png');
+    $item.find('.product-image').attr('alt', product.title);
+    $item.find('.product-link').attr('href', product.url);
+    $item.find('.product-link').first().text(product.title);
+    $item.find('.price').html(Shopify.formatMoney(product.price) + ' лв');
+    $item.find('[data-product-id]').attr('data-product-id', product.id);
+    $item.find('.remove-btn').attr('data-product-handle', product.handle);
+
+    // Set stock status
+    var stockClass = product.available ? 'in-stock' : 'out-of-stock';
+    var stockText = product.available ?
+      (product.variants && product.variants.length > 0 && product.variants[0].inventory_quantity > 10 ?
+        window.wishlistTranslations.manyInStock : window.wishlistTranslations.inStock) :
+      window.wishlistTranslations.outOfStock;
+
+    $item.find('.stock-status').addClass(stockClass).text(stockText);
+
+    // Add to grid
+    $('#wishlist-grid').append($item);
+  }
+
+  // Update stats
+  function updateStats() {
+    $('#wishlist-count').text(wishlistItems.length);
+    $('#wishlist-value').text(Shopify.formatMoney(totalValue) + ' лв');
+  }
+
+  // Show empty state
+  function showEmptyState() {
+    $('#empty-wishlist').show();
+    $('#wishlist-actions').hide();
+  }
+
+  // Show wishlist actions
+  function showWishlistActions() {
+    if (wishlistItems.length > 0) {
+      $('#wishlist-actions').show();
+      $('#empty-wishlist').hide();
+    }
+  }
+
+  // Remove from wishlist
+  window.removeFromWishlist = function(button) {
+    var productHandle = $(button).attr('data-product-handle');
+    var $item = $(button).closest('.wishlist-item');
+
+    // Remove from cookie
+    var str = $.cookie(cookieName) || '';
+    str = str.replace(productHandle, '');
+    str = str.replace('____', '__');
+    str = str.replace(/^__/, '').replace(/__$/, '');
+
+    $.cookie(cookieName, str, {expires: 14, path: '/'});
+
+    // Remove from display
+    $item.fadeOut(300, function() {
+      $(this).remove();
+
+      // Update arrays
+      wishlistItems = wishlistItems.filter(item => item.handle !== productHandle);
+      totalValue = wishlistItems.reduce((sum, item) => sum + item.price, 0);
+
+      updateStats();
+
+      if (wishlistItems.length === 0) {
+        showEmptyState();
+      }
+    });
+
+    // Show success message
+    showToast(window.wishlistTranslations.removedFromWishlist, 'success');
+  };
+
+  // Add to cart
+  window.addToCart = function(button) {
+    var productId = $(button).attr('data-product-id');
+    var $btn = $(button);
+    var originalText = $btn.text();
+
+    $btn.text(window.wishlistTranslations.addingToCart).prop('disabled', true);
+
+    // Add to cart via AJAX
+    $.ajax({
+      url: '/cart/add.js',
+      type: 'POST',
+      data: {
+        id: productId,
+        quantity: 1
+      },
+      success: function(response) {
+        $btn.text(window.wishlistTranslations.added).removeClass('btn-secondary').addClass('btn-primary');
+        showToast(window.wishlistTranslations.addedToCart, 'success');
+
+        // Update cart count if element exists
+        updateCartCount();
+
+        setTimeout(function() {
+          $btn.text(originalText).prop('disabled', false).removeClass('btn-primary').addClass('btn-secondary');
+        }, 2000);
+      },
+      error: function(xhr, status, error) {
+        $btn.text(originalText).prop('disabled', false);
+        showToast(window.wishlistTranslations.cartError, 'error');
+      }
+    });
+  };
+
+  // Clear wishlist
+  window.clearWishlist = function() {
+    if (confirm(window.wishlistTranslations.confirmClear)) {
+      $.cookie(cookieName, '', {expires: -1, path: '/'});
+      $('#wishlist-grid').empty();
+      wishlistItems = [];
+      totalValue = 0;
+      updateStats();
+      showEmptyState();
+      showToast(window.wishlistTranslations.wishlistCleared, 'success');
+    }
+  };
+
+  // Update cart count
+  function updateCartCount() {
+    fetch('/cart.js')
+      .then(response => response.json())
+      .then(cart => {
+        const cartCountElements = document.querySelectorAll('.cart-count, .cart-item-count');
+        cartCountElements.forEach(element => {
+          element.textContent = cart.item_count;
+        });
+      })
+      .catch(error => console.error('Error updating cart count:', error));
+  }
+
+  // Show toast notification
+  function showToast(message, type) {
+    var toast = $('<div class="toast toast-' + type + '">' + message + '</div>');
+    toast.css({
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      padding: '15px 25px',
+      background: type === 'success' ? '#27ae60' : '#e74c3c',
+      color: 'white',
+      borderRadius: '8px',
+      zIndex: 10000,
+      opacity: 0,
+      transform: 'translateY(-20px)',
+      transition: 'all 0.3s ease',
+      fontWeight: '600',
+      backdropFilter: 'blur(10px)',
+      boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)'
+    });
+
+    $('body').append(toast);
+
+    setTimeout(function() {
+      toast.css({opacity: 1, transform: 'translateY(0)'});
+    }, 100);
+
+    setTimeout(function() {
+      toast.css({opacity: 0, transform: 'translateY(-20px)'});
+      setTimeout(function() {
+        toast.remove();
+      }, 300);
+    }, 3000);
+  }
+
+  // Initialize
+  initWishlist();
+
+  // Handle responsive layout
+  function handleResize() {
+    if (window.innerWidth <= 768) {
+      $('.wishlist-stats').addClass('mobile-stats');
+    } else {
+      $('.wishlist-stats').removeClass('mobile-stats');
+    }
+  }
+
+  $(window).resize(handleResize);
+  handleResize();
+});
+
+// Cookie utility (enhanced version)
+if (typeof $.cookie === 'undefined') {
+  jQuery.cookie = function(name, value, options) {
+    if (typeof value !== 'undefined') {
+      options = options || {};
+      if (value === null) {
+        value = '';
+        options.expires = -1;
+      }
+      var expires = '';
+      if (options.expires && (typeof options.expires === 'number' || options.expires.toUTCString)) {
+        var date;
+        if (typeof options.expires === 'number') {
+          date = new Date();
+          date.setTime(date.getTime() + (options.expires * 24 * 60 * 60 * 1000));
+        } else {
+          date = options.expires;
+        }
+        expires = '; expires=' + date.toUTCString();
+      }
+      var path = options.path ? '; path=' + options.path : '';
+      var domain = options.domain ? '; domain=' + options.domain : '';
+      var secure = options.secure ? '; secure' : '';
+      document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('');
+    } else {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = jQuery.trim(cookies[i]);
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  };
+}
+
+// Enhanced Shopify product fetching
+if (typeof Shopify.getProduct === 'undefined') {
+  Shopify.getProduct = function(handle, callback) {
+    jQuery.getJSON('/products/' + handle + '.js', function(product) {
+      callback(product);
+    }).fail(function() {
+      console.error('Failed to load product:', handle);
+      callback(null);
+    });
+  };
+}
 </script>
+
+<style>
+/* Additional mobile optimizations */
+@media (max-width: 768px) {
+  .mobile-stats {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .mobile-stats .stat-item {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+}
+
+/* Accessibility improvements */
+.wishlist-item:focus-within {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.btn:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.remove-btn:focus {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .wishlist-page {
+    background: white !important;
+  }
+
+  .remove-btn,
+  .wishlist-actions,
+  .loading-overlay {
+    display: none !important;
+  }
+
+  .wishlist-item {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}
+</style>
