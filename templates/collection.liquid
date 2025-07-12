@@ -249,13 +249,15 @@
               <div class="results-count">
                 <span class="count-text">
                   Показани
-                  {% if paginate.current_page == paginate.pages %}
-                    {{ collection.products_count }}
-                  {% else %}
-                    {{ paginate.current_page | times: settings.collection_results_per_page }}
-                  {% endif %}
+                  <strong id="current-products-count">
+                    {% if paginate.current_page == paginate.pages %}
+                      {{ collection.products_count }}
+                    {% else %}
+                      {{ paginate.current_page | times: settings.collection_results_per_page }}
+                    {% endif %}
+                  </strong>
                   от
-                  {{ collection.products_count }}
+                  <strong>{{ collection.products_count }}</strong>
                   {% if collection.products_count == 1 %}
                     продукт
                   {% else %}
@@ -325,19 +327,19 @@
                   </ul>
 
                   {% comment %} Loading indicator {% endcomment %}
-                                     <div class="loading-indicator" id="loading-indicator" style="display: none;">
-                     <div class="spinner"></div>
-                     <span>Зареждане на още продукти...</span>
-                   </div>
+                  <div class="loading-indicator" id="loading-indicator" style="display: none;">
+                    <div class="spinner"></div>
+                    <span>Зареждане на още продукти...</span>
+                  </div>
 
                   {% comment %} Load more trigger {% endcomment %}
                   {% if paginate.pages > 1 %}
                     <div class="load-more-trigger" id="load-more-trigger">
-                                             {% if paginate.next %}
-                         <a href="{{ paginate.next.url }}" class="load-more-link" id="load-more-link">
-                           Зареди още продукти
-                         </a>
-                       {% endif %}
+                      {% if paginate.next %}
+                        <a href="{{ paginate.next.url }}" class="load-more-link" id="load-more-link">
+                          Зареди още продукти
+                        </a>
+                      {% endif %}
                     </div>
                   {% endif %}
                 </div>
@@ -768,20 +770,42 @@
   gap: 1rem;
   padding: 2rem;
   color: #7f8c8d;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+  position: relative;
+  z-index: 10;
 }
 
 .spinner {
-  width: 24px;
-  height: 24px;
-  border: 3px solid rgba(255, 107, 157, 0.3);
-  border-top: 3px solid #ff6b9d;
+  width: 32px;
+  height: 32px;
+  border: 4px solid rgba(255, 107, 157, 0.2);
+  border-top: 4px solid #ff6b9d;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  flex-shrink: 0;
 }
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.error-message {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Improve loading states */
+.loading-indicator span {
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .load-more-trigger {
@@ -1488,33 +1512,48 @@ document.addEventListener('DOMContentLoaded', function() {
     url.searchParams.set('page', currentPage);
 
     fetch(url.toString())
-      .then(response => response.text())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+      })
       .then(html => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         const newProducts = doc.querySelectorAll('.baby-product-card');
 
+        if (newProducts.length === 0) {
+          console.log('No more products to load');
+          if (loadMoreTrigger) {
+            loadMoreTrigger.style.display = 'none';
+          }
+          isLoading = false;
+          return;
+        }
+
         // Add new products with animation
         newProducts.forEach((product, index) => {
           setTimeout(() => {
-            product.style.opacity = '0';
-            product.style.transform = 'translateY(30px)';
-            productsGrid.appendChild(product);
+            // Clone the product element to avoid reference issues
+            const productClone = product.cloneNode(true);
+            productClone.style.opacity = '0';
+            productClone.style.transform = 'translateY(30px)';
+            productsGrid.appendChild(productClone);
+
+            // Initialize add to cart functionality for new products
+            initializeProductCardFunctionality(productClone);
 
             requestAnimationFrame(() => {
-              product.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-              product.style.opacity = '1';
-              product.style.transform = 'translateY(0)';
+              productClone.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+              productClone.style.opacity = '1';
+              productClone.style.transform = 'translateY(0)';
             });
           }, index * 100);
         });
 
-        // Update product count
-        const currentCount = document.getElementById('current-count');
-        if (currentCount) {
-          const newCount = productsGrid.children.length;
-          currentCount.textContent = newCount;
-        }
+        // Update results count
+        updateResultsCount();
 
         // Hide loading indicator
         if (loadingIndicator) {
@@ -1544,14 +1583,233 @@ document.addEventListener('DOMContentLoaded', function() {
         if (loadMoreLink) {
           loadMoreLink.style.display = 'inline-flex';
         }
+
+        // Show error message
+        showErrorMessage('Възникна грешка при зареждането на продуктите. Моля, опитайте отново.');
       });
   }
 
-  // Initialize product count
-  const currentCountEl = document.getElementById('current-count');
-  if (currentCountEl && productsGrid) {
-    currentCountEl.textContent = productsGrid.children.length;
+  // Initialize add to cart functionality for dynamically loaded products
+  function initializeProductCardFunctionality(productCard) {
+    // Add to cart functionality
+    const cartForm = productCard.querySelector('[data-product-form]');
+    const addButton = productCard.querySelector('[data-add-to-cart]');
+
+    if (cartForm && addButton) {
+      cartForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (addButton.classList.contains('loading')) return;
+
+        // Validate form data
+        const variantId = cartForm.querySelector('input[name="id"], select[name="id"]').value;
+        if (!variantId) {
+          console.error('No variant ID found');
+          return;
+        }
+
+        addButton.classList.add('loading');
+
+        // Get the button text element
+        const btnText = addButton.querySelector('.btn-text');
+        const originalText = btnText.textContent;
+        btnText.textContent = 'Добавяне...';
+
+        // Add to cart using Shopify's cart API
+        const formData = new FormData(cartForm);
+
+        // Debug log
+        console.log('Adding to cart:', {
+          variantId: variantId,
+          quantity: formData.get('quantity') || 1
+        });
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.text().then(text => {
+              throw new Error(`HTTP ${response.status}: ${text}`);
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Success feedback
+          addButton.style.background = '#00b894';
+          btnText.textContent = 'Добавено!';
+
+          // Dispatch cart updated event for theme compatibility
+          document.dispatchEvent(new CustomEvent('cart:updated', {
+            detail: { item: data }
+          }));
+
+          // Also dispatch legacy cart events for broader compatibility
+          if (window.timber && window.timber.cartUpdateCallback) {
+            window.timber.cartUpdateCallback(data);
+          }
+
+          // Reset button after 2 seconds
+          setTimeout(() => {
+            addButton.classList.remove('loading');
+            addButton.style.background = '#FF6B9D';
+            btnText.textContent = originalText;
+          }, 2000);
+        })
+        .catch(error => {
+          console.error('Error adding to cart:', error);
+          addButton.classList.remove('loading');
+          addButton.style.background = '#dc3545';
+
+          // Show more specific error messages
+          if (error.message.includes('422')) {
+            btnText.textContent = 'Няма в наличност';
+          } else if (error.message.includes('404')) {
+            btnText.textContent = 'Продуктът не е намерен';
+          } else {
+            btnText.textContent = 'Грешка!';
+          }
+
+          // Reset button after 3 seconds for error states
+          setTimeout(() => {
+            addButton.style.background = '#FF6B9D';
+            btnText.textContent = originalText;
+          }, 3000);
+        });
+      });
+    }
+
+    // Variant selection handling for swatches
+    const swatchInputs = productCard.querySelectorAll('.swatch input[type="radio"]');
+    const variantSelect = productCard.querySelector('[data-variant-select]');
+    const priceElement = productCard.querySelector('.product-card__price-current');
+    const compareElement = productCard.querySelector('.product-card__price-compare');
+    const addToCartBtn = productCard.querySelector('[data-add-to-cart]');
+
+    if (swatchInputs.length > 0 && variantSelect) {
+      swatchInputs.forEach(input => {
+        input.addEventListener('change', function() {
+          updateVariantSelection(productCard, variantSelect, priceElement, compareElement, addToCartBtn);
+        });
+      });
+    }
+
+    // Quick view functionality
+    const quickViewBtn = productCard.querySelector('.action-btn--quick-view');
+    if (quickViewBtn) {
+      quickViewBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const productHandle = this.dataset.productHandle;
+        console.log('Quick view for:', productHandle);
+      });
+    }
+
+    // Wishlist functionality
+    const wishlistBtn = productCard.querySelector('.action-btn--wishlist');
+    if (wishlistBtn) {
+      wishlistBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const productId = this.dataset.productId;
+        const icon = this.querySelector('.icon--heart');
+
+        if (this.classList.contains('added')) {
+          this.classList.remove('added');
+          icon.style.fill = 'currentColor';
+          this.setAttribute('aria-label', 'Add to wishlist');
+          this.setAttribute('title', 'Add to Wishlist');
+        } else {
+          this.classList.add('added');
+          icon.style.fill = '#e74c3c';
+          this.setAttribute('aria-label', 'Remove from wishlist');
+          this.setAttribute('title', 'Remove from Wishlist');
+        }
+
+        console.log('Wishlist toggled for product:', productId);
+      });
+    }
   }
+
+  // Update variant selection
+  function updateVariantSelection(card, variantSelect, priceElement, compareElement, addToCartBtn) {
+    const swatches = card.querySelectorAll('.swatch');
+    const selectedOptions = [];
+
+    swatches.forEach(swatch => {
+      const checkedInput = swatch.querySelector('input[type="radio"]:checked');
+      if (checkedInput) {
+        selectedOptions.push(checkedInput.value);
+      }
+    });
+
+    // Find matching variant
+    const options = Array.from(variantSelect.options);
+    const matchingOption = options.find(option => {
+      const optionText = option.textContent.trim();
+      return selectedOptions.every(selected => optionText.includes(selected));
+    });
+
+    if (matchingOption) {
+      variantSelect.value = matchingOption.value;
+
+      // Update button availability
+      if (addToCartBtn) {
+        const isAvailable = matchingOption.hasAttribute('data-available');
+        addToCartBtn.disabled = !isAvailable;
+        const btnText = addToCartBtn.querySelector('.btn-text');
+        if (btnText) {
+          btnText.textContent = isAvailable ? 'Добави в количката' : 'Няма в наличност';
+        }
+      }
+    }
+  }
+
+  // Update results count
+  function updateResultsCount() {
+    const currentCountElement = document.getElementById('current-products-count');
+    if (currentCountElement && productsGrid) {
+      const currentCount = productsGrid.children.length;
+      currentCountElement.textContent = currentCount;
+    }
+  }
+
+  // Show error message
+  function showErrorMessage(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.style.cssText = `
+      background: #ff6b9d;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    `;
+    errorDiv.textContent = message;
+
+    const productsContainer = document.querySelector('.products-container');
+    if (productsContainer) {
+      productsContainer.appendChild(errorDiv);
+
+      // Remove error message after 5 seconds
+      setTimeout(() => {
+        errorDiv.remove();
+      }, 5000);
+    }
+  }
+
+  // Initialize existing products
+  const existingProducts = document.querySelectorAll('.baby-product-card');
+  existingProducts.forEach(product => {
+    initializeProductCardFunctionality(product);
+  });
+
+  // Initialize results count
+  updateResultsCount();
 });
 
 // Global function for clearing filters (used in empty state)

@@ -232,9 +232,7 @@
                 </svg>
                 <span class="btn-text">Добави в количката</span>
                 <span class="btn-loading" aria-hidden="true">
-                  <svg class="icon icon--spinner" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="15.71"></circle>
-                  </svg>
+                  <div class="spinner-ring"></div>
                 </span>
               </button>
             </form>
@@ -651,25 +649,48 @@ li.baby-product-card:hover .product-card,
 
 .btn-loading {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn--add-to-cart.loading .btn-text,
 .btn--add-to-cart.loading .icon--cart {
   opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .btn--add-to-cart.loading .btn-loading {
   opacity: 1;
 }
 
-.icon--spinner circle {
+.btn--add-to-cart.loading {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn--add-to-cart.loading:hover {
+  transform: none;
+  box-shadow: 0 4px 16px rgba(0, 123, 255, 0.3);
+}
+
+.spinner-ring {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  from { stroke-dashoffset: 0; }
-  to { stroke-dashoffset: -31.42; }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* Sold Out State */
@@ -743,6 +764,12 @@ li.baby-product-card:hover .product-card,
   .btn--add-to-cart {
     padding: 1rem;
     font-size: 1rem;
+  }
+
+  .spinner-ring {
+    width: 18px;
+    height: 18px;
+    border-width: 2.5px;
   }
 }
 
