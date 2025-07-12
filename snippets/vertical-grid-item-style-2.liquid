@@ -142,16 +142,47 @@
         {% endif %}
 
         {% if settings.enable_wishlist %}
-          <button type="button"
-                  class="action-btn action-btn--wishlist"
-                  aria-label="Add {{ product.title | escape }} to wishlist"
-                  title="Add to Wishlist"
-                  data-product-id="{{ product.id }}">
-            <svg class="icon icon--heart" aria-hidden="true" focusable="false" viewBox="0 0 24 24">
-              <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5 2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.04L12,21.35Z"/>
-            </svg>
-            <span class="sr-only">Add to Wishlist</span>
-          </button>
+          <div class="add-to-wishlist">
+            <div class="default-wishbutton-{{ product.handle }} loading">
+              <button type="button"
+                      class="action-btn action-btn--wishlist add-in-wishlist-js"
+                      aria-label="Add {{ product.title | escape }} to wishlist"
+                      title="Add to Wishlist"
+                      data-product-handle="{{ product.handle }}"
+                      data-product-id="{{ product.id }}">
+                <svg class="icon icon--heart" aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                  <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5 2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.04L12,21.35Z"/>
+                </svg>
+                <span class="sr-only">Add to Wishlist</span>
+              </button>
+            </div>
+            <div class="loadding-wishbutton-{{ product.handle }} loading" style="display: none;">
+              <button type="button"
+                      class="action-btn action-btn--wishlist"
+                      aria-label="Adding to wishlist..."
+                      title="Adding to Wishlist"
+                      disabled>
+                <svg class="icon icon--spinner" aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="31.416" stroke-dashoffset="31.416">
+                    <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/>
+                    <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/>
+                  </circle>
+                </svg>
+                <span class="sr-only">Adding to Wishlist</span>
+              </button>
+            </div>
+            <div class="added-wishbutton-{{ product.handle }} loading" style="display: none;">
+              <a href="/pages/wishlist"
+                 class="action-btn action-btn--wishlist action-btn--wishlist-added"
+                 aria-label="View wishlist"
+                 title="View Wishlist">
+                <svg class="icon icon--heart-filled" aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                  <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5 2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.04L12,21.35Z"/>
+                </svg>
+                <span class="sr-only">View Wishlist</span>
+              </a>
+            </div>
+          </div>
         {% endif %}
       </div>
     </div>
@@ -515,6 +546,26 @@ li.baby-product-card:hover .product-card,
 .action-btn--wishlist:hover {
   background: #e74c3c;
   color: white;
+}
+
+.action-btn--wishlist-added {
+  background: #e74c3c !important;
+  color: white !important;
+}
+
+.action-btn--wishlist-added:hover {
+  background: #c0392b !important;
+  color: white !important;
+}
+
+.action-btn--wishlist:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.add-to-wishlist {
+  position: relative;
+  display: inline-block;
 }
 
 .action-btn--quick-view:hover {
@@ -985,32 +1036,134 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Wishlist functionality
-  const wishlistBtns = document.querySelectorAll('.action-btn--wishlist');
-  wishlistBtns.forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
+  // Initialize wishlist functionality
+  initWishlistButtons();
+  updateWishlistButtons();
 
-      const productId = this.dataset.productId;
-      const icon = this.querySelector('.icon--heart');
+  function initWishlistButtons() {
+    const wishlistBtns = document.querySelectorAll('.add-in-wishlist-js');
+    wishlistBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
 
-      // Toggle wishlist state (replace with actual wishlist logic)
-      if (this.classList.contains('added')) {
-        this.classList.remove('added');
-        icon.style.fill = 'currentColor';
-        this.setAttribute('aria-label', 'Add to wishlist');
-        this.setAttribute('title', 'Add to Wishlist');
-      } else {
-        this.classList.add('added');
-        icon.style.fill = '#e74c3c';
-        this.setAttribute('aria-label', 'Remove from wishlist');
-        this.setAttribute('title', 'Remove from Wishlist');
-      }
+        const productHandle = this.dataset.productHandle;
+        const cookieName = "wishlistList";
 
-      console.log('Wishlist toggled for product:', productId);
+        try {
+          // Get current wishlist from cookie
+          let wishlistItems = getCookie(cookieName) || '';
+
+          // Add product to wishlist if not already there
+          if (wishlistItems.indexOf(productHandle) === -1) {
+            if (wishlistItems === '') {
+              wishlistItems = productHandle;
+            } else {
+              wishlistItems = wishlistItems + '__' + productHandle;
+            }
+
+            // Save to cookie
+            setCookie(cookieName, wishlistItems, 14);
+
+            // Show loading state
+            const defaultBtn = document.querySelector('.default-wishbutton-' + productHandle);
+            const loadingBtn = document.querySelector('.loadding-wishbutton-' + productHandle);
+            const addedBtn = document.querySelector('.added-wishbutton-' + productHandle);
+
+            if (defaultBtn) defaultBtn.style.display = 'none';
+            if (loadingBtn) loadingBtn.style.display = 'block';
+
+            // Show added state after 2 seconds
+            setTimeout(() => {
+              if (loadingBtn) loadingBtn.style.display = 'none';
+              if (addedBtn) addedBtn.style.display = 'block';
+            }, 2000);
+
+            // Show success message
+            showWishlistMessage('Продуктът е добавен в списъка с желания!', 'success');
+          }
+        } catch (error) {
+          console.error('Error adding to wishlist:', error);
+          showWishlistMessage('Грешка при добавянето в списъка с желания', 'error');
+        }
+      });
     });
-  });
+  }
+
+  function updateWishlistButtons() {
+    const cookieName = "wishlistList";
+    try {
+      const wishlistItems = getCookie(cookieName);
+      if (wishlistItems && wishlistItems !== '__' && wishlistItems !== '') {
+        const items = wishlistItems.split('__');
+        items.forEach(handle => {
+          if (handle !== '') {
+            const defaultBtn = document.querySelector('.default-wishbutton-' + handle);
+            const addedBtn = document.querySelector('.added-wishbutton-' + handle);
+
+            if (defaultBtn) defaultBtn.style.display = 'none';
+            if (addedBtn) addedBtn.style.display = 'block';
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error updating wishlist buttons:', error);
+    }
+  }
+
+  function getCookie(name) {
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  }
+
+  function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = name + "=" + value + ";expires=" + expires.toUTCString() + ";path=/";
+  }
+
+  function showWishlistMessage(message, type) {
+    // Create toast notification
+    const toast = document.createElement('div');
+    toast.className = `wishlist-toast wishlist-toast--${type}`;
+    toast.textContent = message;
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      background: ${type === 'success' ? '#27ae60' : '#e74c3c'};
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      z-index: 10000;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    `;
+
+    document.body.appendChild(toast);
+
+    // Show toast
+    setTimeout(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+    }, 100);
+
+    // Hide toast after 3 seconds
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(-20px)';
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 300);
+    }, 3000);
+  }
 });
 
 // CSS Animation keyframes
