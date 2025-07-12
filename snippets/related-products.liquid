@@ -441,7 +441,7 @@
 
         // Show loading state
         this.classList.add('loading');
-        this.textContent = 'Adding...';
+        this.textContent = 'Добавяне...';
         this.disabled = true;
 
         // Add to cart
@@ -459,7 +459,7 @@
         .then(data => {
           // Success
           this.classList.remove('loading');
-          this.textContent = 'Added!';
+          this.textContent = 'Добавено!';
           this.style.background = '#28a745';
 
           // Reset after 2 seconds
@@ -475,7 +475,7 @@
         .catch(error => {
           console.error('Error:', error);
           this.classList.remove('loading');
-          this.textContent = 'Try Again';
+          this.textContent = 'Опитайте отново';
           this.style.background = '#dc3545';
 
           setTimeout(() => {
