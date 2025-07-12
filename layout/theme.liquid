@@ -55,306 +55,498 @@
   {% endif %}
 
   <style>
-    /* Header Type 2 - Improved Responsive Layout */
-    .header-type-2 .site-header__menubar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 15px 5%;
-      max-width: 100%;
-      position: relative;
-      flex-wrap: wrap;
-      min-height: 70px;
+    /* Modern Responsive Header System */
+    :root {
+      --header-bg: #ffffff;
+      --header-border: #f0e8f3;
+      --header-text: #7b6b8a;
+      --header-accent: #ff6b9d;
+      --header-accent-light: rgba(255, 107, 157, 0.1);
+      --header-shadow: 0 2px 20px rgba(123, 107, 138, 0.08);
+      --header-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --header-padding: clamp(12px, 3vw, 24px);
+      --header-height: clamp(65px, 8vh, 85px);
+      --logo-height: clamp(35px, 6vh, 55px);
     }
 
-    .header-type-2 .site-header__logo {
-      padding-left: 0;
-      flex: 0 0 auto;
-      order: 1;
+    /* Header Container */
+    .modern-header-wrapper {
+      position: relative;
+      z-index: 1000;
+      background: var(--header-bg);
+    }
+
+    /* Top Bar (Optional) */
+    .header-top-bar {
+      background: linear-gradient(135deg, #f8f4f9 0%, #fef9ff 100%);
+      border-bottom: 1px solid var(--header-border);
+      padding: 8px 0;
+      font-size: 13px;
+      color: var(--header-text);
+    }
+
+    .header-top-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Main Header */
+    .modern-header-main {
+      padding: 0;
+      min-height: var(--header-height);
+      display: flex;
+      align-items: center;
+    }
+
+    .header-container {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 0 20px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: "logo navigation actions";
+      align-items: center;
+      gap: 30px;
+      min-height: var(--header-height);
+    }
+
+    /* Logo Section */
+    .header-logo-section {
+      grid-area: logo;
+      display: flex;
+      align-items: center;
       z-index: 2;
     }
 
-    .header-type-2 .site-header__logo img {
-      max-height: 50px;
-      height: auto;
+    .header-logo-section .site-header__logo {
+      margin: 0;
+      padding: 0;
+    }
+
+    .header-logo-section .logo-link,
+    .header-logo-section .logo_name {
+      display: block;
+      text-decoration: none;
+      transition: var(--header-transition);
+    }
+
+    .header-logo-section img {
+      height: var(--logo-height);
       width: auto;
+      object-fit: contain;
+      transition: var(--header-transition);
+      filter: brightness(1);
     }
 
-    .header-type-2 .menubar-section {
-      flex: 1 1 auto;
-      order: 2;
-      text-align: center;
-      padding: 0 20px;
+    .header-logo-section .logo_name {
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 700;
+      color: var(--header-text);
+      letter-spacing: -0.5px;
     }
 
-    .header-type-2 .header-right-section {
-      padding-right: 0;
-      flex: 0 0 auto;
-      order: 3;
+      .header-logo-section .logo-link:hover img {
+    /* No scaling or filter changes */
+  }
+
+  .header-logo-section .logo_name:hover {
+    /* No color changes */
+  }
+
+    /* Navigation Section */
+    .header-navigation-section {
+      grid-area: navigation;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Actions Section */
+    .header-actions-section {
+      grid-area: actions;
       display: flex;
       align-items: center;
-      gap: 15px;
+      justify-content: flex-end;
+      gap: 12px;
     }
 
-    /* Mobile Menu Button - Now on the right */
-    .header-type-2 .mobile-menu-trigger {
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
       display: none;
-      background: none;
-      border: none;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: #ffffff;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      color: var(--header-text);
       cursor: pointer;
-      padding: 10px;
-      font-size: 22px;
-      color: #7b6b8a;
-      z-index: 3;
-      transition: color 0.3s ease;
-      border-radius: 8px;
-      flex-shrink: 0;
+      transition: var(--header-transition);
+      font-size: 18px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 0 !important;
     }
 
-    .header-type-2 .mobile-menu-trigger:hover,
-    .header-type-2 .mobile-menu-trigger.active {
-      color: #ff6b9d;
-      background: rgba(255, 107, 157, 0.1);
+    .mobile-menu-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: var(--header-accent);
+      border-radius: 50%;
+      transition: all 0.4s ease;
+      transform: translate(-50%, -50%);
+      z-index: -1;
     }
 
-    /* Large Desktop Screens */
-    @media only screen and (min-width: 1200px) {
-      .header-type-2 .site-header__menubar {
-        padding: 20px 3%;
+    .mobile-menu-btn:hover::before,
+    .mobile-menu-btn.active::before {
+      width: 120%;
+      height: 120%;
+    }
+
+      .mobile-menu-btn:hover,
+  .mobile-menu-btn.active,
+  .mobile-menu-btn:focus,
+  .mobile-menu-btn:active {
+    color: #ffffff;
+    border-color: transparent;
+    transform: none;
+    box-shadow: none;
+    background: none;
+    outline: none !important;
+  }
+
+    /* Menu Icon Animation */
+    .mobile-menu-btn .menu-icon {
+      position: relative;
+      width: 20px;
+      height: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .mobile-menu-btn .menu-icon span {
+      display: block;
+      height: 2px;
+      width: 100%;
+      background: currentColor;
+      border-radius: 1px;
+      transition: var(--header-transition);
+      transform-origin: center;
+    }
+
+    .mobile-menu-btn.active .menu-icon span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .mobile-menu-btn.active .menu-icon span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    .mobile-menu-btn.active .menu-icon span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -6px);
+    }
+
+    /* Responsive Breakpoints */
+
+    /* Large Desktop (1400px+) */
+    @media (min-width: 1200px) {
+      .header-container {
+        gap: 40px;
       }
 
-      .header-type-2 .site-header__logo img {
-        max-height: 60px;
+      :root {
+        --header-height: 80px;
+        --logo-height: 50px;
       }
     }
 
-    /* Tablet and Medium Screens - Lower threshold to 967px to match existing mobile menu logic */
-    @media only screen and (max-width: 967px) {
-      .header-type-2 .site-header__menubar {
-        padding: 15px 4%;
+    /* Large Tablet (968px - 1199px) */
+    @media (max-width: 1199px) {
+      .header-container {
+        gap: 25px;
       }
 
-      .header-type-2 .menubar-section {
-        display: none !important; /* Hide desktop navigation on tablets and mobile */
-      }
-
-      .header-type-2 .mobile-menu-trigger {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
+      :root {
+        --header-height: 70px;
+        --logo-height: 42px;
       }
     }
 
-    /* Additional mobile layout fixes for screens below 967px */
-    @media only screen and (max-width: 767px) {
-      .header-type-2 .site-header__menubar {
-        padding: 12px 15px;
-        min-height: 60px;
+    /* Tablet and Mobile (967px and below) */
+    @media (max-width: 967px) {
+      .header-container {
+        grid-template-columns: 1fr auto;
+        grid-template-areas: "logo actions";
         gap: 15px;
       }
 
-      .header-type-2 .site-header__logo {
-        order: 1; /* Logo on left */
-        flex: 1 1 auto;
-        text-align: left;
-      }
-
-      .header-type-2 .site-header__logo img {
-        max-height: 45px;
-      }
-
-      .header-type-2 .mobile-menu-trigger {
-        min-width: 44px;
-        height: 44px;
-      }
-
-      .header-type-2 .header-right-section {
-        order: 2;
-        gap: 10px;
-      }
-    }
-
-    /* Very Small Mobile Screens - 567px and below */
-    @media only screen and (max-width: 567px) {
-      .header-type-2 .site-header__menubar {
-        padding: 10px 15px;
-        gap: 10px;
-        min-height: 55px;
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: nowrap;
-      }
-
-      .header-type-2 .site-header__logo {
-        order: 1;
-        text-align: left;
-        flex: 1 1 auto;
-        margin: 0;
-        padding: 0;
-        max-width: calc(100% - 120px); /* Reserve space for right section */
-      }
-
-      .header-type-2 .site-header__logo img {
-        max-height: 35px !important;
-        height: auto;
-        width: auto;
-      }
-
-      .header-type-2 .mobile-menu-trigger {
-        padding: 8px;
-        margin: 0;
-        min-width: 40px;
-        height: 40px;
-        font-size: 18px;
-      }
-
-      .header-type-2 .header-right-section {
-        order: 2;
-        flex: 0 0 auto;
-        gap: 8px;
-        min-width: 100px;
-        justify-content: flex-end;
-      }
-
-      /* Override any conflicting flexbox properties */
-      .header-type-2 .menubar-section {
+      .header-navigation-section {
         display: none !important;
       }
-    }
 
-    /* Small Mobile Screens */
-    @media only screen and (max-width: 480px) {
-      .header-type-2 .site-header__menubar {
-        min-height: 55px;
+      .mobile-menu-btn {
+        display: flex !important;
       }
 
-      .header-type-2 .site-header__logo img {
-        max-height: 35px;
+      :root {
+        --header-height: 65px;
+        --logo-height: 38px;
       }
     }
 
-    /* Ensure proper z-index for dropdowns */
-    .header-type-2 .site-header {
-      position: relative;
-      z-index: 100;
+    /* Mobile (767px and below) */
+    @media (max-width: 767px) {
+      .header-top-bar {
+        padding: 6px 0;
+        font-size: 12px;
+      }
+
+      :root {
+        --header-height: 65px;
+        --logo-height: 38px;
+        --header-padding: 16px;
+      }
     }
 
-            /* Disable sticky header - header stays at top */
-    .header-sticky {
-      position: static !important;
+    /* Small Mobile (480px and below) */
+    @media (max-width: 480px) {
+      .header-top-bar {
+        display: none;
+      }
+
+      :root {
+        --header-height: 60px;
+        --logo-height: 35px;
+        --header-padding: 12px;
+      }
+
+      .header-container {
+        gap: 15px;
+      }
     }
 
-    .header-sticky.is-sticky {
-      position: static !important;
-      top: auto !important;
-      left: auto !important;
-      right: auto !important;
-      z-index: auto !important;
-      width: auto !important;
-      height: auto !important;
+    /* Very Small Mobile (375px and below) */
+    @media (max-width: 375px) {
+      :root {
+        --header-height: 55px;
+        --logo-height: 32px;
+      }
     }
 
-    /* Remove any sticky-specific styling */
-    .header-sticky.is-sticky .header-type-2 .site-header__menubar,
-    .header-sticky.is-sticky .header-type-2 .site-header__logo img,
-    .header-sticky.is-sticky .header-type-2 .mobile-menu-trigger {
-      /* Reset to inherit normal styling */
-      min-height: inherit;
-      padding: inherit;
-      background: inherit;
-      backdrop-filter: none;
-      border-bottom: none;
-      box-shadow: none;
-      max-height: inherit;
-      transition: none;
+      /* Accessibility & Focus States - Clean */
+  .mobile-menu-btn:focus,
+  .mobile-menu-btn:active,
+  .mobile-menu-btn:focus-visible,
+  .header-logo-section .logo-link:focus,
+  .header-logo-section .logo_name:focus,
+  .header-logo-section .logo-link:active,
+  .header-logo-section .logo_name:active,
+  .header-logo-section .logo-link:focus-visible,
+  .header-logo-section .logo_name:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: none !important;
+    transform: none !important;
+  }
+
+  /* Override browser default focus styles for logo */
+  .header-logo-section .logo-link::-moz-focus-inner,
+  .header-logo-section .logo_name::-moz-focus-inner {
+    border: 0 !important;
+    outline: none !important;
+  }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
     }
 
-    /* Header background */
-    .header-type-2 .site-header {
-      background: #fff;
+    /* High Contrast Mode */
+    @media (prefers-contrast: high) {
+      :root {
+        --header-border: #000000;
+        --header-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
     }
 
-    .header-type-2 .site-header__menubar {
-      background: #fff;
+    /* Print Styles */
+    @media print {
+      .header-actions-section,
+      .mobile-menu-btn {
+        display: none !important;
+      }
+
+      .modern-header-wrapper {
+        box-shadow: none;
+        border-bottom: 1px solid #000;
+      }
     }
 
-            /* Mobile Menu Enhancements */
+            /* Enhanced Mobile Menu */
     .cbp-spmenu {
-      background: linear-gradient(135deg, #fff 0%, #fef9ff 100%);
+      background: linear-gradient(135deg, #ffffff 0%, #fef9ff 100%);
       z-index: 10000;
       overflow-y: auto;
-      padding-bottom: 20px;
+      padding: 0;
+      width: 320px;
+      box-shadow: -5px 0 25px rgba(123, 107, 138, 0.2);
+      backdrop-filter: blur(10px);
+      border-left: 1px solid rgba(240, 232, 243, 0.3);
+    }
+
+    .cbp-spmenu .gf-menu-device-wrapper {
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     .cbp-spmenu .close-menu {
-      background: #f0e8f3;
+      background: linear-gradient(135deg, #f0e8f3 0%, #fef9ff 100%);
       color: #7b6b8a;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
+      border-radius: 12px;
+      width: 44px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 15px 20px 0 auto;
+      margin: 20px 20px 0 auto;
       cursor: pointer;
-      transition: all 0.3s ease;
-      border: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
       font-size: 18px;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cbp-spmenu .close-menu::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: #ff6b9d;
+      border-radius: 50%;
+      transition: all 0.4s ease;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+    }
+
+    .cbp-spmenu .close-menu:hover::before {
+      width: 120%;
+      height: 120%;
     }
 
     .cbp-spmenu .close-menu:hover {
-      background: #ff6b9d;
-      color: #fff;
+      color: #ffffff;
+      border-color: #ff6b9d;
+      transform: rotate(90deg) scale(1.1);
+      box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
     }
 
-    /* Mobile Header Actions Styling */
+    /* Enhanced Mobile Header Actions */
     .mobile-header-actions {
-      padding: 0 20px 20px;
-      border-bottom: 2px solid #f0e8f3;
-      margin-bottom: 20px;
+      padding: 25px 25px 30px;
+      border-bottom: 1px solid rgba(240, 232, 243, 0.4);
+      margin-bottom: 0;
+      background: linear-gradient(135deg, rgba(248, 244, 249, 0.5) 0%, rgba(254, 249, 255, 0.8) 100%);
     }
 
     .mobile-header-actions h3 {
       color: #7b6b8a;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin: 0 0 15px 0;
-      padding: 10px 0;
+      letter-spacing: 1.5px;
+      margin: 0 0 20px 0;
+      padding: 0;
+      position: relative;
+      padding-bottom: 8px;
+    }
+
+    .mobile-header-actions h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, #ff6b9d 0%, #ffa8cc 100%);
+      border-radius: 1px;
     }
 
     .mobile-action-item {
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .mobile-action-link {
       display: flex;
       align-items: center;
-      padding: 12px 0;
+      padding: 16px 18px;
       color: #7b6b8a;
       text-decoration: none;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 500;
-      transition: color 0.3s ease;
-      border-bottom: 1px solid #f5f0f7;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 12px;
+      margin-bottom: 4px;
+      background: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mobile-action-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255, 107, 157, 0.08) 0%, rgba(255, 168, 204, 0.08) 100%);
+      transition: left 0.3s ease;
+    }
+
+    .mobile-action-link:hover::before {
+      left: 0;
     }
 
     .mobile-action-link:hover {
       color: #ff6b9d;
+      transform: translateX(8px);
+      background: rgba(255, 107, 157, 0.05);
     }
 
     .mobile-action-link i {
-      margin-right: 12px;
-      width: 20px;
+      margin-right: 15px;
+      width: 22px;
       color: #b8a8c8;
       font-size: 16px;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
     }
 
     .mobile-action-link:hover i {
       color: #ff6b9d;
+      transform: scale(1.1);
     }
 
     /* Mobile Search */
@@ -480,9 +672,11 @@
     }
 
     .cbp-spmenu .gf-menu-device-container {
-      padding: 0 20px;
+      padding: 25px;
       display: block !important;
       visibility: visible !important;
+      flex: 1;
+      overflow-y: auto;
     }
 
     .cbp-spmenu .site-nav {
@@ -495,24 +689,68 @@
     }
 
     .cbp-spmenu .site-nav > li {
-      border-bottom: 1px solid #f0e8f3;
+      border-bottom: 1px solid rgba(240, 232, 243, 0.3);
       display: block !important;
       width: 100% !important;
+      margin-bottom: 2px;
+    }
+
+    .cbp-spmenu .site-nav > li:last-child {
+      border-bottom: none;
     }
 
     .cbp-spmenu .site-nav > li > a {
-      display: block !important;
-      padding: 15px 0;
+      display: flex !important;
+      align-items: center;
+      padding: 18px 20px;
       color: #7b6b8a;
       text-decoration: none;
       font-size: 16px;
       font-weight: 500;
-      transition: color 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 12px;
+      margin-bottom: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cbp-spmenu .site-nav > li > a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255, 107, 157, 0.1) 0%, rgba(255, 168, 204, 0.1) 100%);
+      transition: left 0.3s ease;
+    }
+
+    .cbp-spmenu .site-nav > li > a:hover::before,
+    .cbp-spmenu .site-nav > li > a.current::before {
+      left: 0;
     }
 
     .cbp-spmenu .site-nav > li > a:hover,
     .cbp-spmenu .site-nav > li > a.current {
       color: #ff6b9d;
+      transform: translateX(8px);
+      background: rgba(255, 107, 157, 0.05);
+    }
+
+    .cbp-spmenu .site-nav > li > a.current {
+      font-weight: 600;
+    }
+
+    .cbp-spmenu .site-nav > li > a.current::after {
+      content: '';
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: #ff6b9d;
+      border-radius: 50%;
     }
 
     /* Override any hiding styles for mobile menu */
@@ -541,7 +779,7 @@
       }
     }
 
-    /* Fix mobile menu to overlay from right instead of push */
+    /* Enhanced Mobile Menu Positioning & Animations */
     @media only screen and (max-width: 967px) {
       .cbp-spmenu-push-toleft {
         right: 0 !important;
@@ -552,20 +790,21 @@
 
       .cbp-spmenu-right {
         position: fixed;
-        right: -280px;
-        width: 280px;
+        right: -320px;
+        width: 320px;
         height: 100vh;
         top: 0;
         z-index: 10000;
-        transition: right 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
       }
 
       .cbp-spmenu-right.cbp-spmenu-open {
         right: 0;
-        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        transform: translateX(0);
       }
 
-      /* Add backdrop */
+      /* Enhanced backdrop with blur */
       body.cbp-spmenu-push-toleft::before {
         content: '';
         position: fixed;
@@ -573,16 +812,71 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(123, 107, 138, 0.4);
+        backdrop-filter: blur(8px);
         z-index: 9999;
         opacity: 0;
         visibility: hidden;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       body.cbp-spmenu-push-toleft.menu-open::before {
         opacity: 1;
         visibility: visible;
+      }
+
+      /* Menu slide-in animation */
+      .cbp-spmenu-right {
+        transform: translateX(100%);
+      }
+
+      .cbp-spmenu-right.cbp-spmenu-open {
+        transform: translateX(0);
+      }
+
+      /* Staggered animation for menu items */
+      .cbp-spmenu-open .mobile-action-item,
+      .cbp-spmenu-open .site-nav > li {
+        animation: slideInFromRight 0.6s ease-out forwards;
+        opacity: 0;
+      }
+
+      .cbp-spmenu-open .mobile-action-item:nth-child(1) { animation-delay: 0.1s; }
+      .cbp-spmenu-open .mobile-action-item:nth-child(2) { animation-delay: 0.15s; }
+      .cbp-spmenu-open .mobile-action-item:nth-child(3) { animation-delay: 0.2s; }
+      .cbp-spmenu-open .mobile-action-item:nth-child(4) { animation-delay: 0.25s; }
+
+      .cbp-spmenu-open .site-nav > li:nth-child(1) { animation-delay: 0.3s; }
+      .cbp-spmenu-open .site-nav > li:nth-child(2) { animation-delay: 0.35s; }
+      .cbp-spmenu-open .site-nav > li:nth-child(3) { animation-delay: 0.4s; }
+      .cbp-spmenu-open .site-nav > li:nth-child(4) { animation-delay: 0.45s; }
+      .cbp-spmenu-open .site-nav > li:nth-child(5) { animation-delay: 0.5s; }
+      .cbp-spmenu-open .site-nav > li:nth-child(6) { animation-delay: 0.55s; }
+
+      @keyframes slideInFromRight {
+        from {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Responsive menu width */
+      @media (max-width: 480px) {
+        .cbp-spmenu-right {
+          width: 280px;
+          right: -280px;
+        }
+      }
+
+      @media (max-width: 375px) {
+        .cbp-spmenu-right {
+          width: 260px;
+          right: -260px;
+        }
       }
     }
 
@@ -690,34 +984,50 @@
     </div>
   </nav>
 <div class="wrapper-container">
-    <div class="header-type-2">
-      {% section 'top-bar-type-2' %}
 
-      {% include 'search-bar-type-2' %}
-
-      <header class="site-header">
-        <div class="header-sticky">
-          <div id="header-landing" class="sticky-animate">
-            <div class="site-header__menubar">
-              {% include 'logo' %}
-              <div class="menubar-section order-header">
-                <div class="desktop-megamenu">
-                  {% section 'navigation' %}
-                </div>
-              </div>
-              <div class="header-right-section">
-                {% section 'header-model-2' %}
-                <button type="button" class="mobile-menu-trigger" id="showRightPush">
-                  <i class="fa fa-bars" aria-hidden="true"></i>
-                  <span class="sr-only">{{ 'general.accessibility.menu' | t | default: 'Menu' }}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-    </div>
   </div>
+
+  <!-- Modern Responsive Header -->
+  <div class="modern-header-wrapper">
+    {% section 'top-bar-type-2' %}
+
+    <header class="modern-header-main" role="banner">
+      <div class="header-container">
+
+        <!-- Logo Section -->
+        <div class="header-logo-section">
+          {% include 'logo' %}
+        </div>
+
+        <!-- Navigation Section -->
+        <div class="header-navigation-section">
+          {% section 'navigation' %}
+        </div>
+
+        <!-- Actions Section -->
+        <div class="header-actions-section">
+          {% section 'header-model-2' %}
+
+          <!-- Mobile Menu Button -->
+          <button type="button"
+                  class="mobile-menu-btn"
+                  id="showRightPush"
+                  aria-label="{{ 'general.accessibility.menu' | t | default: 'Menu' }}"
+                  aria-expanded="false"
+                  aria-controls="mobile-menu">
+            <div class="menu-icon">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <span class="sr-only">{{ 'general.accessibility.menu' | t | default: 'Menu' }}</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+  </div>
+
     {% if settings.preloader_enable %}<div class="se-pre-con"></div> {% endif %}
     <div id="PageContainer"></div>
     <div class="quick-view"></div>
@@ -781,6 +1091,179 @@
     $('.quick-view .close-window').click(function() {
 	$('.quick-view').switchClass("open-in","open-out");
 	});
+</script>
+
+<!-- Enhanced Mobile Menu & Header JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Mobile menu functionality
+  const mobileMenuBtn = document.getElementById('showRightPush');
+  const mobileMenu = document.getElementById('cbp-spmenu-s1');
+  const body = document.body;
+  const closeMenuBtn = document.querySelector('.close-menu');
+
+  // Remove any existing event listeners from core-files.js
+  if (mobileMenuBtn) {
+    // Clone the button to remove all existing event listeners
+    const newMobileMenuBtn = mobileMenuBtn.cloneNode(true);
+    mobileMenuBtn.parentNode.replaceChild(newMobileMenuBtn, mobileMenuBtn);
+
+    // Re-assign the reference to the new button
+    const menuBtn = document.getElementById('showRightPush');
+
+    // Add our new event listener
+    menuBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const isOpen = body.classList.contains('cbp-spmenu-push-toleft');
+
+      // Toggle menu state
+      body.classList.toggle('cbp-spmenu-push-toleft');
+      body.classList.toggle('menu-open');
+
+      if (mobileMenu) {
+        mobileMenu.classList.toggle('cbp-spmenu-open');
+      }
+
+      menuBtn.classList.toggle('active');
+
+      // Update ARIA attributes
+      menuBtn.setAttribute('aria-expanded', !isOpen);
+
+      // Prevent body scroll when menu is open
+      if (!isOpen) {
+        body.style.overflow = 'hidden';
+        // Focus trap
+        if (mobileMenu) {
+          mobileMenu.focus();
+        }
+      } else {
+        body.style.overflow = '';
+      }
+    });
+  }
+
+  // Close menu button
+  if (closeMenuBtn) {
+    closeMenuBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const currentMenuBtn = document.getElementById('showRightPush');
+      if (currentMenuBtn) {
+        currentMenuBtn.click();
+      }
+    });
+  }
+
+  // Mobile search toggle
+  const searchToggle = document.querySelector('.mobile-search-toggle');
+  const searchForm = document.querySelector('.mobile-search-form');
+
+  if (searchToggle && searchForm) {
+    searchToggle.addEventListener('click', function() {
+      const isVisible = searchForm.style.display === 'block';
+      searchForm.style.display = isVisible ? 'none' : 'block';
+
+      if (!isVisible) {
+        const searchInput = searchForm.querySelector('input[type="search"]');
+        if (searchInput) {
+          setTimeout(() => searchInput.focus(), 100);
+        }
+      }
+    });
+  }
+
+  // Close menu when clicking outside
+  document.addEventListener('click', function(e) {
+    const currentMenuBtn = document.getElementById('showRightPush');
+    if (currentMenuBtn &&
+        !e.target.closest('#cbp-spmenu-s1') &&
+        !e.target.closest('.mobile-menu-btn') &&
+        currentMenuBtn.classList.contains('active')) {
+      currentMenuBtn.click();
+    }
+  });
+
+  // Close menu on window resize if desktop
+  let resizeTimeout;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const currentMenuBtn = document.getElementById('showRightPush');
+      if (window.innerWidth > 967 && currentMenuBtn && currentMenuBtn.classList.contains('active')) {
+        currentMenuBtn.click();
+      }
+    }, 250);
+  });
+
+  // Keyboard accessibility
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const currentMenuBtn = document.getElementById('showRightPush');
+      if (currentMenuBtn && currentMenuBtn.classList.contains('active')) {
+        currentMenuBtn.click();
+        currentMenuBtn.focus();
+      }
+
+      // Close search forms
+      const searchForms = document.querySelectorAll('.mobile-search-form');
+      searchForms.forEach(form => {
+        if (form.style.display === 'block') {
+          form.style.display = 'none';
+        }
+      });
+    }
+  });
+
+  // Clean logo interaction without hover effects
+  const logoLinks = document.querySelectorAll('.header-logo-section .logo-link');
+  logoLinks.forEach(link => {
+    // No hover effects - keeping logo clean and static
+  });
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href !== '#' && href.length > 1) {
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+
+          // Close mobile menu if open
+          if (mobileMenuBtn && mobileMenuBtn.classList.contains('active')) {
+            mobileMenuBtn.click();
+          }
+        }
+      }
+    });
+  });
+
+  // Performance optimization: Debounce scroll events
+  let scrollTimeout;
+  window.addEventListener('scroll', function() {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      // Add any scroll-based functionality here
+    }, 10);
+  });
+
+  // Initialize header height CSS variable for mobile viewport height calculations
+  function setHeaderHeight() {
+    const header = document.querySelector('.modern-header-wrapper');
+    if (header) {
+      const height = header.offsetHeight;
+      document.documentElement.style.setProperty('--actual-header-height', `${height}px`);
+    }
+  }
+
+  setHeaderHeight();
+  window.addEventListener('resize', setHeaderHeight);
+});
 </script>
 </body>
 </html>

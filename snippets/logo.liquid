@@ -1,58 +1,405 @@
+{% comment %}
+  Modern Logo Component - Optimized for new header structure
+  Features: Responsive scaling, improved accessibility, better SEO
+{% endcomment %}
+
 {% if template == 'index' %}
-<h1 class="grid__item wide--one-sixth post-large--one-sixth large--one-sixth site-header__logo" itemscope itemtype="http://schema.org/Organization">
-  {% else %}
-  <div class="h1 grid__item wide--one-sixth post-large--one-sixth large--one-sixth site-header__logo" itemscope itemtype="http://schema.org/Organization">
-    {% endif %}
-    {% if settings.logo_use_image %}
-    <a class="logo-link" href="/">
-      <img class="normal-logo" src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" itemprop="logo" style="margin-bottom: 15px;">
+  <h1 class="site-header__logo" itemscope itemtype="http://schema.org/Organization">
+{% else %}
+  <div class="h1 site-header__logo" itemscope itemtype="http://schema.org/Organization">
+{% endif %}
+
+  {% if settings.logo_use_image %}
+    <a class="logo-link"
+       href="/"
+       aria-label="{{ shop.name }} - {{ 'general.accessibility.home' | t | default: 'Return to homepage' }}"
+       title="{{ shop.name }}">
+      <img class="logo-image"
+           src="{{ 'logo.png' | asset_url }}"
+           alt="{{ shop.name }}"
+           itemprop="logo"
+           loading="eager"
+           width="auto"
+           height="auto">
     </a>
-    {% else %}
-    <a href="/" class="logo_name">{{ shop.name }}</a>
-    {% endif %}
-    {% if template == 'index' %}
-    </h1>
   {% else %}
+    <a href="/"
+       class="logo-text"
+       aria-label="{{ shop.name }} - {{ 'general.accessibility.home' | t | default: 'Return to homepage' }}"
+       itemprop="url">
+      <span itemprop="name">{{ shop.name }}</span>
+    </a>
+  {% endif %}
+
+{% if template == 'index' %}
+  </h1>
+{% else %}
   </div>
 {% endif %}
 
 <style>
-  /* Logo centering for very small screens */
-  @media only screen and (max-width: 567px) {
+  /* Modern Logo Styles */
+  .site-header__logo {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    margin-bottom: 1rem !important;
+  }
+
+  .logo-link,
+  .logo-text {
+    display: inline-block;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Logo Image Styles */
+  .logo-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none !important;
+  }
+
+  /* Logo Text Styles */
+  .logo-text {
+    font-family: inherit;
+    font-weight: 700;
+    color: var(--header-text, #7b6b8a);
+    letter-spacing: -0.02em;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .logo-text span {
+    display: block;
+  }
+
+  /* Hover Effects - Clean and Simple */
+  .logo-link:hover .logo-image {
+    /* No scaling or color changes */
+  }
+
+  .logo-text:hover {
+    /* No color or transform changes */
+  }
+
+  /* Focus States for Accessibility - Clean */
+  .logo-link:focus,
+  .logo-text:focus,
+  .logo-link:active,
+  .logo-text:active,
+  .logo-link:focus-visible,
+  .logo-text:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: none !important;
+  }
+
+  /* Override any browser default focus styles */
+  .logo-link::-moz-focus-inner,
+  .logo-text::-moz-focus-inner {
+    border: 0 !important;
+    outline: none !important;
+  }
+
+  /* Active States */
+  .logo-link:active .logo-image {
+    /* No scaling effects */
+  }
+
+  .logo-text:active {
+    /* No transform effects */
+  }
+
+  /* Responsive Logo Sizing */
+
+  /* Large Desktop (1400px+) */
+  @media (min-width: 1400px) {
+    .logo-image {
+      max-height: 60px;
+    }
+
+    .logo-text {
+      font-size: 32px;
+    }
+  }
+
+  /* Desktop (1200px - 1399px) */
+  @media (max-width: 1399px) {
+    .logo-image {
+      max-height: 55px;
+    }
+
+    .logo-text {
+      font-size: 28px;
+    }
+  }
+
+  /* Large Tablet (968px - 1199px) */
+  @media (max-width: 1199px) {
+    .logo-image {
+      max-height: 50px;
+    }
+
+    .logo-text {
+      font-size: 26px;
+    }
+  }
+
+  /* Tablet (768px - 967px) */
+  @media (max-width: 967px) {
+    .logo-image {
+      max-height: 45px;
+    }
+
+    .logo-text {
+      font-size: 24px;
+    }
+  }
+
+  /* Mobile (481px - 767px) */
+  @media (max-width: 767px) {
+    .logo-image {
+      max-height: 40px;
+    }
+
+    .logo-text {
+      font-size: 22px;
+    }
+  }
+
+  /* Small Mobile (376px - 480px) */
+  @media (max-width: 480px) {
+    .logo-image {
+      max-height: 36px;
+    }
+
+    .logo-text {
+      font-size: 20px;
+    }
+  }
+
+  /* Very Small Mobile (≤375px) */
+  @media (max-width: 375px) {
+    .logo-image {
+      max-height: 32px;
+    }
+
+    .logo-text {
+      font-size: 18px;
+    }
+  }
+
+  /* High DPI/Retina Display Optimization */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .logo-image {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    .logo-link,
+    .logo-text,
+    .logo-image {
+      transition: none !important;
+    }
+
+    .logo-link:hover .logo-image {
+      transform: none !important;
+    }
+
+    .logo-text:hover {
+      transform: none !important;
+    }
+  }
+
+  /* High Contrast Mode */
+  @media (prefers-contrast: high) {
+    .logo-text {
+      font-weight: 800;
+    }
+
+    .logo-link:focus,
+    .logo-text:focus {
+      outline-width: 3px;
+      outline-color: currentColor;
+    }
+  }
+
+  /* Dark Mode Support (if implemented) */
+  @media (prefers-color-scheme: dark) {
+    .logo-image {
+      /* No filter changes - keep original image colors */
+    }
+
+    .logo-image:hover {
+      /* No filter changes on hover */
+    }
+  }
+
+  /* Print Styles */
+  @media print {
+    .logo-link,
+    .logo-text {
+      color: #000 !important;
+    }
+
+    .logo-image {
+      max-height: 40px !important;
+      filter: none !important;
+    }
+  }
+
+  /* Logo Loading States */
+  .logo-image[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .logo-image[loading="lazy"].loaded {
+    opacity: 1;
+  }
+
+  /* Fallback for older browsers */
+  .no-webp .logo-image {
+    /* Fallback styles if WebP is not supported */
+  }
+
+  /* Logo animation on page load */
+  @keyframes logoFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .site-header__logo {
+    animation: logoFadeIn 0.6s ease-out;
+  }
+
+  /* Disable animation if reduced motion is preferred */
+  @media (prefers-reduced-motion: reduce) {
     .site-header__logo {
-      text-align: center !important;
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      width: 100% !important;
-      padding: 0 !important;
-      margin: 0 !important;
-      flex: none !important;
-      order: 1 !important;
-    }
-
-    .site-header__logo .logo-link,
-    .site-header__logo .logo_name {
-      display: block !important;
-      text-align: center !important;
-      width: auto !important;
-      margin: 0 auto !important;
-    }
-
-    .site-header__logo img,
-    .site-header__logo .normal-logo {
-      display: block !important;
-      margin: 0 auto !important;
-      max-height: 35px !important;
-      height: auto !important;
-      width: auto !important;
-    }
-
-    /* Override any grid or flexbox issues */
-    .grid__item.site-header__logo {
-      float: none !important;
-      width: 100% !important;
-      flex: none !important;
+      animation: none;
     }
   }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Enhanced logo functionality
+  const logoImage = document.querySelector('.logo-image');
+  const logoLink = document.querySelector('.logo-link');
+  const logoText = document.querySelector('.logo-text');
+
+  // Logo image loading optimization
+  if (logoImage) {
+    // Add loaded class when image loads
+    logoImage.addEventListener('load', function() {
+      this.classList.add('loaded');
+    });
+
+    // Error handling for logo image
+    logoImage.addEventListener('error', function() {
+      console.warn('Logo image failed to load');
+      // Could add fallback text here if needed
+    });
+
+    // Lazy loading support
+    if ('loading' in HTMLImageElement.prototype) {
+      logoImage.loading = 'eager'; // Logo should load immediately
+    }
+  }
+
+  // Enhanced keyboard navigation for logo
+  if (logoLink || logoText) {
+    const logoElement = logoLink || logoText;
+
+    logoElement.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.click();
+      }
+    });
+
+    // Clean focus handling without scaling
+    logoElement.addEventListener('focus', function() {
+      // Focus is handled by CSS outline only
+    });
+
+    logoElement.addEventListener('blur', function() {
+      // No transform changes needed
+    });
+  }
+
+  // Performance optimization: Preload logo image if not already loaded
+  if (logoImage && !logoImage.complete) {
+    const preloadLink = document.createElement('link');
+    preloadLink.rel = 'preload';
+    preloadLink.as = 'image';
+    preloadLink.href = logoImage.src;
+    document.head.appendChild(preloadLink);
+  }
+
+  // Logo analytics tracking (if needed)
+  if (logoLink || logoText) {
+    (logoLink || logoText).addEventListener('click', function() {
+      // Track logo clicks for analytics
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'logo_click', {
+          event_category: 'navigation',
+          event_label: 'header_logo'
+        });
+      }
+    });
+  }
+
+  // Responsive logo sizing based on header height
+  function adjustLogoSize() {
+    const header = document.querySelector('.modern-header-wrapper');
+    const logo = document.querySelector('.logo-image');
+
+    if (header && logo) {
+      const headerHeight = header.offsetHeight;
+      const maxLogoHeight = Math.max(30, headerHeight * 0.6);
+      logo.style.maxHeight = `${maxLogoHeight}px`;
+    }
+  }
+
+  // Adjust logo size on load and resize
+  adjustLogoSize();
+  window.addEventListener('resize', adjustLogoSize);
+
+  // Logo visibility optimization for performance
+  if ('IntersectionObserver' in window) {
+    const logoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('logo-visible');
+        } else {
+          entry.target.classList.remove('logo-visible');
+        }
+      });
+    });
+
+    const logoContainer = document.querySelector('.site-header__logo');
+    if (logoContainer) {
+      logoObserver.observe(logoContainer);
+    }
+  }
+});
+</script>
