@@ -211,7 +211,18 @@
                   class="product-card__cart-form"
                   id="cart-form-{{ product.id }}"
                   data-product-form>
-              <input type="hidden" name="id" value="{{ product.variants[0].id }}">
+              {% if product.variants.size > 1 %}
+                <select name="id" style="display: none;" data-variant-select>
+                  {% for variant in product.variants %}
+                    <option value="{{ variant.id }}" {% if variant.available %}data-available="true"{% endif %}>
+                      {{ variant.title }}
+                    </option>
+                  {% endfor %}
+                </select>
+              {% else %}
+                <input type="hidden" name="id" value="{{ product.variants[0].id }}">
+              {% endif %}
+              <input type="hidden" name="quantity" value="1">
               <button type="submit"
                       class="btn btn--add-to-cart"
                       aria-label="Add {{ product.title | escape }} to cart"
@@ -624,6 +635,14 @@ li.baby-product-card:hover .product-card,
   transform: translateY(0);
 }
 
+.btn--add-to-cart:disabled {
+  background: #95a5a6 !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
 .btn--add-to-cart .icon {
   width: 16px;
   height: 16px;
@@ -785,6 +804,57 @@ document.addEventListener('DOMContentLoaded', function() {
     lazyCards.forEach(card => cardObserver.observe(card));
   }
 
+  // Variant selection handling for swatches
+  const productCards = document.querySelectorAll('.baby-product-card');
+  productCards.forEach(card => {
+    const swatchInputs = card.querySelectorAll('.swatch input[type="radio"]');
+    const variantSelect = card.querySelector('[data-variant-select]');
+    const priceElement = card.querySelector('.product-card__price-current');
+    const compareElement = card.querySelector('.product-card__price-compare');
+    const addToCartBtn = card.querySelector('[data-add-to-cart]');
+
+    if (swatchInputs.length > 0 && variantSelect) {
+      swatchInputs.forEach(input => {
+        input.addEventListener('change', function() {
+          updateVariantSelection(card, variantSelect, priceElement, compareElement, addToCartBtn);
+        });
+      });
+    }
+  });
+
+  function updateVariantSelection(card, variantSelect, priceElement, compareElement, addToCartBtn) {
+    const swatches = card.querySelectorAll('.swatch');
+    const selectedOptions = [];
+
+    swatches.forEach(swatch => {
+      const checkedInput = swatch.querySelector('input[type="radio"]:checked');
+      if (checkedInput) {
+        selectedOptions.push(checkedInput.value);
+      }
+    });
+
+    // Find matching variant
+    const options = Array.from(variantSelect.options);
+    const matchingOption = options.find(option => {
+      const optionText = option.textContent.trim();
+      return selectedOptions.every(selected => optionText.includes(selected));
+    });
+
+    if (matchingOption) {
+      variantSelect.value = matchingOption.value;
+
+      // Update button availability
+      if (addToCartBtn) {
+        const isAvailable = matchingOption.hasAttribute('data-available');
+        addToCartBtn.disabled = !isAvailable;
+        const btnText = addToCartBtn.querySelector('.btn-text');
+        if (btnText) {
+          btnText.textContent = isAvailable ? 'Добави в количката' : 'Няма в наличност';
+        }
+      }
+    }
+  }
+
   // Add to cart functionality with loading states
   const cartForms = document.querySelectorAll('[data-product-form]');
   cartForms.forEach(form => {
@@ -795,29 +865,82 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (addButton.classList.contains('loading')) return;
 
+      // Validate form data
+      const variantId = form.querySelector('input[name="id"], select[name="id"]').value;
+      if (!variantId) {
+        console.error('No variant ID found');
+        return;
+      }
+
       addButton.classList.add('loading');
 
-      // Simulate cart addition (replace with actual cart logic)
+      // Get the button text element
+      const btnText = addButton.querySelector('.btn-text');
+      const originalText = btnText.textContent;
+      btnText.textContent = 'Добавяне...';
+
+      // Add to cart using Shopify's cart API
+      const formData = new FormData(form);
+
+      // Debug log
+      console.log('Adding to cart:', {
+        variantId: variantId,
+        quantity: formData.get('quantity') || 1
+      });
+
       fetch('/cart/add.js', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new FormData(form)
+        body: formData
       })
-      .then(response => response.json())
-            .then(data => {
+      .then(response => {
+        if (!response.ok) {
+          return response.text().then(text => {
+            throw new Error(`HTTP ${response.status}: ${text}`);
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
         // Success feedback
         addButton.style.background = '#00b894';
-        addButton.querySelector('.btn-text').textContent = 'Added!';
+        btnText.textContent = 'Добавено!';
 
+        // Dispatch cart updated event for theme compatibility
+        document.dispatchEvent(new CustomEvent('cart:updated', {
+          detail: { item: data }
+        }));
+
+        // Also dispatch legacy cart events for broader compatibility
+        if (window.timber && window.timber.cartUpdateCallback) {
+          window.timber.cartUpdateCallback(data);
+        }
+
+        // Reset button after 2 seconds
         setTimeout(() => {
           addButton.classList.remove('loading');
           addButton.style.background = '#FF6B9D';
-          addButton.querySelector('.btn-text').textContent = 'Добави в количката';
+          btnText.textContent = originalText;
         }, 2000);
       })
       .catch(error => {
-        addButton.classList.remove('loading');
         console.error('Error adding to cart:', error);
+        addButton.classList.remove('loading');
+        addButton.style.background = '#dc3545';
+
+        // Show more specific error messages
+        if (error.message.includes('422')) {
+          btnText.textContent = 'Няма в наличност';
+        } else if (error.message.includes('404')) {
+          btnText.textContent = 'Продуктът не е намерен';
+        } else {
+          btnText.textContent = 'Грешка!';
+        }
+
+        // Reset button after 3 seconds for error states
+        setTimeout(() => {
+          addButton.style.background = '#FF6B9D';
+          btnText.textContent = originalText;
+        }, 3000);
       });
     });
   });
