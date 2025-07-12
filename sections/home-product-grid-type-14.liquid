@@ -32,6 +32,18 @@
           {% include 'vertical-grid-item-style-2', grid_item_width:grid_item_width %}
           {% endfor %}
         </ul>
+
+        {% comment %} View All Button {% endcomment %}
+        {% if section.settings.show_view_all and collection and collection.products.size > limit %}
+          <div class="view-all-button-container">
+            <a href="{{ collection.url }}" class="btn btn--view-all">
+              <span class="btn-text">Виж всички</span>
+              <svg class="icon icon--arrow-right" aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+              </svg>
+            </a>
+          </div>
+        {% endif %}
       </div>
 
     </div>
@@ -45,6 +57,120 @@
 
 <style>
     {% if section.settings.heading_image_need %}  .home-product-grid-type-14 .border-title:before {  content:"";background-image:url({{ section.settings.heading_image | img_url: 'medium' }});display:inline-block;background-repeat:no-repeat;background-position:center;width:69px;height:62px;} {% endif %}
+
+    /* View All Button Styles */
+    .view-all-button-container {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem 0;
+    }
+
+    .btn--view-all {
+      display: inline-flex !important;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 2rem !important;
+      background: #FF6B6B !important;
+      background-color: #FF6B6B !important;
+      color: white !important;
+      text-decoration: none !important;
+      border-radius: 25px !important;
+      font-weight: 600;
+      font-size: 1rem !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      box-shadow: 0 4px 15px rgba(213, 124, 122, 0.3) !important;
+      border: none !important;
+      border-color: transparent !important;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-transform: none !important;
+      letter-spacing: 0.5px !important;
+    }
+
+    .btn--view-all:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn--view-all:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 20px rgba(0, 212, 197, 0.4) !important;
+      background: #00D4C5 !important;
+      background-color: #00D4C5 !important;
+      color: white !important;
+      border-color: transparent !important;
+    }
+
+    .btn--view-all:hover:before {
+      left: 100%;
+    }
+
+    .btn--view-all:active {
+      transform: translateY(0) !important;
+      box-shadow: 0 2px 10px rgba(0, 212, 197, 0.3) !important;
+      background: #00D4C5 !important;
+      background-color: #00D4C5 !important;
+      color: white !important;
+      border-color: transparent !important;
+    }
+
+    .btn--view-all .icon {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      transition: transform 0.3s ease;
+    }
+
+    .btn--view-all:hover .icon {
+      transform: translateX(3px);
+    }
+
+    .btn--view-all .btn-text {
+      font-family: inherit;
+      letter-spacing: 0.5px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .view-all-button-container {
+        margin-top: 1.5rem;
+      }
+
+      .btn--view-all {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      .btn--view-all .icon {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    /* Accessibility improvements */
+    .btn--view-all:focus {
+      outline: 2px solid #D57C7A !important;
+      outline-offset: 2px;
+      background: #D57C7A !important;
+      background-color: #D57C7A !important;
+      color: white !important;
+      border-color: transparent !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn--view-all,
+      .btn--view-all .icon,
+      .btn--view-all:before {
+        transition: none;
+      }
+    }
 </style>
 
 
@@ -169,6 +295,13 @@
           }
 
         ]
+      },
+      {
+        "type": "checkbox",
+        "id": "show_view_all",
+        "label": "Show 'View All' button",
+        "default": true,
+        "info": "Display a button to view all products in the collection"
       }
 
 
