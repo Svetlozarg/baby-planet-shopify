@@ -5,7 +5,7 @@
 {% endcomment %}
 {% if cart.item_count > 0 %}
 
-  <form action="/cart" method="post" novalidate class="cart">
+  <form action="/cart" method="post" novalidate class="cart" style="margin-top: 30px;">
 
 
     {% if cart.announcements.size > 0 %}
@@ -29,12 +29,12 @@
 <div class="grid__item wide--three-tenths post-large--three-tenths large--three-tenths medium--grid__item">
           <div class="grid">
             <div class="grid__item">
-       
+
          <span class="h4">{{ 'cart.label.product' | t }}</span>
         </div>
            </div>
         </div>
-       
+
           <div class="grid__item wide--seven-tenths post-large--seven-tenths large--seven-tenths medium--grid__item">
           <div class="grid--full">
             <div class="grid__item wide--one-quarter post-large--one-quarter large--one-quarter medium--one-fifth">
@@ -63,7 +63,7 @@
 <div class="grid__item wide--three-tenths post-large--three-tenths large--three-tenths medium--grid__item">
             <div class="grid cart_items">
           <div class="grid__item wide--one-half post-large--one-half large--one-half medium--grid__item">
-            
+
                 <a href="{{ item.url | within: collections.all }}" class="cart__image">
 
                   {% comment %}
@@ -111,14 +111,14 @@
                   {% endfor %}
                 {% endif %}
 
-                
-             
-              
+
+
+
               </div>
 
           </div>
           </div>
-          
+
           <div class="grid__item wide--seven-tenths post-large--seven-tenths large--seven-tenths medium--grid__item">
             <div class="grid--full cart__row--table-large">
 
@@ -133,7 +133,7 @@
                <div class="qty-box-set">
                 <input type="button" value="-" class="qtyminus1">
                 <input type="number" class="quantity-selector cart-number" name="updates[]" id="updates_{{ item.id }}" value="{{ item.quantity }}" min="0">
-                <input type="button" value="+" class="qtyplus1">     
+                <input type="button" value="+" class="qtyplus1">
                 </div>
               </div>
 
@@ -261,4 +261,3 @@
     }
   });
 </script>
-          
